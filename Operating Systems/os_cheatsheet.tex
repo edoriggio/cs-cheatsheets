@@ -1,0 +1,1211 @@
+\documentclass{article}
+
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{fancyvrb,newverbs,xcolor}
+
+\definecolor{cverbbg}{gray}{0.93}
+
+\newenvironment{cverbatim}
+ {\SaveVerbatim{cverb}}
+ {\endSaveVerbatim
+  \flushleft\fboxrule=0pt\fboxsep=.5em
+  \colorbox{cverbbg}{\BUseVerbatim{cverb}}%
+  \endflushleft
+}
+
+\newenvironment{lcverbatim}
+ {\SaveVerbatim{cverb}}
+ {\endSaveVerbatim
+  \flushleft\fboxrule=0pt\fboxsep=.5em
+  \colorbox{cverbbg}{%
+    \makebox[\dimexpr\linewidth-2\fboxsep][l]{\BUseVerbatim{cverb}}%
+  }
+  \endflushleft
+}
+
+\newcommand{\ctexttt}[1]{\colorbox{cverbbg}{\texttt{#1}}}
+\newverbcommand{\cverb}
+  {\setbox\verbbox\hbox\bgroup}
+  {\egroup\colorbox{cverbbg}{\box\verbbox}}
+
+\begin{document}
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+        
+        \Huge
+        \textbf{Cheatsheet}
+        
+        \vspace{0.5cm}
+        \LARGE
+        
+        \vspace{.5cm}
+        
+        Edoardo Riggio
+   		  \vspace{1.5cm}
+       
+        \vfill
+        
+        \today
+        
+        \vspace{.8cm}
+          \Large
+          Operating Systems - SP. 2021 \\
+        Computer Science\\
+        Universit\`{a} della Svizzera Italiana, Lugano\\
+        
+    \end{center}
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+\subsection{Computer System}
+A \textbf{computer system} can be roughly divided into four parts:
+
+\begin{itemize}
+	\item \textbf{Hardware}
+	\vspace{.2cm} \\
+	It provides the basic computing resources for the system, such as CPU, memory and I/O devices.
+	
+	\item \textbf{Operating System}
+	\vspace{.2cm} \\
+	It controls and coordinates the use of hardware among various applications and users.
+	
+	\item \textbf{Application Programs}
+	\vspace{.2cm} \\
+	They define the ways in which the resources are used to solve users' computing problems.
+	
+	\item \textbf{User}
+	\vspace{.2cm} \\
+	They are people, machines and other computers.
+\end{itemize}
+
+\subsection{Operating System}
+An \textbf{operating system} is a program that manages a computer's hardware. It also acts as an intermediary between the computer user and the computer hardware. The main goals of an OS are for example:
+
+\begin{itemize}
+	\item Execute user programs
+	\item Make the system convenient to use
+	\item efficiently use the computer hardware
+\end{itemize}
+The operating system provides the environment within which other programs can do useful work. An OS is mainly two things:
+
+\begin{itemize}
+	\item \textbf{Resource Allocator}
+	\vspace{.2cm} \\
+	The operating system manages the resources offered by the computer hardware. It must also decide how to allocate these resources efficiently and fairly.
+	
+	\item \textbf{Control Program}
+	\vspace{.2cm} \\
+	The operating system manages the execution of user programs to prevent errors and improper use of the computer.
+\end{itemize}
+There is no universal definition for an operating system. It exists because it offers a reasonable way to solve the problem of creating a usable computer system. \\ \\
+There is also no accepted definition of what is part of the operating system. A good approximation could be "everything that a vendor includes and ships when a user orders an operating system". \\ \\
+A possible way of defining an operating system is that this is the one program running at all times on the computer -- also known as the \textbf{kernel}. Everything that is not the kernel can be either:
+
+\begin{itemize}
+	\item \textbf{System Program}
+	\vspace{.2cm} \\
+	They are programs associated with the operating system but not part of the kernel.
+	
+	\item \textbf{Application Programs}
+	\vspace{.2cm} \\
+	They are the programs that are not associated with the operation of a system.
+\end{itemize}
+
+\subsection{Computer System Organisation}
+Modern computers consist of 1 or more CPUs and a number of device controllers connected through a common bus that provides access to shared memory. \\ \\
+In order for a computer to start running, it needs an initial program to run. Such program is called \textbf{bootstrap program}. This initialises all aspects of an operating system. This program tends to be simple, and is typically stored in ROM (Read-Only Memory) or in EEPROM (Electrically Erasable Programmable Read-Only Memory).\\ \\
+When the kernel is loaded and executing, it starts providing services to the system and its users. Some services, though, are provided outside of the kernel, by system programs that are loaded into memory at boot time. Such programs are called \textbf{system daemons} and are those that run the entire time that the kernel is running.\\ \\
+In an operating system, the occurrence of events are usually signalled by an \textbf{interrupt} either from the hardware or the software. Hardware may trigger interrupts by sending a signal to the CPU, while software may trigger interrupts by executing a \textbf{system call}. When the CPU is interrupted, it stops what it's doing and immediately transfers execution to a fixed location. Since interrupts must be handled quickly, a table of pointers to interrupt routines can be used in order to provide the necessary speed. Such table is called an \textbf{interrupt vector}, and is stored in the first hundred or so locations in low memory.
+
+\subsection{Storage Structure}
+The CPU can load instructions only from memory, so any program to run must be stored there. Computers run most of their programs from rewritable main memory such as RAM (Random Access Memory) or DRAM (Dynamic Random Access Memory). Static programs are instead stored in ROM or EEPROM. There are problems with main memory, two of which being:
+
+\begin{itemize}
+	\item It is usually too small to store all programs and data permanently
+	\item It is \textbf{volatile}, meaning that it looses everything when powered off
+\end{itemize}
+These are the main reasons to why most systems also provide secondary storage as an extension of main memory. This type of storage is capable to hold large quantities of data permanently.
+
+\subsection{I/O Structure}
+Operating systems typically have a device driver for each device controller. A \textbf{device controller} is in charge of a specific type of device. Instead, \textbf{device drivers} provide the rest of the operating system with a uniform interface to the device. \\ \\
+In order to start an I/O operation, the device driver loads the appropriate registers within the device controller. The controller then starts the transfer of data from the device to its local buffer. Once the transfer is complete, the controller sends an interrupt to the driver. \\ \\
+When dealing with the transfer of large amounts of data, the previous solution generates a lot of overhead. In order to reduce that, \textbf{DMA} (Direct Memory Access) is used. After setting everything up, the device controller transfers an entire block of data to/from its buffer from/to memory directly -- with no intervention from the CPU. Only one interrupt is generated for block.
+
+\subsection{Multiprocessor Systems}
+\textbf{Multiprocessor systems} have two or more processors in close communication, sharing the computer bus, and sometimes the clock, memory and peripheral devices. These systems have three main advantages:
+
+\begin{itemize}
+	\item \textbf{Increased Throughput}
+	\vspace{.2cm} \\
+	The more processors, the more speed. However, the more processors we add, the more overhead there is in order to maintain all the parts working correctly.
+	
+	\item \textbf{Economy of Scale}
+	\vspace{.2cm} \\
+	Multiprocessor systems cost less than multiple single-processor systems. All resources are shared in the first system.
+	
+	\item \textbf{Increased Reliability}
+	\vspace{.2cm} \\
+	The failure of one processor will not halt the system, just slow it down. The ability to continue providing service proportional to the level of surviving hardware is called \textbf{graceful degradation}. Systems that go beyond graceful degradation are called \textbf{fault tolerant}, because they can suffer a failure of any single component and still be able to work.
+\end{itemize}
+The multiple-processor systems in use today use two main systems:
+
+\begin{itemize}
+	\item \textbf{Asymmetric Multiprocessing}
+	\vspace{.2cm} \\
+	Here, to each processor is assigned a specific task. A boss processor controls the system by allocating work to the worker processes.
+	
+	\item \textbf{Symmetric Multiprocessing}
+	\vspace{.2cm} \\
+	Each processor performs all tasks within the operating system. All processors are peers.
+\end{itemize}
+
+\subsection{Multicore Systems}
+A system is \textbf{multicore} when it includes multiple cores on a single chip. This CPU design can be more efficient than single-core CPU designs. These advantages are:
+
+\begin{itemize}
+	\item \textbf{Speed}
+	\vspace{.2cm} \\
+	On-chip communication is faster than between-chip communication.
+	
+	\item \textbf{Power Consumption}
+	\vspace{.2cm} \\
+	Multicore CPUs consume a considerably less amount of energy than multiple single-core CPUs.
+\end{itemize}
+In multicore CPU designs, each core has its own register set as well as its own local cache.
+
+\subsection{Operating System Structure}
+One of the most important aspects of operating systems is the ability to \textbf{multiprogram}. Multiprogramming increases CPU utilisation by organising jobs so that the CPU always has one to execute. The operating system keeps several jobs in memory simultaneously. Jobs are initially kept on the disk in the \textbf{job pool}. This pool consists of all processes residing on the disk awaiting for allocation of main memory. \\ \\ \textbf{Multitasking} is a logical extension of multiprogramming. In time-sharing systems, the CPU executes multiple jobs by switching among them. Switching occurs so frequently that users can interact with each program while it's running. A time-shared machine allows multiple users to share the computer simultaneously. This type of machine uses CPU scheduling and multiprogramming in order to provide each user with a part of the computer. Each user has at least one separate program in memory. Such programs are called \textbf{processes}. \\ \\
+If several jobs are brought into memory, and there is not enough room for them, \textbf{job scheduling} is used in order to make the decision of choosing. If several jobs are ready to run at the same time, \textbf{CPU scheduling} is used in order to make the decision of which job to run first. \\ \\
+A method used in order to ensure reasonable response times is \textbf{virtual memory}. This technique allows for the execution of a process that is not completely in memory. The main advantage of virtual memory is that it enables users to run processes that are larger than actual physical memory.
+
+\subsection{Operating-Systems Operations}
+Modern operating systems are \textbf{interrupt driven}. Events are almost always signalled by the occurrence of either an interrupt or a trap. A \textbf{trap} is a software-generated interrupt caused by either an error or by a request from a user program. Operating systems also need to make sure that an interrupt or trap that happens for one user is propagated and affect other users as well.
+
+\subsubsection{Dual Mode Operation}
+In order to ensure the proper execution of the OS, we must be able to distinguish between user defined and OS code. In order to do this we need at lest two modes of operation:
+
+\begin{itemize}
+	\item \textbf{Kernel Mode}
+	\item \textbf{User Mode}
+\end{itemize}
+A bit, called the \textbf{mode bit}, is used by the operating system to indicate the current mode of execution (0 = kernel mode, 1 = user mode). By switching this bit we can know if code is running in kernel mode or in user mode. \\ \\
+When a user program tries to run privileged commands, a trap occurs in which the OS evaluates the operating system evaluates the command. If it is accepted, then the mode bit switches to 0 and the command is executed in kernel mode. After which the mode bit id set again to 1. 
+
+\subsubsection{Timer}
+A \textbf{timer} can be set in order to interrupt the computer after a specific period of time. This period may be fixed or variable. If the timer throws an interrupt, then the control is passed to the operating system and an error message could be displayed.
+
+\subsection{Process Management}
+A \textbf{process} is an active entity that uses resources of a system. This is the unit of work in a system. A system consists of a collection of processes, both OS and user processes. The operating system is responsible for the following:
+
+\begin{itemize}
+	\item Scheduling processes and threads of a CPU
+	\item Crating and deleting both user and system processes
+	\item Suspending and resuming processes
+	\item Providing mechanisms for process synchronisation
+	\item Providing mechanisms for process communication
+\end{itemize}
+
+\subsection{Memory Management}
+To improve both the utilisation of CPU and the responsiveness of the computer, they must keep several programs in memory, creating a need for memory management. The OS is responsible for the following:
+
+\begin{itemize}
+	\item Keeping track of which parts of memory are currently being used and who is using them
+	\item Deciding which processes and data needs to be moved in and out of memory
+	\item Allocating and deallocating memory as needed
+\end{itemize}
+
+\subsection{Storage Management}
+In order to make the computer system convenient for users, the OS provides a uniform, logical view of information storage. The operating system abstracts from the physical properties of its storage devices to define a logical storage unit, the \textbf{file}. The operating system maps files onto physical media and accesses these files via the storage devices. The OS is responsible for the following:
+
+\begin{itemize}
+	\item Creating and deleting files
+	\item Creating and deleting directories to organise files
+	\item Supporting primitives for manipulating files and directories
+	\item Mapping files onto secondary storage
+	\item Backing up files on stable, nonvolatile storage media
+	\item Free-space management
+	\item Storage allocation
+	\item Disk scheduling
+\end{itemize}
+
+\subsection{Caching}
+\textbf{Caching} is an important principle of computer systems. Information is normally stored in some storage system. As it is used, it is copied in the cache on a temporary basis. Since cache is very fast, it is the first place the computer goes when searching for information. If said information is not found in cache, it is looked for in main memory, then secondary memory and so on. \\ \\
+Caches have limited sizes, so \textbf{cache management} is used in order to make caches efficient. \textbf{Cache coherency} is used to make sure that an updated copy of some data is always the same in local caches. This is true when we are in a multiprocessor environment where each of the CPUs also contain local caches.
+
+\subsection{I/O Systems}
+The I/O subsystem hides from the user the peculiarities of specific hardware devices. It consists of several components:
+
+\begin{itemize}
+	\item A memory-management component that includes buffering, caching and spooling
+	\item A general device-driver interface
+	\item Drivers for specific hardware devices
+\end{itemize}
+
+\subsection{Protection and Security}
+If a computer system has multiple users and allows concurrent execution of processes, then access to data must be regulated.
+
+\section{System Structures}
+\subsection{Operating System Services}
+An operating system provides a set of services, such as:
+
+\begin{itemize}
+	\item \textbf{User Interface}
+	\vspace{.2cm} \\
+	The \textbf{UI} (User Interface), can take several forms, such as \textbf{GUI} (Graphical User Interface) or \textbf{CLI} (Command-Line Interface). It offers a way for the user to easily interact with the machine.
+	
+	\item \textbf{Program Execution}
+	\vspace{.2cm} \\
+	The system must be able to load programs into memory and run them. The programs must also be able to end their execution either normally or by throwing an exception.
+	
+	\item \textbf{I/O Operations}
+	\vspace{.2cm} \\
+	The operating system must provide the means for the user to be able to interact with I/O, since he cannot do it himself.
+	
+	\item \textbf{File-System Manipulation}
+	\vspace{.2cm} \\
+	The ability of being able to delete, create or modify files and directories. The operating system also offers a way to set permissions to files and directories such that only authorised users can access them.
+	
+	\item \textbf{Communications}
+	\vspace{.2cm} \\
+	Enabling processes to be able to exchange messages between each other. Communication may be implemented either by shared memory or by message passing.
+	
+	\item \textbf{Error Detection}
+	\vspace{.2cm} \\
+	The operating system needs to properly detect and correct errors constantly.
+\end{itemize}
+Another set of services in place to ensure the efficient operation of a system is:
+
+\begin{itemize}
+	\item \textbf{Resource Allocation}
+	\vspace{.2cm} \\
+	Resources need to be allocated whenever there are multiple users or multiple jobs running at the same time.
+	
+	\item \textbf{Accounting}
+	\vspace{.2cm} \\
+	The operating system needs to keep track of which users use how much and what kind of computer resources.
+	
+	\item \textbf{Protection and Security}
+	\vspace{.2cm} \\
+	When several separate processes execute concurrently, it should not be possible for one process to interfere with the others or with the operating system itself. Also authentication is a form of security. In this way non-authorised users cannot access sensitive data.
+\end{itemize}
+
+\subsection{Command Interpreters}
+There are two main ways to interact with computer systems:
+
+\begin{itemize}
+	\item \textbf{Command Interpreters}
+	\vspace{.2cm} \\
+	Interpreters are known as \textbf{shells}, and can be multiple on a single machine. The main function of these shells is to get and execute the next user-specified command.
+	
+	\item \textbf{Graphical User Interfaces}
+	\vspace{.2cm} \\
+	The GUI first appeared on the Xerox Alto in 1973. Mac OSX adopted the Aqua themed GUI, while Microsoft MSOS. KDE and Gnome are instead used in Linux an UNIX systems.
+\end{itemize}
+
+\subsection{System Calls}
+\textbf{System calls} provide an interface to the services made available by the operating system. They are typically written in either C or C++ -- even though assembly code might be needed for directly accessing hardware. \\ \\
+The \textbf{API} (Application Programming Interface) specifies a set of functions that are available to an application programmer, including parameters and return values. Some APIs available to programmers are:
+
+\begin{itemize}
+	\item Windows API
+	\item POSIX API
+	\item Java API
+\end{itemize}
+The \textbf{system-call interface} intercepts function calls in the API and invokes the necessary system calls within the OS. Typically, a number is associated to each system call, and the system-call interface maintains a table indexed according to these numbers. The system-call interface invokes the intended system call in the OS kernel and returns the status of the system call and the return values. \\ \\
+The caller doesn't need to know anything about how the system call is implemented or what it does during execution. Three general methods are used in order to pass parameters to the operating system:
+\begin{itemize}
+	\item \textbf{Pass parameters directly in registers}
+	\item \textbf{Pass tables or blocks of data in registers}
+	\vspace{.2cm} \\
+	It could happen that there are more parameters than registers. In such case, parameters are stored in a block or table in memory. The address of the block or table is then passed as a parameter in a register.
+	
+	\item \textbf{Stored onto the stack}
+	\vspace{.2cm} \\
+	The program can push parameters onto the stack, and the OS can pop these parameters from the stack.
+\end{itemize}
+
+\subsection{Types of System Calls}
+System calls can be roughly divided into six major categories:
+
+\begin{itemize}
+	\item \textbf{Process Control}
+	\item \textbf{File Manipulation}
+	\item \textbf{Information Maintenance}
+	\item \textbf{Communications}
+	\item \textbf{Protection}
+\end{itemize}
+
+\subsection{Operating-System Structure}
+There are many parts in place to make the operating system as reliable, fast and usable as possible. These are: the \textbf{simple structure}, the \textbf{layered approach}, the \textbf{microkernels}, the \textbf{modules} and the \textbf{hybrid systems}.
+
+\subsubsection{Simple Structure}
+In order to build a modern OS, a common approach is to partition the tasks into modules, rather than have one monolithic system. \\ \\
+In MS-DOS, the interface and level of functionality are not well separated. This is also given by the fact that the hardware was still not that modern considering today's standards. The Intel 8088 chip provided no dual mode and no hardware protection
+
+\subsubsection{Layered Approach}
+This is an approach in which the OS is broken down into a numbers of different \textbf{layers}. The bottom layer is the hardware (layer 0), while the highest is the user interface (layer N). \\ \\
+A layer is an implementation of an abstract object made up of data and the operations that can manipulate those data. It consists of data structures and a set of routines that can be invoked by higher-level layers, and in turn, invoke operations on lower-level layers.
+
+\subsubsection{Microkernels}
+This method structures the OS by removing all non-essential components from the kernel and implementing them as system and user-level programs. \textbf{Microkernels} provide minimal process and memory management, in addition to a communication facility. Communication between the microkernel and the applications is provided through message passing. \\ \\
+This solution is easier to maintain, and is also more secure and reliable.
+
+\subsubsection{Modules}
+The best current methodology for OS design, involves using loadable kernel modules. Here the kernel has a set of core components, and links in additional services via modules.
+
+\section{Process Concept}
+
+While early computers allowed only for one program to be executed at a time, modern computers allow multiple programs to be loaded into memory and executed concurrently. \\ \\
+A \textbf{process} is a program in execution. A process is the unit of modern time-sharing systems.
+
+\subsection{The Process}
+A \textbf{process} is composed of several parts. This is a graphical representation of such parts.
+
+\begin{cverbatim}
+   +---------------------+   max
+   |                     |             Dynamically allocated
+   |        Stack        |         --> memory which is used to
+   |                     |             hold temporary data, such
+   +---------------------+             as the program 
+   |          |          |
+   |          v          |
+   |                     |
+   |                     |
+   |          A          |
+   |          |          |
+   +---------------------+
+   |                     |             It is the memory which is 
+   |         Heap        |         --> dynamically allocated
+   |                     |             during process runtime
+   +---------------------+
+   |                     |            
+   |         Data        |         --> It contains the global
+   |                     |             variables
+   +---------------------+
+   |                     |             It represents the
+   |         Text        |         --> textual part of the
+   |                     |             process (i.e. the code)
+   +---------------------+   0         
+\end{cverbatim}
+A \textbf{program} is a passive entity, often referred to as an executable file. On the other hand, a \textbf{process} is an active entity.
+
+\subsection{Process States}
+A process during its lifetime may change state. A state diagram corresponding to each of the possible states could be:
+
+\begin{cverbatim}
+  +---------+             +---------+ <---------------+
+  |   New   | -admitted-> |  Ready  |                 |
+  +---------+             +---------+ ----+           |
+                               A          |           |
+                               |          |           |
+                          I/O or event    |           |
+                           completion     |           |
+                               |          |           |
+                          +---------+    scheduler   interrupt
+                          | Waiting |    dispatch     |
+                          +---------+     |           |
+                               A          |           |
+                               |          |           |
+                       I/O or event wait  |           |
+                               |          |           |
+  +------------+          +---------+ <---+           |
+  | Terminated | <-exit-- | Running |                 |
+  +------------+          +---------+ ----------------+ 
+\end{cverbatim}
+
+\subsection{Process Control Block}
+Each process is represented in the operating system by a \textbf{PCB} (Process Control Block). The PCB includes the following information about a process:
+
+\begin{itemize}
+	\item \textbf{Process State}
+	
+	\item \textbf{Program Counter}
+	\vspace{.2cm} \\
+	It indicates the address of the next instruction to be executed for this process.
+	
+	\item \textbf{CPU Registers}
+	
+	\item \textbf{CPU-Scheduling Information}
+	\vspace{.2cm} \\
+	It includes process priority, pointers to scheduling queues, and other scheduling parameters.
+	
+	\item \textbf{Memory-Management Information}
+	
+	\item \textbf{Accounting Information}
+	\vspace{.2cm} \\
+	It includes the amount of CPU and real time used, time limits...
+	
+	\item \textbf{I/O Status Information}
+	\vspace{.2cm} \\
+	It includes a list of I/O devices allocated to the process, list of open files...
+\end{itemize}
+
+\subsection{Process Scheduling}
+In order to obtain multiprogramming and time-sharing in a machine, the \textbf{process scheduler} selects an available process for program execution on the CPU.
+
+\subsubsection{Scheduling Queues}
+The following are the queues a process is put into when it enters the system:
+
+\begin{itemize}
+	\item \textbf{Job Queue}
+	\vspace{.2cm} \\
+	Queue containing all of the processes in the system.
+	
+	\item \textbf{Ready Queue}
+	\vspace{.2cm} \\
+	A set of all processes residing in main memory, ready and waiting to execute.
+	
+	\item \textbf{Device Queue}
+	\vspace{.2cm} \\
+	A set of processes waiting for an I/O device.
+\end{itemize}
+During their lifetime, processes can migrate among the various queues.
+
+\subsubsection{Schedulers}
+The operating system must select processes from the previously mentioned queues in some fashion. The selection process is carried out by the appropriate scheduler. There are two main schedulers:
+
+\begin{itemize}
+	\item \textbf{Long-Term Scheduler}
+	\vspace{.2cm} \\
+	Selects which process should be brought into the ready queue, by bringing them into memory.
+	
+	\item \textbf{Short-Term Scheduler}
+	\vspace{.2cm} \\
+	Selects which process from the ready queue should be executed next and allocates CPU.
+\end{itemize}
+The main difference between these two schedulers is the frequency of execution. While the short-term scheduler is invoked very frequently, the long-term scheduler is instead invoked very infrequently. \\ \\
+The long-term scheduler controls the degree of \textbf{multiprogramming}, i.e. the number of processes in memory. Most processes can be described as:
+
+\begin{itemize}
+	\item \textbf{I/O Bound Process}
+	\vspace{.2cm} \\
+	This is a process that spends most of its time doing I/O operations rather than computations.
+	
+	\item \textbf{CPU-Bound Process}
+	\vspace{.2cm} \\
+	This is a process that spends most of its time doing computations
+\end{itemize}
+A \textbf{medium-term scheduler} could also be implemented. This scheduler serves to remove processes from memory and reduces the degree of multiprogramming. Later, this process is added to memory again, and its execution can continue. This scheme is called \textbf{swapping}.
+
+\subsection{Operation on Processes}
+
+\subsubsection{Process Creation}
+Parent processes can create children processes which in turn can create other children processes. This forms a tree of processes. \\ \\
+A child process may be able to obtain its resources directly from the operating system, or it may be constraint to a subset of the resources of the parent process. Parent processes may also pass along some initialisation data to the children processes. Two options are possible when processes are initiated, they can either run concurrently or the parent will wait for the children to finish executing. \\ \\
+There are also two address-space possibilities for new processes. The first is that the child process is a duplicate of the parent process (same program and data as the parent). The second possibility is that the child process has a new program loaded into it. \\ \\
+The following is a graph displaying what happens when a \cverb|fork()| method is called on a process:
+
+\begin{cverbatim}
+  +----------+                   +----------+
+  |  Fork()  | -parent (pid>0)-> |  Wait()  | --> parent 
+  +----------+                   +----------+
+       |                              A
+  child (pid=0)                       |
+       |                              |
+       |        +----------+     +----------+
+       +------> |  Exec()  | --> |  Exit()  |
+                +----------+     +----------+
+\end{cverbatim}
+
+\subsubsection{Process Termination}
+A process terminates when it finishes executing its final statement and asks the OS to delete it by using the exit() system call. The process now may do the following:
+
+\begin{itemize}
+	\item Output data from child process to parent (via the \cverb|wait()| system call)
+	\item All process resources are deallocated by the operating system.
+\end{itemize}
+A child process can also be terminated by using the \cverb|abort()| system call. This could happen for a variety of reasons:
+
+\begin{itemize}
+	\item The child exceeded the usage of some of the resources that it has been allocated
+	\item The task assigned to the child is no longer required
+	\item The operating system does not allow for a child to continue if its parent terminates. In this case, all child processes are killed (\textbf{cascading termination})
+\end{itemize}
+A \textbf{zombie process} is a process that has been terminated, but whose parent has not yet called \cverb|wait()| \\ \\
+An \textbf{orphan process} is a child process that has not invoked \cverb|wait()|. Orphan processes are assigned \cverb|init| as their new parent process. The \cverb|init| process periodically invokes the \cverb|wait()| system call.
+
+\subsection{Interprocess Communication}
+A process is said to be \textbf{independent} if it cannot affect or be affected by the other processes executing in the system. Any process that does not share data with other processes is independent. \\ \\
+A process, instead, is said to be \textbf{cooperating} if it affects and can be affected by the other processes executing in the system. Any process that does share data with other processes is said to be cooperating. \\ \\
+Cooperating processes require an \textbf{interprocess communication mechanism} that will allow them to exchange data and information. There are two fundamental models of interprocess communication:
+
+\begin{itemize}
+	\item \textbf{Shared Memory}
+	\vspace{.2cm} \\
+	A region of memory that is shared by cooperating processes is established. Processes can then exchange information by reading and writing data to the shared region. This method is fast and no assistance from the kernel is required. It suffers though of cache coherency issues.
+	
+	\item \textbf{Message Passing}
+	\vspace{.2cm} \\
+	Communication takes place by means of messages exchanged between the cooperating processes. It is useful to exchange small amounts of data, and is easier to implement in a distributed system.
+\end{itemize}
+
+\subsubsection{Shared-Memory Systems}
+In shared-memory systems a region of memory is shared in order to make multiple processes communicate with each other. In these systems there is a \textbf{producer} process that puts data into a buffer, and a \textbf{consumer} process that gets the data from this buffer. \\ \\
+Two types of buffers can be used:
+
+\begin{itemize}
+	\item \textbf{Bounded Buffer}
+	\vspace{.2cm} \\
+	Assumes a fixed buffer size. In this case the consumer must wait if the buffer is empty, and the producer must wait if the buffer is full.
+	
+	\item \textbf{Unbounded Buffer}
+	\vspace{.2cm} \\
+	It places no limit on the actual size of the buffer. In this case the consumer has to wait if the buffer is empty, but the producer doesn't need to wait.
+\end{itemize}
+
+\subsubsection{Message-Passing System}
+This system provides a mechanism to allow processes to communicate and to synchronise their actions without sharing the same address space. \\ \\
+Message passing can be of two types:
+
+\begin{itemize}
+	\item \textbf{Blocking}
+	\vspace{.2cm} \\
+	This is considered \textbf{synchronous}. In \textbf{blocking send} operations, the sending process is blocked until the message is received by the receiving process. In \textbf{blocking receive} operations, the receiver blocks until a message is available.
+	
+	\item \textbf{Nonblocking}\
+	\vspace{.2cm} \\
+	This is considered \textbf{asynchronous}. In \textbf{nonblocking send} operations, the sending process sends the message and resumes operation. In \textbf{nonblocking receive} the receiver retrieves either a valid message or a null.
+\end{itemize}
+
+\subsection{Pipes}
+A \textbf{pipe} acts as a conduit allowing two processes to communicate. Pipes are one of the first mechanisms in early UNIX systems.
+
+\subsubsection{Ordinary Pipes}
+\textbf{Ordinary pipes} allow two processes to communicate in standard producer-consumer fashion. The producer writes to the write-end of the pipe, while the consumer reads on the read-end of the pipe. \\ \\
+These pipes are \textbf{unidirectional}. Two pipes must be used for bi-directional communication (in UNIX systems, \cverb|fd[0]| is the read-end, while \cverb|fd[1]| is the write-end). \\ \\
+An ordinary pipe cannot be accessed from outside the process that created it. Here is a representation:
+
+\begin{cverbatim}
+      Parent                                           Child
+  fd[0]    fd[1]                                   fd[0]   fd[1]
+   |        |                                       |       |
+   |        +---------------------------------------+---+   |
+   |                                                |   |   |
+   |    +-------------------------------------------+   |   |
+   |    |                                               |   |
+   |    |      +---------------------------------+      |   |
+   |    +----> |                                 | <----+   |
+   |           |              Pipe               |          |
+   +---------> |                                 | <--------+
+               +---------------------------------+
+                
+\end{cverbatim}
+
+\subsubsection{Named Pipes}
+Named pipes provide bi-directional communication, and no parent-child relationship is required. Once it has been established, a named pipe can be used by several processes. They also continue to exist after the communicating processes have finished.
+
+\section{Multithreaded Programming}
+\subsection{Thread}
+A \textbf{thread} is a basic unit of CPU utilisation. It comprises a thread ID, a program counter, a register set and a stack. It shares with other threads belonging to the same process its code section, data section and other operating system resources. \\ \\
+A process can either be \textbf{single-threaded} or \textbf{multithreaded}. In this second case, the program can perform multiple tasks at the same time.
+
+\subsection{Benefits}
+There are some benefits that come with multithreaded programming, such as:
+
+\begin{itemize}
+	\item \textbf{Responsiveness}
+	\vspace{.2cm} \\
+	It may allow continued execution if part of the process is blocked, it is especially important for GUIs.
+	
+	\item \textbf{Resource Sharing}
+	\vspace{.2cm} \\
+	Threads share resources of the process, which is easier than both shared memory and message passing.
+	
+	\item \textbf{Economy}
+	\vspace{.2cm} \\
+	Cheaper than process creation, thread switching has lower overhead compared to context switching.
+	
+	\item \textbf{Scalability}
+	\vspace{.2cm} \\
+	Process can take advantage of multiprocessor systems.
+\end{itemize}
+
+\subsection{Multicore Programming}
+In a \textbf{multicore} system, multiple threads can run simultaneously. A system is said to be \textbf{parallel} if it can perform more than one task simultaneously. On the other hand, a system is said to be \textbf{concurrent} if it supports more than one task by allowing all the tasks to make progress. \\ \\
+It is possible to have concurrency without parallelism. \\ \\
+The main challenges in programming for multicore systems are:
+
+\begin{itemize}
+	\item \textbf{Identifying Tasks}
+	\vspace{.2cm} \\
+	This involves examining applications to find areas that can be divided into separate, concurrent tasks.
+	
+	\item \textbf{Balance}
+	\vspace{.2cm} \\
+	While identifying tasks that can run in parallel, it must also be ensured that the tasks perform equal work of equal value.
+	
+	\item \textbf{Data Splitting}
+	\vspace{.2cm} \\
+	The data accessed and manipulated by the tasks must be divided to run on multiple cores.
+	
+	\item \textbf{Data Dependency}
+	\vspace{.2cm} \\
+	The data accessed by the tasks must be examined for dependencies between two or more tasks.
+	
+	\item \textbf{Testing and Debugging}
+\end{itemize}
+There are two main types of parallelism:
+
+\begin{itemize}
+	\item \textbf{Data Parallelism}
+	\vspace{.2cm} \\
+	It focuses on distributing subsets of the same data across multiple computing cores and performing the same operation on each core.
+	
+	\item \textbf{Task Parallelism}
+	\vspace{.2cm} \\
+	It involves distributing tasks across multiple cores. Each thread is performing a unique operation.
+\end{itemize}
+
+\subsection{Multithreading Models}
+Support for threads might be provided at two levels:
+
+\begin{itemize}
+	\item \textbf{User Threads}
+	\vspace{.2cm} \\
+	Are supported above the kernel and are managed without the kernel's support.
+	
+	\item \textbf{Kernel Threads}
+	\vspace{.2cm} \\
+	Are supported directly by the operating system.
+\end{itemize}
+There is a relationship between user and kernel threads. Following are three common ways of establishing such relationships.
+
+\subsubsection{Many-to-One Model}
+This model maps \textbf{many user threads} to \textbf{one kernel thread}. \\ \\
+This is efficient, but the system halts whenever a blocking system call is executed. In this model threads are unable to run in parallel.
+
+\subsubsection{One-to-One Model}
+This model maps \textbf{each user thread} with \textbf{one kernel thread}. \\ \\
+It has a degree of concurrency and threads can run in parallel. There is the overhead of creating the correspondent kernel thread to a user thread.
+
+\subsubsection{Many-to-Many Model}
+This model multiplexes \textbf{many user threads} to a \textbf{smaller or equal number of kernel threads}. \\ \\
+This allows greater concurrency. If a user thread executes a blocking system call, the kernel can schedule another thread for execution.
+
+\subsection{Threading Issues}
+When working with threads, a series of issues can present to the developer. These are:
+
+\begin{itemize}
+	\item \textbf{fork() and execute() System Calls}
+	\vspace{.2cm} \\
+	There are two different versions of the \cverb|fork()| method. The first one duplicates all threads, while the other only duplicates only the threads that invoked \cverb|fork()|. \\ \\
+	If a thread invokes the \cverb|exec()| system call, the program specified in the parameter of \cverb|exec()| will replace the entire process (including all of its threads).
+	
+	\item \textbf{Signal Handling}
+	\vspace{.2cm} \\
+	A \textbf{signal} is used in UNIX to notify a process that a particular event has occurred. A signal can be received either synchronously or asynchronously. \\ \\
+	Signals can be either handled  by a default or user-defined signal handler. In multithreaded programs, delivering signals may be tricky. In the case of \textbf{synchronous signals}, they are only delivered to the thread causing the signal. In the case of \textbf{asynchronous signals}, the signal could either be delivered to all threads of the program, or only to one.
+	
+	\item \textbf{Thread Cancellation}
+	\vspace{.2cm} \\
+	This involves terminating a thread before it has completed. A thread that is to be cancelled is referred to as the \textbf{target thread}. \\ \\
+	There are two ways in which a thread can be cancelled:
+	
+	\begin{itemize}
+		\item \textbf{Asynchronous Cancellation}
+		\vspace{.2cm} \\
+		One thread immediately terminates the target thread.
+		
+		\item \textbf{Deferred Cancellation}
+		\vspace{.2cm} \\
+		The target thread periodically checks whether it should terminate, allowing it to terminate itself.
+	\end{itemize}
+	The problem with thread cancellation are the allocated resources. In case of asynchronous cancellation, sometimes it may occur that the OS, while reclaiming all system resources from a thread, does not actually reclaim all of them.
+\end{itemize}
+
+\subsection{Thread-Local Storage}
+In the case that a thread needed its own copy of some data, this is referred to as \textbf{TLS} (Thread-Local Storage). This kind of data is visible only during function invocations.
+
+\subsection{Scheduler Activations}
+An intermediate data structure is implemented between the user and the kernel threads. This data structure, also known as \textbf{LWP} (LightWeight Process) is used for communication between the kernel and the thread library. \\ \\
+To the user-thread library, the LWP appears to be a virtual processor on which the application can schedule a user thread to run. If a kernel thread blocks, the LWP blocks as well. A user thread attached to that LWP would block too.
+
+\section{Process Scheduling}
+\subsection{CPU-I/O Burst Cycle}
+Process execution consists of a cycle of a CPU execution and an I/O wait. The process execution begins with a CPU burst.
+
+\subsection{CPU Scheduler}
+Whenever the CPU becomes idle, the operating system must select one of the processes in the ready queue to be executed. The scheduler's job is to select a process from the processes in memory which are ready to execute and allocate the CPU to that process. \\ \\
+If a process switches from running to waiting state or from running to ready state, \textbf{nonpreemptive schedulers} are used. Instead, when a process switches from waiting to ready or it terminates, then \textbf{preemptive schedulers} are used. \\ \\
+A \textbf{dispatcher} is involved in CPU-scheduling. It is a module that gives control of the CPU to the process selected by the short term scheduler. The operations involved are:
+
+\begin{itemize}
+	\item \textbf{Context Switching}
+	\item \textbf{Switching to User-mode}
+	\item \textbf{Jumping to the proper location in the user program in order to restart it}
+\end{itemize}
+The time it is needed for the dispatcher to stop one process and start another is known as the \textbf{dispatch latency}.
+
+\subsection{Scheduling Criteria}
+The following are the criteria used in order to compare CPU-scheduling algorithms -- following each parameter is which quantity of that measurement is best:
+
+\begin{itemize}
+	\item \textbf{CPU Utilisation} - Max
+	\vspace{.2cm} \\
+	Keep the CPU as busy as possible.
+	
+	\item \textbf{Throughput} - Max
+	\vspace{.2cm} \\
+	Number of processes that complete their execution per time unit.
+	
+	\item \textbf{Turnaround Time} - Min
+	\vspace{.2cm} \\
+	The amount of time needed to execute a particular process.
+	
+	\item \textbf{Waiting Time} - Min
+	\vspace{.2cm} \\
+	The amount of time a process has been waiting for inside of the ready queue.
+	
+	\item \textbf{Response Time} - Min
+	\vspace{.2cm} \\
+	The amount of time that passes from the submission of a request until the first response is produced.
+\end{itemize}
+
+\subsection{Length of the Next CPU Burst}
+The length of the next CPU burst can be calculated by using the length of previous CPU bursts, using exponential averaging. The following is the formula: \
+
+\[ \tau_{n+1} = \alpha \cdot t_n + (1-\alpha) \cdot \tau_n \] \\
+Were $t_n$ is the actual length of the n$^{\text{th}}$ CPU burst, while $\tau_{n+1}$ is the value for the next CPU burst.
+
+\subsection{Scheduling Algorithms}
+There are many scheduling algorithms, each having its upsides and downsides. Here are some of them.
+
+\subsubsection{FCFS Scheduling}
+\textbf{FCFS} (First Come, First Served) is the simplest CPU-scheduling algorithm that one can implement. The processes are simply scheduled based on their time of arrival in the ready queue.
+\\
+\begin{cverbatim}
+ Arrival times:
+  - P1 (burst time: 24)
+  - P2 (burst time: 3)
+  - P3 (burst time: 3)
+\end{cverbatim}
+\
+\begin{cverbatim}
+ Scheduling:
+ +-----------------------------------+------------+------------+
+ |                P1                 |     P2     |     P3     |
+ +-----------------------------------+------------+------------+
+ |                                   |            |            |
+ 0                                   24           27           30
+ \end{cverbatim}
+ 
+ \begin{cverbatim}
+ Waiting times:
+  - P1 = 0
+  - P2 = 24
+  - P3 = 27
+    -------
+    Avg. 17
+\end{cverbatim}
+Here we have what is known as the \textbf{convoy effect}, where the short processes are slowed down by the longer processes executing before them.
+
+\subsubsection{SJF Scheduling}
+\textbf{SJF} (Shortest Job First) associates with each process the length of the process's next CPU burst. These lengths are used to schedule the process with the shortest time. In this case it is non-preemptive.
+\\
+\begin{cverbatim}
+ Arrival times:
+  - P1 (burst time: 6)
+  - P2 (burst time: 8)
+  - P3 (burst time: 7)
+  - P4 (burst time: 3)
+\end{cverbatim}
+\
+\begin{cverbatim}
+ Scheduling:
+ +--------+------------+----------------+----------------------+
+ |   P4   |     P1     |       P3       |          P2          |
+ +--------+------------+----------------+----------------------+
+ |        |            |                |                      |
+ 0        3            9                16                     24
+\end{cverbatim}
+\
+\begin{cverbatim}
+ Waiting times:
+  - P1 = 3
+  - P2 = 16
+  - P3 = 9
+  - P4 = 0
+    -------
+    Avg. 7
+\end{cverbatim}
+\
+\subsubsection{SRTF Scheduling}
+\textbf{SRTF} (Shortest Remaining Time First) is the preemptive version of the SJF algorithm. In this case the execution of one process can be interrupted by the CPU.
+
+\begin{cverbatim}
+ Arrival times:
+  - P1 - 0 (burst time: 8)
+  - P2 - 1 (burst time: 4)
+  - P3 - 2 (burst time: 9)
+  - P4 - 3 (burst time: 5)
+\end{cverbatim}
+\
+\begin{cverbatim}
+ Scheduling:
+ +----+--------+------------+--------------+-------------------+
+ | P1 |   P2   |     P3     |      P1      |        P3         |
+ +----+--------+------------+--------------+-------------------+
+ |    |        |            |              |                   |
+ 0    1        5            10             17                  26
+\end{cverbatim}
+\
+\begin{cverbatim}
+ Waiting times:
+  - P1 = 10-1 = 9
+  - P2 = 1-1 = 0
+  - P3 = 17-2 = 15
+  - P4 = 5-3 = 2
+    --------------
+    Avg. 6.5
+\end{cverbatim}
+\
+\subsubsection{Priority Scheduling}
+In the case of \textbf{priority scheduling}, a priority number is assigned to each process.
+\\
+\begin{cverbatim}
+ Priorities:
+  - P1 - 3 (burst time: 10)
+  - P2 - 1 (burst time: 1)
+  - P3 - 4 (burst time: 2)
+  - P4 - 5 (burst time: 1)
+  - P5 - 2 (burst time: 5)
+\end{cverbatim}
+\
+\begin{cverbatim}
+ Scheduling:
+ +----+--------+-----------------------+------------+----------+
+ | P2 |   P5   |          P3           |     P1     |    P4    |
+ +----+--------+-----------------------+------------+----------+
+ |    |        |                       |            |          |
+ 0    1        6                       16           18         19
+\end{cverbatim}
+\
+\begin{cverbatim}
+ Waiting times:
+  - P1 = 16
+  - P2 = 0
+  - P3 = 6
+  - P4 = 18
+  - P5 = 1
+    --------
+    Avg. 8.2
+\end{cverbatim}
+\
+\subsubsection{RR Scheduling}
+\textbf{RR} (Round Robin) is a scheduling algorithm in which each process gets a small unit of CPU time -- usually from 10 to 100 milliseconds. After this time has elapsed, the process is preempted and is added to the end of the ready queue.
+\\
+\begin{cverbatim}
+ Arrival times:
+  - P1 (burst time: 53)
+  - P2 (burst time: 17)
+  - P3 (burst time: 68)
+  - P4 (burst time: 24)
+  
+ Time quantum: 20 
+\end{cverbatim}
+\
+\begin{cverbatim}
+ Scheduling:
+ +-----+-----+-----+-----+-----+-----+-----+-----+-----+-------+
+ | P1  | P2  | P3  | P4  | P1  | P3  | P4  | P1  | P3  |  P3   |
+ +-----+-----+-----+-----+-----+-----+-----+-----+-----+-------+
+ |     |     |     |     |     |     |     |     |     |       |
+ 0     20    37    57    77    97   117   121   134   154     162
+\end{cverbatim}
+\
+\begin{cverbatim}
+ Waiting Time:
+  - P1 = 57+24 = 81
+  - P2 = 20
+  - P3 = 37+40+17 = 94
+  - P4 = 57+40 = 97
+  --------------------
+  Avg. 73
+\end{cverbatim}
+\
+\subsubsection{Multilevel Queue}
+Here the ready queue is permanently partitioned into two distinct queues, based on certain properties of the process. For example memory size, process priority or process size. A common partitioning is:
+
+\begin{itemize}
+	\item \textbf{Foreground} - Interactive $\rightarrow$ RR Scheduling
+	\item \textbf{Background} - Batch $\rightarrow$ FCFS Scheduling
+\end{itemize}
+In a multilevel queue system, each queue has absolute priority over lower-priority queues.
+
+\subsubsection{MLFQ Scheduling}
+\textbf{MLFQ} (MultiLevel Feedback Queue) is a scheduling algorithm where a process can move between the various queues. In general, a MLFQ scheduler is defined by the following parameters:
+
+\begin{itemize}
+	\item Number of queues
+	\item Scheduling algorithms for each queue
+	\item Method used to determine when to upgrade a process
+	\item Method used to determine when to demote a process
+	\item Method used to determine which queue a process will enter when that process needs service
+\end{itemize}
+
+\subsubsection{Thread Scheduling}
+
+When systems support threads, these are scheduled, not processes. In many-to-one and many-to-many models, the thread library schedules the user threads to run on LWPs. This is known as \textbf{PCS} (Process Contention Scope) since scheduling competition is within the process. \\ \\
+Scheduling kernel threads onto available CPU is known as \textbf{SCS} (System-Contention Scope) since scheduling competition is among all threads in the system.
+
+\subsubsection{Multi-Processor Scheduling}
+When working with multiple processors, \textbf{load sharing} becomes possible. In this case scheduling algorithms become more and more complex. There are two main approaches when dealing with multi-processor scheduling:
+
+\begin{itemize}
+	\item \textbf{Asymmetric Multiprocessing}
+	\vspace{.2cm} \\
+	Only one processor is able to access the system data structures, thus alleviating the need of data sharing.
+	
+	\item \textbf{Symmetric Multiprocessing}
+	\vspace{.2cm} \\
+	Each processor is self-scheduling. All of the processes are either in a common queue, or each processor has its own queue of ready processes.
+\end{itemize}
+
+\subsection{Algorithm Evaluation}
+In order to choose the best CPU-scheduling algorithm for a specific system or case, we need to test them in order to see which one is the most appropriate. There are several techniques that can be used in order to evaluate an algorithm.
+
+\subsubsection{Deterministic Modeling}
+In this evaluation, the scheduling algorithms take a predefined workload and is defined by the performance for that workload. \\ \\
+This method is very simple, fast, and offers a direct comparison between the algorithms. But it is specific for an input.
+
+\subsubsection{Queuing Models}
+The distribution of CPU and I/O bursts is calculated and used to determine the performance of a scheduling algorithm. \\ \\
+In order to analyse the algorithm, we can use \textbf{Little's Formula}, which is the following:
+
+\[ n = \lambda \cdot W \] \\
+Where $n$ is the average queue length, $\lambda$ is the average arrival time at the queue, and $W$ is the average waiting time. This formula is particularly useful, because it is valid for any scheduling algorithm and any arrival distribution. \\ \\
+This method is more general than the deterministic modelling. But it can be difficult to handle, especially for complex distributions.
+
+\subsubsection{Simulations}
+In this case we use a simplified programming model of the actual computer system. The workload is synthetic and based on distributions. The data collected is empirical, meaning that is based on actual system measurements. \\ \\
+This method is a faithful representation of the environment, but simpler. The problems with this approach are that the results may be inaccurate (if the model is over simplistic), or it can be computationally expensive or complex to program (if the model is too detailed).
+
+\subsubsection{Implementation}
+In this method the algorithm is directly introduced into the existing operating system. Here the algorithm is evaluated with a real environment and workload. \\ \\
+This method is the ultimate representation of environment, where no detail is left out. But it could be very difficult to implement, and the result depends on the representative workload.
+
+\section{Synchronisation}
+A process is said to be \textbf{cooperating} if it can be affected or can affect by other processes executing in the system. These processes can either directly share a logical space, or they can be allowed to share data only through files or messages.
+
+\subsection{The Critical Section Problem}
+A \textbf{critical section} is a section of code in which the process may be changing common variables, writing a file... \\ \\
+In order to find a solution to the critical section problem, the following requests must be satisfied:
+
+\begin{itemize}
+	\item \textbf{Mutual Exclusion}
+	\vspace{.2cm} \\
+	If a process $P_i$ is executing a critical section, then no other process can be executing that critical section.
+	
+	\item \textbf{Progress}
+	\vspace{.2cm} \\
+	If no process is executing in its critical section, and there exist some processes that wish to enter their critical section, then the selection of the process that will enter its critical section next cannot be indefinitely postponed.
+	
+	\item \textbf{Bounded Waiting}
+	\vspace{.2cm} \\
+	A bound must exist on the number of times that other processes are allowed to enter their critical section, after a process has made a request to enter its critical section and before the request has been granted.
+\end{itemize}
+In operating systems, two techniques are mainly used in order to handle critical sections:
+
+\begin{itemize}
+	\item \textbf{Preemptive Kernel}
+	\vspace{.2cm} \\
+	This allows a process to be stopped while it's running in kernel mode.
+	
+	\item \textbf{Non-preemptive Kernel}
+	\vspace{.2cm} \\
+	This doesn't allow a process to be stopped while it's running in kernel mode.
+\end{itemize}
+
+\subsection{Peterson's Solution}
+This solution is restricted to two processes that alternate their execution between their critical sections and the remainder sections. These two processes share two data items:
+
+\begin{itemize}
+	\item \textbf{Turn}
+	\vspace{.2cm} \\
+	This decides whose turn is it to enter its critical section.
+	
+	\item \textbf{Flag[i]}
+	\vspace{.2cm} \\
+	It indicates if a process is ready to enter its critical section.
+\end{itemize}
+
+\subsection{Synchronisation Hardware}
+\textbf{Locking} is the action of protecting critical regions trough the use of locks. \\ \\
+\textbf{Atomic hardware instructions} are those implemented in modern machines in order to provide solutions to the critical section problem.
+
+\subsection{Semaphores}
+A \textbf{semaphore} is a synchronisation tool that does not require busy waiting. There are two atomic operations provided to modify a semaphore:
+
+\begin{itemize}
+	\item \cverb|wait()|
+	\item \cverb|signal()|
+\end{itemize}
+
+\subsection{Monitors}
+\textbf{Monitors} are a high level synchronisation tool that provide a convenient and effective mechanism for process synchronisation. Only one process may be active within the monitor at a time.
+
+\subsection{Deadlocks and Starvation}
+A \textbf{deadlock} happens when two or more processes are waiting indefinitely for an event that can be caused by only one of the waiting processes. \\ \\
+\textbf{Starvation} is when a process may never be removed from the semaphore queue in which it is suspended.
+
+\newpage
+\section{Appendix A - Pintos Project}
+\subsection{Pintos Project 2 - Timer Sleep}
+Methods implemented are:
+
+\begin{itemize}
+	\item \textbf{timer\_sleep()}
+	\vspace{.2cm} \\
+	In this method I \textbf{get the current thread}, and assign to the struct the \textbf{number of ticks it needs to wait} (\cverb|t->tick_to_wake = time_ticks() + ticks|). \\ \\
+	\textbf{Interrupts are disabled} afterwards, and I insert using \cverb|list_insert_ordered()|, the current thread inside of the \textbf{list of sleeping threads} (which I implemented and is sorted by \cverb|tick_to_wake|). Finally I block the current thread and \textbf{re-enable the interrupts}.
+	
+	\item \textbf{timer\_interrupt()}
+	\vspace{.2cm} \\
+	At every timer interrupt, I go through the list of sleeping threads and remove all the elements that have a \cverb|tick_to_wake| value that is \textbf{less than or equal to} the actual ticks of the OS. If this condition is satisfied, then I \textbf{pop all of these occurrences of threads and unblock them}.
+\end{itemize}
+Fields implemented are:
+
+\begin{itemize}
+	\item \textbf{tick\_to\_wake}
+	\vspace{.2cm} \\
+	This field represents the tick at which the thread needs to be removed from the list of sleeping threads and unblocked. \\ \\
+	This field is computed by adding the parameter passed in \cverb|timer_sleep()| to the current amount of ticks done by the OS (which is returned by the function \cverb|timer_ticks()|).
+\end{itemize}
+
+\subsection{Pintos Project 3 - Scheduler}
+Methods implemented are:
+
+\begin{itemize}
+	\item \textbf{next\_thread\_to\_run()}
+	\vspace{.2cm} \\
+	Pop the first element of the list of ready threads. This element is guaranteed to \textbf{have the highest priority}. If the list is empty, return an idle thread.
+	
+	\item \textbf{thread\_set\_priority()}
+	\vspace{.2cm} \\
+	Check if the new priority to be set to the current thread is higher or lower than the previous one. If the new priority is \textbf{higher} (thus highest, being the current thread the one with the highest priority), then simply assign the new priority. \\ \\
+	If the priority is lower, then call \cverb|thread_yield()|.
+	
+	\item \textbf{thread\_create()}
+	\vspace{.2cm} \\
+	If the current scheduling method is \textbf{MLFQS}, then set the \cverb|PRI_MAX| and the default niceness, while if the current scheduling method is \textbf{priority}, then set the priority given by the parameter, and the default niceness.
+	
+	\item \textbf{thread\_set\_nice()}
+	\vspace{.2cm} \\
+	\textbf{Update the nice value} of the thread based on the value given by the parameter (and if the scheduling method is set to priority). \\ \\
+	The value of the thread priority is recomputed, and there is a function that checks whether this is the thread with the highest priority inside of the ready list (using \cverb|try_yield()|).
+	
+	\item \textbf{thread\_get\_nice()}
+	\vspace{.2cm} \\
+	Just return the niceness of the current thread.
+	
+	\item \textbf{thread\_get\_load\_avg()}
+	\vspace{.2cm} \\
+	Just return the value of the load\_avg.
+	
+	\item \textbf{thread\_get\_recent\_cpu()}
+	\vspace{.2cm} \\
+	Just return the value of the recent\_cpu of the current thread.
+	
+	\item \textbf{timer\_interrupt()}
+	\vspace{.2cm} \\
+	\textbf{Every second} the load average is recomputed, as well as the recent cpu (for each thread). \\ \\
+	\textbf{Every 4 ticks} the priority is recomputed (for each thread -- this is the correction to the mistake made).
+\end{itemize}
+Fields implemented are:
+
+\begin{itemize}
+	\item \textbf{nice}
+	\vspace{.2cm} \\
+	This field stores the niceness of the given thread (for the mlfqs scheduling).
+	
+	\item \textbf{recent\_cpu}
+	\vspace{.2cm} \\
+	This field stores the recent cpu value of the given thread (for the mlfqs scheduling).
+\end{itemize}
+
+\newpage
+
+\subsection{Pintos Project 4 - User Program}
+
+Methods implemented are:
+
+\begin{itemize}
+	\item \textbf{syscall\_handler()}
+	\vspace{.2cm} \\
+	Get the elements from the stack representing the arguments passed by the program making that call. \\ \\
+	In the case of a \textbf{write call}, the arguments represent the directory, buffer and size of the data that the program is requesting the OS to write. \\ \\
+	The \textbf{exit call}, on the other hand, simply makes the thread exit. The exit status of the process is then saved inside of the \cverb|child_status| field of the current thread.
+	
+	\item \textbf{setup\_stack()}
+	\vspace{.2cm} \\
+	In the stack of the current executing process are pushed all of the arguments that need to be passed. The stack is also composed by pointers to the arguments and other data.
+	
+	\item \textbf{process\_wait()}
+	\vspace{.2cm} \\
+	The currently executing thread is blocked and the exit status of its child is returned.
+	
+	\item \textbf{process\_exit()}
+	\vspace{.2cm} \\
+	The currently running thread is terminated and the parent of this thread is unblocked.
+\end{itemize}
+Fields implemented are:
+
+\begin{itemize}
+	\item \textbf{parent}
+	\vspace{.2cm} \\
+	A pointer to the thread's parent (it can be NULL).
+	
+	\item \textbf{children}
+	\vspace{.2cm} \\
+	A list of children of the given thread.
+\end{itemize}
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
