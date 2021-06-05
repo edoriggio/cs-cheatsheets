@@ -48,7 +48,7 @@
         \vspace*{1cm}
         
         \Huge
-        \textbf{Cheatsheet}
+        \textbf{Operating Systems Cheatsheet}
         
         \vspace{0.5cm}
         \LARGE
@@ -103,14 +103,14 @@ An \textbf{operating system} is a program that manages a computer's hardware. It
 \begin{itemize}
 	\item Execute user programs
 	\item Make the system convenient to use
-	\item efficiently use the computer hardware
+	\item Efficiently use the computer hardware
 \end{itemize}
 The operating system provides the environment within which other programs can do useful work. An OS is mainly two things:
 
 \begin{itemize}
 	\item \textbf{Resource Allocator}
 	\vspace{.2cm} \\
-	The operating system manages the resources offered by the computer hardware. It must also decide how to allocate these resources efficiently and fairly.
+	The operating system manages the resources offered by the computer hardware -- such as CPU time, memory space, file-storage space, I/O devices... It must also decide how to allocate these resources so that it can operate the computer efficiently and fairly.
 	
 	\item \textbf{Control Program}
 	\vspace{.2cm} \\
@@ -137,7 +137,7 @@ When the kernel is loaded and executing, it starts providing services to the sys
 In an operating system, the occurrence of events are usually signalled by an \textbf{interrupt} either from the hardware or the software. Hardware may trigger interrupts by sending a signal to the CPU, while software may trigger interrupts by executing a \textbf{system call}. When the CPU is interrupted, it stops what it's doing and immediately transfers execution to a fixed location. Since interrupts must be handled quickly, a table of pointers to interrupt routines can be used in order to provide the necessary speed. Such table is called an \textbf{interrupt vector}, and is stored in the first hundred or so locations in low memory.
 
 \subsection{Storage Structure}
-The CPU can load instructions only from memory, so any program to run must be stored there. Computers run most of their programs from rewritable main memory such as RAM (Random Access Memory) or DRAM (Dynamic Random Access Memory). Static programs are instead stored in ROM or EEPROM. There are problems with main memory, two of which being:
+The CPU can load instructions only from memory, so any program to run must be stored there. Computers run most of their programs from rewritable main memory such as RAM (Random Access Memory) or DRAM (Dynamic Random Access Memory) -- which is used as main memory. Static programs are instead stored in ROM or EEPROM. There are problems with main memory, two of which being:
 
 \begin{itemize}
 	\item It is usually too small to store all programs and data permanently
@@ -190,7 +190,19 @@ A system is \textbf{multicore} when it includes multiple cores on a single chip.
 	\vspace{.2cm} \\
 	Multicore CPUs consume a considerably less amount of energy than multiple single-core CPUs.
 \end{itemize}
-In multicore CPU designs, each core has its own register set as well as its own local cache.
+In multicore CPU designs, each core has its own register set as well as its own local cache. \\ \\
+Some operating systems have the ability to continue providing service proportional to the level of surviving hardware. This is known as \textbf{graceful degradation}. Other systems go beyond graceful degradation, this is known as a \textbf{fault tolerant} system. These systems can suffer a failure of any single component and still continue operation. \\ \\
+Multiple-processor systems in use today are of two types:
+
+\begin{itemize}
+	\item \textbf{Asymmetric Multiprocessing}
+	\vspace{.2cm} \\
+	Each processor is assigned to a specific task, and a poss processor controls the system. This scheme defines a boss-worker relationship.
+	
+	\item \textbf{Symmetric Multiprocessing}
+	\vspace{.2cm} \\
+	Each processor performs all tasks within the operating system. Here, all processors are peers.
+\end{itemize}
 
 \subsection{Operating System Structure}
 One of the most important aspects of operating systems is the ability to \textbf{multiprogram}. Multiprogramming increases CPU utilisation by organising jobs so that the CPU always has one to execute. The operating system keeps several jobs in memory simultaneously. Jobs are initially kept on the disk in the \textbf{job pool}. This pool consists of all processes residing on the disk awaiting for allocation of main memory. \\ \\ \textbf{Multitasking} is a logical extension of multiprogramming. In time-sharing systems, the CPU executes multiple jobs by switching among them. Switching occurs so frequently that users can interact with each program while it's running. A time-shared machine allows multiple users to share the computer simultaneously. This type of machine uses CPU scheduling and multiprogramming in order to provide each user with a part of the computer. Each user has at least one separate program in memory. Such programs are called \textbf{processes}. \\ \\
@@ -208,10 +220,10 @@ In order to ensure the proper execution of the OS, we must be able to distinguis
 	\item \textbf{User Mode}
 \end{itemize}
 A bit, called the \textbf{mode bit}, is used by the operating system to indicate the current mode of execution (0 = kernel mode, 1 = user mode). By switching this bit we can know if code is running in kernel mode or in user mode. \\ \\
-When a user program tries to run privileged commands, a trap occurs in which the OS evaluates the operating system evaluates the command. If it is accepted, then the mode bit switches to 0 and the command is executed in kernel mode. After which the mode bit id set again to 1. 
+When a user program tries to run privileged commands, a trap occurs in which the operating system evaluates the command. If it is accepted, then the mode bit switches to 0 and the command is executed in kernel mode. After which the mode bit is set again to 1. 
 
 \subsubsection{Timer}
-A \textbf{timer} can be set in order to interrupt the computer after a specific period of time. This period may be fixed or variable. If the timer throws an interrupt, then the control is passed to the operating system and an error message could be displayed.
+A \textbf{timer} can be set in order to interrupt the computer after a specific period of time. This period may be fixed or variable. If the counter reaches 0, an interrupt occurs and the control transfers directly to the operating system.
 
 \subsection{Process Management}
 A \textbf{process} is an active entity that uses resources of a system. This is the unit of work in a system. A system consists of a collection of processes, both OS and user processes. The operating system is responsible for the following:
@@ -220,12 +232,12 @@ A \textbf{process} is an active entity that uses resources of a system. This is 
 	\item Scheduling processes and threads of a CPU
 	\item Crating and deleting both user and system processes
 	\item Suspending and resuming processes
-	\item Providing mechanisms for process synchronisation
+	\item Providing mechanisms for process synchronization
 	\item Providing mechanisms for process communication
 \end{itemize}
 
 \subsection{Memory Management}
-To improve both the utilisation of CPU and the responsiveness of the computer, they must keep several programs in memory, creating a need for memory management. The OS is responsible for the following:
+To improve both the utilization of CPU and the responsiveness of the computer, they must keep several programs in memory, creating a need for memory management. The OS is responsible for the following:
 
 \begin{itemize}
 	\item Keeping track of which parts of memory are currently being used and who is using them
@@ -234,7 +246,8 @@ To improve both the utilisation of CPU and the responsiveness of the computer, t
 \end{itemize}
 
 \subsection{Storage Management}
-In order to make the computer system convenient for users, the OS provides a uniform, logical view of information storage. The operating system abstracts from the physical properties of its storage devices to define a logical storage unit, the \textbf{file}. The operating system maps files onto physical media and accesses these files via the storage devices. The OS is responsible for the following:
+In order to make the computer system convenient for users, the OS provides a uniform, logical view of information storage. The operating system abstracts from the physical properties of its storage devices to define a logical storage unit, the \textbf{file}. The operating system maps files onto physical media and accesses these files via the storage devices. \\ \\
+These files generally represent programs or data. furthermore, files are organized into directories in order to make them easier to use, The OS is responsible for the following:
 
 \begin{itemize}
 	\item Creating and deleting files
@@ -259,9 +272,10 @@ The I/O subsystem hides from the user the peculiarities of specific hardware dev
 	\item A general device-driver interface
 	\item Drivers for specific hardware devices
 \end{itemize}
+Only the drivers know the peculiarities of the specific device to which it is assigned.
 
 \subsection{Protection and Security}
-If a computer system has multiple users and allows concurrent execution of processes, then access to data must be regulated.
+If a computer system has multiple users and allows concurrent execution of processes, then access to data must be regulated. An unprotected resource cannot defend against use or misuse by users.
 
 \section{System Structures}
 \subsection{Operating System Services}
