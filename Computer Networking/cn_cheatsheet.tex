@@ -48,7 +48,7 @@
         \vspace*{1cm}
         
         \Huge
-        \textbf{Cheatsheet}
+        \textbf{Computer Networking Cheatsheet}
         
         \vspace{0.5cm}
         \LARGE
@@ -77,12 +77,32 @@
 
 \section{Computer Networking and the Internet}
 \subsection{Internet}
-The Internet is a computer network that connects together billions of computing devices around the world. All of the devices connected to the Internet are called hosts or end systems. This network is formed by \textbf{end systems} connected together by \textbf{communication links} and \textbf{packet switches}. The transmission rate of links is measured in bits/s. \\ \\
-When two end systems need to exchange data, then it is divided into \textbf{packets} and are sent through the network. When they arrive at destination, then they are reassembled. A \textbf{packet switch} takes a packet arriving on one of its incoming links and forwards them to one of its outgoing links.\\ \\
+The Internet is both a computer network that connects together billions of computing devices around the world, and an infrastructure that provides services to applications. \\ \\
+All of the devices connected to the Internet are called \textbf{hosts} or \textbf{end systems}. These hosts and end systems are connected together by a network of \textbf{communication links} and \textbf{packet switches}. The transmission rate of links is measured in bits/s. \\ \\
+When two end systems need to exchange data, this is divided into \textbf{packets} and are sent through the network. When they arrive at destination, then they are reassembled. A \textbf{packet switch} takes a packet arriving on one of its incoming links and forwards them to one of its outgoing links. Packet switches can be of different types, such as \textbf{routers} and \textbf{link-layer switches}. \\ \\
 End systems can access the Internet through \textbf{ISPs}. Each ISP in itself is a network of packet switches and communication links.
 
-\subsection{Protocol}
-A protocol defines the format and the order of messages exchanged between two or more communicating entities, as well as actions taken on the transmission and/or receipt of a message or other event. Standards for protocols are defined by \textbf{IETF} and \textbf{IEEE}.
+\subsection{Internet Services}
+Applications on the Internet are said to be \textbf{distributed applications}, since they involve multiple end systems that exchange data with each other. In order for a program to instruct the Internet on how to deliver data to another program on another end system, \textbf{socket interfaces} are used. These interfaces are provided by hosts attached to the Internet.
+
+\subsection{Protocols}
+All activity in the Internet that involves two or more communicating remote entities is governed by a protocol. \\ \\
+A protocol defines the format and the order of messages exchanged between two or more communicating entities, as well as actions taken on the transmission and/or receipt of a message or other event. Different protocols are used to accomplish different communication tasks. \\ \\
+Internet standards are developed by the \textbf{IETF} (Internet Engineering Task Force) by means of \textbf{RFCs} (Requests For Comment). These RFCs define protocols such as TCP, IP, HTTP, SMTP... \\ \\
+Other bodies also specify standards for network components, such as the \textbf{IEEE} (Institute of Electrical and Electronics Engineers).
+
+\subsection{Network Edge}
+A network edge is composed mainly of two parts:
+
+\begin{itemize}
+	\item \textbf{Network Edge}
+	\vspace{.2cm} \\
+	Is the part of the network which is composed of applications and end systems. These end systems are also referred to as \textbf{hosts}. That is because they run application programs.
+	
+	\item \textbf{Access Network}
+	\vspace{.2cm} \\
+	It is the network that physically connects an end system to the fist router, on a path from an end system all the way to any other distant end system.
+\end{itemize}
 
 \subsection{Physical Media}
 \subsubsection{Guided Media}
@@ -91,15 +111,15 @@ In the case of guided media, the electromagnetic/optical waves are guided along 
 \begin{itemize}
 	\item \textbf{Twisted-Pair Copper Wire}
 	\vspace{.2cm} \\
-	Most used form is \textbf{UTP} (Unshielded Twisted Pair), and it is used for a computer network within a building
+	Most used form is \textbf{UTP} (Unshielded Twisted Pair), and it is used for a computer network within a building.
 	
 	\item \textbf{Coaxial Cable}
 	\vspace{.2cm} \\
-	This medium is made out of copper (core) and has an internal concentric structure
+	This medium is made out of copper (core) and has an internal concentric structure.
 	
 	\item \textbf{Fiber Optic Cable}
 	\vspace{.2cm} \\
-	This type of medium transfers bits as light pulses. It is immune to electromagnetic interference, have a very low signal attenuation up to 100 km and are very hard to tap
+	This type of medium transfers bits as light pulses. It is immune to electromagnetic interference, have a very low signal attenuation up to 100 km and are very hard to tap.
 \end{itemize}
 
 \subsubsection{Unguided Media}
@@ -108,38 +128,67 @@ In the case of unguided media, electromagnetic waves are propagated in the atmos
 \begin{itemize}
 	\item \textbf{Terrestrial Radio Channel}
 	\vspace{.2cm} \\
-	No physical wire is needed to be installed, waves can penetrate walls and have a long range of action. Terrestrial radio channel can be divided into 3 categories: short range (Bluetooth), medium range (WiFi) and long range (3G, LTE, 4G, 5G ...)
+	No physical wire is needed to be installed, waves can penetrate walls and have a long range of action. Terrestrial radio channel can be divided into 3 categories: short range (Bluetooth), medium range (Wi-Fi) and long range (3G, LTE, 4G, 5G ...).
 	
 	\item \textbf{Satellite Radio Channel}
 	\vspace{.2cm} \\
-	Two types of satellites are used: \textbf{geostationary satellites} and \textbf{LEO satellites} (Low-Earth Orbiting)
+	Two types of satellites are used: \textbf{geostationary satellites} and \textbf{LEO satellites} (Low-Earth Orbiting).
 \end{itemize}
 
 \subsection{Packet Switching}
-In order for packets to go from a source to a destination, they have to travel over communication links at a rate that is equal to the full transmission rate of the link's medium. The formula is: \\
+In order to send a message, the source breaks a long message into smaller chunks called \textbf{packets}. Between the source and the destination, each packet travels through \textbf{communication links} and \textbf{packet switches}. Packets are transmitted at a rate equal to the full transmission rate of the link. The formula is: \\
 
 	\[ \Delta_{TX} = \frac{L}{R} \] \
 	
-\subsection{Store-and-Forward}
+\subsubsection{Store-and-Forward}
 Most packets use the store-and-forward transmission. This means that the packet must be fully received before it can be forwarded to the next packet switch. The end-to-end delay over $N$ routers can be measured as follows: \\
 
 	\[ d_{end-to-end} = N \cdot \frac{L}{R} \] \
 	
 \subsection{Forwarding Tables and Routing Algorithms}
-Based on the destination header of the incoming packet, the router needs to define (through forwarding tables and routing algorithms) the next router to which the packet needs to be sent to. They also determine the shortest path the packet needs to traverse in order to reach its destination.
+Each router has a \textbf{forwarding table} that maps destination addresses to that router's outbound links. This is used by the router, in combination with the destination IP address in the packet's header, in order to find the next router the packet needs to be sent to. \\ \\
+\textbf{Routing protocols} may, for example, determine the shortest path the packet needs to traverse in order to reach its destination.
 
 \subsection{Circuit Switching}
-In circuit switched networks, the resources needed along the path to provide for communication between the end systems are reserved for the whole duration of the connection. A circuit in a link is implemented using either:
+In circuit switched networks, the resources needed along the path to provide for communication between the end systems are reserved for the whole duration of the connection. For this duration, also a constant transmission time is reserved and it is guaranteed to be constant. A circuit in a link is implemented using either:
 
 \begin{itemize}
 	\item \textbf{FDM (Frequency Division Multiplexing)}
 	\vspace{.2cm} \\
-	The frequency spectrum of the link is divided up among the established connections across the link. The bandwidth for telephone networks is 4 kHz, while FM radio stations share the 88-108 MHz frequency spectrum.
+	The frequency spectrum of the link is divided up among the established connections across the link. The link dedicates the frequency of the band for the entire duration of the connection. The bandwidth for telephone networks is 4 kHz, while FM radio stations share the 88-108 MHz frequency spectrum.
 	
 	\item \textbf{TDM (Time-Division Multiplexing)}
 	\vspace{.2cm} \\
 	In this case time is divided into frames of fixed duration, and each frame is divided into a fixed number of time slots. When the network establishes a connection, the network dedicates one time slot in every frame for this connection. 
 \end{itemize}
+Circuit switches can be wasteful because the dedicates circuits are idle during \textbf{silent periods}. These idle periods are instead used by packet switching networks and used for other connections.
+
+\subsection{Structure of the Network}
+In order to connect end users to each other, a network must be built. This network is hierarchical and is composed of multiple interconnected networks. These are the networks:
+
+\begin{itemize}
+	\item \textbf{Network Structure 1}
+	\vspace{.2cm} \\
+	This network structure interconnects all of the access ISPs with a \textbf{single global transit ISP}. This would be a network of routers and communication links that spans the globe.
+	
+	\item \textbf{Network Structure 2}
+	\vspace{.2cm} \\
+	This network consists of \textbf{many access ISPs} and a \textbf{few global transit ISPs}. Global transit ISPs themselves must be interconnected.
+	
+	\item \textbf{Network Structure 3}
+	\vspace{.2cm} \\
+	In any given region, there may be a \textbf{regional ISP} to which each \textbf{access ISP} connects. Each regional ISP then connects to \textbf{tier-1 ISPs}. These are the global transit ISPs.
+	
+	\item \textbf{Network Structure 4}
+	\vspace{.2cm} \\
+	\textbf{PoPs} (Points of Presence) are added in order to group one or more routers at the same location such that they can be connected to provider ISPs. Any ISP, could also decide to \textbf{multi-home}. That is, to connect two or more provider ISPs. \textbf{Peering} is when two ISPs that are both near and at the same hierarchy, connect their networks together. Finally, a third-party company can create an \textbf{IXP} (Internet eXchange Point), which is a meeting point where multiple ISPs can peer together.
+	
+	\item \textbf{Network Structure 5}
+	\vspace{.2cm} \\
+	\textbf{Content-Provider Networks} are added to the network -- such as Google. These networks peer with lower-level ISPs and connect to tier-1 ISPs.
+\end{itemize}
+This can be a schematic representation of the modern network of networks: \\ \\
+\centerline{\includegraphics[width=9cm]{./assets/n_of_ns.png}}
 
 \subsection{Packet Delay}
 As a packet travels from one node to the subsequent node, the packet suffers from several types of delay at each node.
@@ -181,35 +230,35 @@ Because the capacity of a router/switch queue is finite, if there are more packe
 The total delay from source to destination is calculated as: \\
 
 	\[ d_{end-to-end} = N \cdot (d_{processing} + d_{transmission} + d_{propagation}) \] \\
-	
-\noindent This is true if all nodes have the same processing, transmission and propagation queues. If that were not the case, then all the single nodal delays must be added up together.
+This is true if all nodes have the same processing, transmission and propagation queues. If that were not the case, then all the single nodal delays must be added up together.
 
 \subsection{End-to-End Throughput}
 End-to-end throughput is the instantaneous rate at which a host can receive dat from another host. The formula is: \\
 
-	\[ t_{end-to-end} = \frac{F}{T} \] \
+	\[ t_{end-to-end} = \frac{F}{T} \] \\
+Throughput not only depends on the transmission rates of the links along the path, but also on the intervening traffic.
 	
 \subsection{Protocol Layers}
 Each of the 5 layers that compose the \textbf{TCP/IP} protocol stack provides its service by performing certain actions within that layer and by using the services of the layer directly below it.
 
 \subsubsection{Application Layer}
 The application layer is where the network applications and their protocols reside. \\ \\
-Some of the most important protocols of this layer are \textbf{HTTP}, \textbf{SMTP}, \textbf{FTP} and \textbf{DNS}... \\ \\
+Some of the most important protocols of this layer are \textbf{HTTP}, \textbf{SMTP}, \textbf{FTP}, \textbf{DNS}... \\ \\
 The packets at this layer are referred to as \textbf{messages}.
 
 \subsubsection{Transport Layer}
-The transport layer application-layer messages between application endpoints. \\ \\
-The two layers of this protocol are \textbf{TCP} and \textbf{UDP}. TCP provides a connection-oriented service. It guarantees the delivery of messages to the destination and flow control. UDP, on the other hand, is the exact opposite of TCP. \\ \\
+The transport layer transports application-layer messages between application endpoints. \\ \\
+The two layers of this protocol are \textbf{TCP} and \textbf{UDP}. TCP provides a connection-oriented service. It guarantees the delivery of messages to the destination and flow control. UDP, on the other hand provides no reliability, no flow control and no congestion control. \\ \\
 The packets at this layer are referred to as \textbf{segments}.
 
 \subsubsection{Network Layer}
-The network layer moves packets from one host to the other. \\ \\
-The protocol provided at this level is the \textbf{IP} protocol, which defines how routers and end systems act on the packet's fields. All Internet components that have a network layer must run the IP protocol. \\ \\
+The network layer moves packets from one host to the other. It also provides the service of delivering the segment to the transport layer in the destination host. \\ \\
+The protocol provided at this level is the \textbf{IP protocol}, which defines how routers and end systems act on the packet's fields. All Internet components that have a network layer must run the IP protocol. \\ \\
 The packets at this layer are referred to as \textbf{datagrams}.
 
 \subsubsection{Link Layer}
 The link layer moves a packet from one node to the next node in the route. \\ \\
-The protocols used in this layer are for example \textbf{Ethernet}, \textbf{WiFi} and \textbf{DOCSIS}. A datagram might be handled by a different protocol for each node it traverses. \\ \\
+The protocols used in this layer are for example \textbf{Ethernet}, \textbf{Wi-Fi} and \textbf{DOCSIS}. A datagram might be handled by a different protocol for each node it traverses. \\ \\
 The packets at this layer are referred to as \textbf{frames}.
 
 \subsubsection{Physical Layer}
@@ -219,7 +268,8 @@ The protocols in this layer depend on the link and on the transmission medium.
 \subsection{Encapsulation}
 Routers and link switches do not incorporate all of the layers in the TCP/IP protocol stack. \\ \\
 Each time the packet goes from a layer to another, a header or trailer is added to it. These headers and trailers contain information about the layer, such as the IP address and MAC address of the destination end system. \\ \\
-From layers 1 to 3 (application, transport and network layers) headers are added at each layer. Instead in layer 4 (link layer), both a header and a trailer are added to the packet. The trailer is used to verify the integrity of the packet.
+From layers 1 to 3 (application, transport and network layers) headers are added at each layer. Instead in layer 4 (link layer), both a header and a trailer are added to the packet. The trailer is used to verify the integrity of the packet. \\ \\
+In more complex cases, a large message may be divided into multiple transport-layer segments. These segments would have to be reconstructed by the destination host in order to get the full message.
 
 \section{Application Layer}
 \subsection{Architectures}
@@ -1339,6 +1389,20 @@ Some fields are:
 	\vspace{.2cm} \\
 	Copy of the IP header and at least 8 bytes of IP data.
 \end{itemize}
+
+\section{The Link Layer and LAN}
+The basic service of the link layer is to move a datagram from one node to an adjacent node over a single communication link.
+
+\subsection{Definitions}
+A \textbf{communication network} is a system that allows two or more endpoints to be connected and to exchange data. \\ \\
+An \textbf{endpoint} is any kind of equipment that is able to connect to the network. \\ \\
+A \textbf{node} is any device that runs a link-layer protocol. \\ \\
+A \textbf{link} is a communication channel that connects adjacent nodes along the communication path.
+
+\subsection{MAC and LLC}
+\textbf{MAC} (Medium Access Control) and \textbf{LLC} (Logical Link Control), are two sublayers of the Data Link layer.\\ \\
+Most of the Link layer is implemented in hardware, while high-level functionalities may be implemented in software that runs on the host's CPU.
+
 
 % -----------
 %  EXERCISES
