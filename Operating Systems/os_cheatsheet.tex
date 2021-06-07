@@ -14,7 +14,7 @@
 
 \documentclass{article}
 
-\usepackage{hyperref, amsmath}
+\usepackage{hyperref, amsmath, graphicx}
 \usepackage{fancyvrb,newverbs,xcolor}
 
 \definecolor{cverbbg}{gray}{0.93}
@@ -415,59 +415,59 @@ While early computers allowed only for one program to be executed at a time, mod
 A \textbf{process} is a program in execution. A process is the unit of modern time-sharing systems.
 
 \subsection{The Process}
-A \textbf{process} is composed of several parts. This is a graphical representation of such parts.
+A \textbf{process} is composed of several parts. This is a graphical representation of such parts. \\ \\
 
-\begin{cverbatim}
-   +---------------------+   max
-   |                     |             Dynamically allocated
-   |        Stack        |         --> memory which is used to
-   |                     |             hold temporary data, such
-   +---------------------+             as the program 
-   |          |          |
-   |          v          |
-   |                     |
-   |                     |
-   |          A          |
-   |          |          |
-   +---------------------+
-   |                     |             It is the memory which is 
-   |         Heap        |         --> dynamically allocated
-   |                     |             during process runtime
-   +---------------------+
-   |                     |            
-   |         Data        |         --> It contains the global
-   |                     |             variables
-   +---------------------+
-   |                     |             It represents the
-   |         Text        |         --> textual part of the
-   |                     |             process (i.e. the code)
-   +---------------------+   0         
-\end{cverbatim}
+\centerline{\includegraphics[width=4.5cm]{./assets/process.png}}
+\vspace{.5cm}
+
+Its parts are:
+\begin{itemize}
+	\item \textbf{Stack}
+	\vspace{.2cm} \\
+	It is a dynamically allocated memory which is used to hold temporary data, such as parameters and local variables.
+	
+	\item \textbf{Heap}
+	\vspace{.2cm} \\
+	Is memory that is dynamically allocated during process run time.
+	
+	\item \textbf{Data}
+	\vspace{.2cm} \\
+	Contains global variables.
+	
+	\item \textbf{Text}
+	\vspace{.2cm} \\
+	It represents the textual part of the process (i.e. the code).
+\end{itemize}
 A \textbf{program} is a passive entity, often referred to as an executable file. On the other hand, a \textbf{process} is an active entity.
 
 \subsection{Process States}
-A process during its lifetime may change state. A state diagram corresponding to each of the possible states could be:
+A process during its lifetime may change state. A state diagram corresponding to each of the possible states could be: \\ \\
 
-\begin{cverbatim}
-  +---------+             +---------+ <---------------+
-  |   New   | -admitted-> |  Ready  |                 |
-  +---------+             +---------+ ----+           |
-                               A          |           |
-                               |          |           |
-                          I/O or event    |           |
-                           completion     |           |
-                               |          |           |
-                          +---------+    scheduler   interrupt
-                          | Waiting |    dispatch     |
-                          +---------+     |           |
-                               A          |           |
-                               |          |           |
-                       I/O or event wait  |           |
-                               |          |           |
-  +------------+          +---------+ <---+           |
-  | Terminated | <-exit-- | Running |                 |
-  +------------+          +---------+ ----------------+ 
-\end{cverbatim}
+\centerline{\includegraphics[width=11cm]{./assets/state.png}}
+\vspace{.5cm}
+The states are:
+
+\begin{itemize}
+	\item \textbf{New}
+	\vspace{.2cm} \\
+	The process is being created.
+	
+	\item \textbf{Running}
+	\vspace{.2cm} \\
+	Instructions are being executed.
+	
+	\item \textbf{Waiting}
+	\vspace{.2cm} \\
+	The process is waiting for some event to occur.
+	
+	\item \textbf{Ready}
+	\vspace{.2cm} \\
+	Waiting for the process to be assigned to a processor.
+	
+	\item \textbf{Terminated}
+	\vspace{.2cm} \\
+	The process has finished to execute.
+\end{itemize}
 
 \subsection{Process Control Block}
 Each process is represented in the operating system by a \textbf{PCB} (Process Control Block). The PCB includes the following information about a process:
@@ -480,6 +480,8 @@ Each process is represented in the operating system by a \textbf{PCB} (Process C
 	It indicates the address of the next instruction to be executed for this process.
 	
 	\item \textbf{CPU Registers}
+	\vspace{.2cm} \\
+	This information must be saved when an interrupt occurs, in order to allow the process to be continued correctly afterwards.
 	
 	\item \textbf{CPU-Scheduling Information}
 	\vspace{.2cm} \\
@@ -518,18 +520,22 @@ The following are the queues a process is put into when it enters the system:
 During their lifetime, processes can migrate among the various queues.
 
 \subsubsection{Schedulers}
-The operating system must select processes from the previously mentioned queues in some fashion. The selection process is carried out by the appropriate scheduler. There are two main schedulers:
+The operating system must select processes from the previously mentioned queues in some fashion. The selection process is carried out by the appropriate scheduler. There are three main schedulers:
 
 \begin{itemize}
 	\item \textbf{Long-Term Scheduler}
 	\vspace{.2cm} \\
-	Selects which process should be brought into the ready queue, by bringing them into memory.
+	Selects which process should be brought into the ready queue, by bringing them into memory. It also frequently controls the degree of multiprogramming within a system.
 	
 	\item \textbf{Short-Term Scheduler}
 	\vspace{.2cm} \\
-	Selects which process from the ready queue should be executed next and allocates CPU.
+	Selects which process from the ready queue should be executed next and allocates the CPU.
+	
+	\item \textbf{Medium-Term Scheduler}
+	\vspace{.2cm} \\
+	Sometimes is advantageous to remove a process from execution in order to reduce the degree of multiprogramming. Later the process can be reintroduced into memory. This is also known as \textbf{swapping}.
 \end{itemize}
-The main difference between these two schedulers is the frequency of execution. While the short-term scheduler is invoked very frequently, the long-term scheduler is instead invoked very infrequently. \\ \\
+The main difference between these first two schedulers is the frequency of execution. While the short-term scheduler is invoked very frequently, the long-term scheduler is instead invoked very infrequently. \\ \\
 The long-term scheduler controls the degree of \textbf{multiprogramming}, i.e. the number of processes in memory. Most processes can be described as:
 
 \begin{itemize}
@@ -541,27 +547,22 @@ The long-term scheduler controls the degree of \textbf{multiprogramming}, i.e. t
 	\vspace{.2cm} \\
 	This is a process that spends most of its time doing computations
 \end{itemize}
-A \textbf{medium-term scheduler} could also be implemented. This scheduler serves to remove processes from memory and reduces the degree of multiprogramming. Later, this process is added to memory again, and its execution can continue. This scheme is called \textbf{swapping}.
+
+\subsubsection{Context Switch}
+When an interrupt occurs, the system needs to save the current \textbf{context} of the running process, so that it can be restored later. Generically, a \textbf{state save} of the current CPU is performed, and then a \textbf{state restore} in performed in order to resume operation. \\ \\
+The constant switching of context is known as \textbf{content switching}, and it is pure overhead.
 
 \subsection{Operation on Processes}
 
 \subsubsection{Process Creation}
 Parent processes can create children processes which in turn can create other children processes. This forms a tree of processes. \\ \\
-A child process may be able to obtain its resources directly from the operating system, or it may be constraint to a subset of the resources of the parent process. Parent processes may also pass along some initialisation data to the children processes. Two options are possible when processes are initiated, they can either run concurrently or the parent will wait for the children to finish executing. \\ \\
+A child process may be able to obtain its resources directly from the operating system, or it may be constraint to a subset of the resources of the parent process. Parent processes may also pass along some initialisation data to the children processes. \\ \\
+Two options are possible when processes are initiated, they can either run concurrently or the parent will wait for the children to finish executing. \\ \\
 There are also two address-space possibilities for new processes. The first is that the child process is a duplicate of the parent process (same program and data as the parent). The second possibility is that the child process has a new program loaded into it. \\ \\
-The following is a graph displaying what happens when a \cverb|fork()| method is called on a process:
+The following is a graph displaying what happens when a \cverb|fork()| method is called on a process: \\ \\
 
-\begin{cverbatim}
-  +----------+                   +----------+
-  |  Fork()  | -parent (pid>0)-> |  Wait()  | --> parent 
-  +----------+                   +----------+
-       |                              A
-  child (pid=0)                       |
-       |                              |
-       |        +----------+     +----------+
-       +------> |  Exec()  | --> |  Exit()  |
-                +----------+     +----------+
-\end{cverbatim}
+\centerline{\includegraphics[width=11cm]{./assets/process creation.png}}
+\vspace{.5cm}
 
 \subsubsection{Process Termination}
 A process terminates when it finishes executing its final statement and asks the OS to delete it by using the exit() system call. The process now may do the following:
@@ -581,8 +582,8 @@ A \textbf{zombie process} is a process that has been terminated, but whose paren
 An \textbf{orphan process} is a child process that has not invoked \cverb|wait()|. Orphan processes are assigned \cverb|init| as their new parent process. The \cverb|init| process periodically invokes the \cverb|wait()| system call.
 
 \subsection{Interprocess Communication}
-A process is said to be \textbf{independent} if it cannot affect or be affected by the other processes executing in the system. Any process that does not share data with other processes is independent. \\ \\
-A process, instead, is said to be \textbf{cooperating} if it affects and can be affected by the other processes executing in the system. Any process that does share data with other processes is said to be cooperating. \\ \\
+A process is said to be \textbf{independent} if it cannot affect or be affected by the other processes executing in the system. \\ \\
+A process, instead, is said to be \textbf{cooperating} if it affects and can be affected by the other processes executing in the system. \\ \\
 Cooperating processes require an \textbf{interprocess communication mechanism} that will allow them to exchange data and information. There are two fundamental models of interprocess communication:
 
 \begin{itemize}
@@ -610,7 +611,7 @@ Two types of buffers can be used:
 \end{itemize}
 
 \subsubsection{Message-Passing System}
-This system provides a mechanism to allow processes to communicate and to synchronise their actions without sharing the same address space. \\ \\
+This system provides a mechanism to allow processes to communicate and to synchronize their actions without sharing the same address space. \\ \\
 Message passing can be of two types:
 
 \begin{itemize}

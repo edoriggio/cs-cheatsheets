@@ -759,25 +759,22 @@ Multiplexing and demultiplexing are used in order to extend the host-to-host del
 \begin{itemize}
 	\item \textbf{Multiplexing at Sender}
 	\vspace{.2cm} \\
-	Data is handled from multiple sockets and adds a transport header. This is later used by the demultiplexer.
+	It is the job of gathering data chunks at the source host from different sockets, encapsulating each chunk of data with header information in order to create segments, and passing the segments to the Network Layer.
 	
 	\item \textbf{Demultiplexing at Receiver}
 	\vspace{.2cm} \\
-	Use the header info from the multiplexer in order to deliver receive segments to the correct sockets.
+	It is the job of delivering the data in a transport-layer segment to the correct socket.
 \end{itemize}
+Sockets have unique identifiers and each segment has a special field that indicates the socket to which the segment is to be delivered. These fields are the \textbf{source port number field} and the \textbf{destination port number field}. \\ \\
+Port numbers ranging from 0-1023 are called \textbf{well-known ports}. These ports are restricted, and reserved to well-known application protocols (HTTP, FTP...).
 
-\subsubsection{Demultiplexing}
-The host receives the IP datagrams. These datagrams have a source and destination IP address, one transport-layer segment and a source and destination number. \\ \\
-The host uses the IP address and port numbers in order to direct segments to the appropriate socket.
-
-\subsubsection{Connectionless Demultiplexing}
+\subsubsection{Connectionless Multiplexing and Demultiplexing}
 When creating a segment to send into a UDP socket, the sender must specify the following:
 
 \begin{itemize}
 	\item \textbf{Destination IP Address}
 	\item \textbf{Destination Port Number}
 \end{itemize}
-
 When the receiving host receives the UDP segment, it does two things:
 
 \begin{itemize}
@@ -786,7 +783,7 @@ When the receiving host receives the UDP segment, it does two things:
 \end{itemize}
 All UDP datagrams with the same destination port number will be directed to the same socket at the receiving host.
 
-\subsubsection{Connection-Oriented Demultiplexing}
+\subsubsection{Connection-Oriented Multiplexing and Demultiplexing}
 A TCP connection is defined by a 4-tuple:
 
 \begin{itemize}
@@ -802,16 +799,17 @@ Servers may also support may simultaneous TCP connections. Each connection is id
 There are several peculiarities of UDP, such as:
 
 \begin{itemize}
-	\item No connection is established (a connection would add RTT delay)
+	\item Finer application-level control over what data is sent and when
+	\item No connection is established
 	\item There is no connection state neither at the sender nor at the receiver
-	\item It has a very small header (8 bytes)
+	\item It has only 8 bytes of overhead
 	\item No congestion control
 \end{itemize}
-The following are the headers of a UDP segment:
+The following is the structure of a UDP segment: \\ \\ \\
+\centerline{\includegraphics[width=6cm]{./assets/udp.png}} \\ \\ \\
+The fields are:
 
 \begin{itemize}
-	\item \textbf{Source Port}
-	\item \textbf{Destination Port}
 	\item \textbf{Length}
 	\vspace{.2cm} \\
 	This field specifies the total number of bytes in the UDP header (header + data)
@@ -833,36 +831,35 @@ The checksum is treated in different ways by both server and receiver.
 	All of the segment's fields are summed up and it is added to the sender's checksum. If any bit with value of 0 is detected in the final sum, then there is an error in the packet. The packet is thus discarded by the receiver.
 \end{itemize}
 \begin{cverbatim}
- - Sender
+- Sender
  
-   Source Port:       0110011001100000 +
-   Destination Port:  0101010101010101 +
-   Length:            1000111100001100 =
-                      ------------------
-                      0100011011000001 
-                              |
-                              | 1's complement
-                              V
-                      1011100100111110
+  Source Port:       0110011001100000 +
+  Destination Port:  0101010101010101 +
+  Length:            1000111100001100 =
+                     ------------------
+                     0100011011000001 
+                             |
+                             | 1's complement
+                             V
+                     1011100100111110
                       
- - Receiver
+- Receiver
  
-   Source Port:       0110011001100000 +
-   Destination Port:  0101010101010101 +
-   Length:            1000111100001100 =
-                      ------------------
-                      0100011011000001 +
-   Sender Checksum:   1011100100111110 =
-                      ------------------
-                      1111111111111111   <- The checksum is valid
+  Source Port:       0110011001100000 +
+  Destination Port:  0101010101010101 +
+  Length:            1000111100001100 =
+                     ------------------
+                     0100011011000001 +
+  Sender Checksum:   1011100100111110 =
+                     ------------------
+                     1111111111111111   <- The checksum is valid
 \end{cverbatim}
 
 \subsection{Reliable Data Transfer}
-\textbf{Reliable data transfer} is when no transferred data bits are corrupted or lost, and all transferred data bits are delivered in the order they where sent in. \\ \\
-\textbf{TCP} offers reliable data transfer.
+\textbf{Reliable data transfer} is when no transferred data bits are corrupted or lost, and all transferred data bits are delivered in the order they where sent in. \textbf{TCP} offers reliable data transfer.
 
 \subsubsection{Rdt 2.0}
-The underlying channel in charge of sending packets may flip bits while transmitting. In order to recover from such bit-flips, we use:
+The underlying channel in charge of sending packets may flip bits while transmitting. Reliable data transfer protocols based on retransmission are known as \textbf{ARQ} (Automatic Repeat reQest). In order to see if there are bit-flips or not, we use:
 
 \begin{itemize}
 	\item \textbf{ACKs (Acknowledgments)}
@@ -883,7 +880,7 @@ This protocol still uses ACKs and NAKs in order to check if the packets are corr
 This protocol has the same features that version 2.1 has. In this case, though, the protocol only uses ACKs. Thus the receiver sends back another ACK in the case that everything is OK, and the packet arrived correctly.
 
 \subsubsection{Rdt 3.0}
-By using this protocol we assume that the channel can also lode packets. In such cases retransmission is not enough. A \textbf{timeout} is introduced. \\ \\
+By using this protocol we assume that the channel can also lose packets. In such cases retransmission is not enough. A \textbf{timeout} is introduced. \\ \\
 The sender waits a predetermined amount of time (the timeout) in order for it to receive the ACK. If after this amount of time no ACK has been received, then the packet is retransmitted. \\ \\ 
 The performance of this version is poor. This is because it spends more time waiting than working.
 
@@ -905,7 +902,10 @@ The following function indicates that all packets with a higher sequence number 
 Timeout(n)
 \end{cverbatim}
 If a packet has been received out-of-order, it can either discard it or buffer it. The out-of-order packet is then reACKed based on which packet has the highest sequence number. \\ \\
-The main problem with GBN is that a packet error would cause the retransmission of many other packets. This is why \textbf{selective repeat} is used instead. In selective repeat the receiver has to individually acknowledge specific packets as they are received. After a time-out these unACKed packets are retransmitted.
+The main problem with GBN is that a packet error would cause the retransmission of many other packets.
+
+\subsubsection{Selective Repeat}
+The receiver individually acknowledges all correctly received packets. Furthermore, the sender retransmits individually for unACKed packets -- the sender needs to maintain a timer for each packet.
 
 \subsection{TCP}
 \textbf{TCP} (Transmission Control Protocol) implements a reliable data transfer service. This includes services such as:
@@ -925,7 +925,7 @@ The \textbf{MSS} (Maximum Segment Size) is the maximum amount of application-lay
 
 \subsubsection{TCP Segment Structure}
 The following is the structure of a TCP segment: \\ \\ \\
-\centerline{\includegraphics[width=13cm]{./assets/tcp.png}} \\ \\ \\
+\centerline{\includegraphics[width=11cm]{./assets/tcp.png}} \\ \\
 Some of the main sections are:
 
 \begin{itemize}
