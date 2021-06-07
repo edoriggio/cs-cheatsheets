@@ -292,7 +292,7 @@ An operating system provides a set of services, such as:
 	
 	\item \textbf{I/O Operations}
 	\vspace{.2cm} \\
-	The operating system must provide the means for the user to be able to interact with I/O, since he cannot do it himself.
+	The operating system must provide the means for the user to be able to interact with I/O, since users cannot control it directly.
 	
 	\item \textbf{File-System Manipulation}
 	\vspace{.2cm} \\
@@ -362,10 +362,33 @@ System calls can be roughly divided into six major categories:
 
 \begin{itemize}
 	\item \textbf{Process Control}
-	\item \textbf{File Manipulation}
+	\vspace{.2cm} \\
+	A running program needs to be able to halt its execution either normally or abnormally. In the case of an error, also a dump of memory might be taken. \\ \\
+	A process or a job executing one program might want to load and execute another program. \\ \\
+	We could also want to control the execution of a program, stop newly created jobs or processes, or ensure the integrity of the data being shared by means of a lock.
+	
+	\item \textbf{File Management}
+	\vspace{.2cm} \\
+	We might need to create and delete files, open them in order to modify their content, or close the files because they are no longer in use. \\ \\
+	Attributes can also be set to files, such as name, file type,  protection codes and accounting information.		
+	
+	\item \textbf{Device Management}
+	\vspace{.2cm} \\
+	A process may need several resources in order to execute, such as main memory or disk drives. Users may need to request a device -- in order to have exclusive access to them. \\ \\
+	Once the device has been allocated, then we would like to open it and read, write or delete its contents. Once operations on that device are done, then we would also like to close the device -- as we do with files.
+	
 	\item \textbf{Information Maintenance}
+	\vspace{.2cm} \\
+	A user might want to knoe the current time and date, or know some more information about the system. \\ \\
+	Memory dumps are also available in order to debug the system or a program.
+	
 	\item \textbf{Communications}
+	\vspace{.2cm} \\
+	Messages can be passed between processes either by using a message-passing model, or by using a shared-memory model.	
+	
 	\item \textbf{Protection}
+	\vspace{.2cm} \\
+	Protection can be provided by setting permissions to files, so that only authorized users can read, write or execute them.
 \end{itemize}
 
 \subsection{Operating-System Structure}

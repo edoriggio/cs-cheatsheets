@@ -273,17 +273,24 @@ In more complex cases, a large message may be divided into multiple transport-la
 
 \section{Application Layer}
 \subsection{Architectures}
+The application architecture is designed by the application developer and dictates how the application is structured over the various end systems.
+
 \subsubsection{Client-Server Architecture}
 In this architecture there is an always-on host which has a permanent IP address. This host (server) receives requests from other hosts (clients).
 
 \subsubsection{Peer-to-Peer Architecture}
-In this architecture there is no always-on host. Here the two peers are directly connected to one another. Peers have different IP addresses, and request and provide services to other peers.
+In this architecture there is no always-on host. Here the direct communication between peers is exploited. P2P architectures are self-scalable and cost effective. There are also problems with security, performance and reliability.
 
 \subsection{Process Communication}
 Processes that are executing in different hosts communicate by exchanging messages. These processes are called the \textbf{client process} (which initiates the communication) and the \textbf{server process} (which awaits to be connected).
 
 \subsubsection{Sockets}
-A socket is the interface between the application and the transport layer within a host (i.e. the API between the application and the network).
+A socket is the interface between the application and the transport layer within a host (i.e. the API between the application and the network). The only control the application developer has on the transport-layer side is on:
+
+\begin{itemize}
+	\item Choice of the transport protocol
+	\item Change the buffer size or maximum segment size
+\end{itemize}
 
 \subsubsection{Sever Process Identification}
 In order to identify a server process, two pieces of information are needed:
@@ -316,29 +323,39 @@ The following services are needed by the application layer:
 	
 	\item \textbf{Security}
 	\vspace{.2cm} \\
-	A transport service may need to provide the application with one or more security services.
+	A transport service may need to provide the application with one or more security services, such as encryption, data integrity or end-point authentication.
 \end{itemize}
 
 \subsection{Transport Services}
 The two protocols offered when creating a network application are \textbf{UDP} and \textbf{TCP}.
 
 \subsubsection{TCP}
-It includes a connection-oriented service and a reliable data transfer service. After a successful handshake, a connection is said to exist between the sockets of the two processes. Both processes can now send messages at the same time. \\ \\
-The communication process can rely on TCP to deliver all of the data sent, without errors and in the proper order. It also has a congestion-control mechanism.
+It includes a connection-oriented service and a reliable data transfer service. Both services are received by the application when TCP is invoked.
+
+\begin{itemize}
+	\item \textbf{Connection-Oriented Service}
+	\vspace{.2cm} \\
+	The client and server exchange transport-layer control information with each other before the application-level messages begin to flow. This is known as \textbf{handshaking}. After a successful handshake, a connection is said to exist between the sockets of the two processes. Both processes can now send messages at the same time. \\ \\
+	The connection is \textbf{full-duplex}, and the connection is teared down after the application has finished sending messages.
+	
+	\item \textbf{Reliable Data Transfer Service}
+	\vspace{.2cm} \\
+	The communication process can rely on TCP to deliver all of the data sent, without errors and in the proper order. It also has a congestion-control mechanism, which throttles a sending process when the network is congested between sender and receiver. It also attempts to limit each TCP connection to its fair share of network bandwidth.
+\end{itemize}
+
 
 \subsubsection{UDP}
-It is a connectionless and lightweight protocol. It provides an unreliable data transfer service, and no guarantee that the message will even reach the destination.
+It is a connectionless and lightweight protocol. It provides an unreliable data transfer service, no guarantee that the message will even reach the destination, the message might not arrive in order and there is no congestion-control mechanism.
 
 \subsection{Application-Level Protocols}
 An application-level protocol defines how an application's processes -- running on different end systems -- pass messages to each other. In particular they define the following:
 
 \begin{itemize}
-	\item The type of messages exchanged (\textbf{request and response messages})
-	\item The syntax of messages (\textbf{fields})
-	\item The semantics of the fields (\textbf{info in the fields})
+	\item The type of messages exchanged 
+	\item The syntax of messages
+	\item The semantics of the fields
 	\item Rules of determining when and how a process sends and receives messages
 \end{itemize}
-
 There are two types of protocols:
 \begin{itemize}
 	\item \textbf{Open Protocols}
@@ -351,12 +368,14 @@ There are two types of protocols:
 \end{itemize}
 
 \subsection{The Web and HTTP}
-The \textbf{HTTP} (HyperText Transfer Protocol) protocol is at the heart of the Web. HTTP is implemented in two separate programs: a client program and a server program. These two programs communicate with each other by means of HTTP messages.
+The \textbf{HTTP} (HyperText Transfer Protocol) protocol is at the heart of the Web. HTTP is implemented in two separate programs: a client program and a server program. These two programs communicate with each other by means of HTTP messages. HTTP defines how clients request Web pages from servers, and how servers transfer Web pages to clients. \\ \\
+A \textbf{Web page} is a document stored inside of a Web server, and contains objects. An \textbf{object} is a file that is addressable by a single URL. \\ \\
+When a user sends an \textbf{HTTP request}, the server receives it and responds with an \textbf{HTTP response} containing the requested objects.
 
-\subsubsection{Base URL}
-The base \textbf{URL} (Uniform Resource Locator) of a webpage is composed of the following parts:
+\subsubsection{URL}
+The \textbf{URL} (Uniform Resource Locator) of a web page is composed of the following parts: \\
 
-\[ \overbrace{\text{http}}^\text{protocol} \text{://} \underbrace{\underbrace{\overbrace{\text{www.}}^\text{subdomain} \overbrace{\text{my-server.}}^\text{subdomain} \overbrace{\text{com}}^\text{Top-level domain}}_\text{hostname} \overbrace{\text{:8080}}^\text{port}}_\text{authority} \underbrace{\text{/assets/image.jpg}}_\text{path name} \] \
+\centerline{\includegraphics[width=7cm]{./assets/url.png}}
 
 \subsubsection{HTTP Connection}
 HTTP uses \textbf{TCP} as its underlying protocol. In order to obtain an HTTP connection, the following steps must be followed:
@@ -372,12 +391,12 @@ HTTP uses \textbf{TCP} as its underlying protocol. In order to obtain an HTTP co
 HTTP is a \textbf{stateless protocol}. This means that it does not maintain any information about past client requests. There are two types of stateless HTTP connections:
 
 \begin{itemize}
-	\item \textbf{Non-Persistent HTTP}
+	\item \textbf{Non-Persistent HTTP Connection}
 	\vspace{.2cm} \\
-	\textbf{At most one} object can be sent on this type of TCP connection. Once the response has been sent from the server to the client, the TCP connection is terminated. \\ \\
+	\textbf{At most one} object can be sent on this type of TCP connection. Once the response has been sent from the server to the client, the TCP connection is terminated. In total, the response time of an HTTP server is of 2 \textbf{RTTs} (Round Trip Times), plus the transmission time at the server of the HTML file. \\ \\
 	In their default modes, browsers open 5 to 10 parallel TCP connections, and each of these connections handles one request-response transaction.
 	
-	\item \textbf{Persistent HTTP}
+	\item \textbf{Persistent HTTP Connection}
 	\vspace{.2cm} \\
 	Multiple objects can be sent over a single TCP connection between client and server. As little as one RTT is used for all the referenced objects. \\ \\
 	Persistent HTTP connections can also be pipelined, in which case two RTTs are needed to establish the connection, and one RTT is needed for \textbf{all} requested objects.
@@ -391,28 +410,26 @@ The \textbf{RTT} (Round-Trip Time) is the time taken by a small packet to travel
 The following is an example of HTTP request:
 
 \begin{lcverbatim}
-1  GET /doc/test.html HTTP/1.1
+1  GET /doc/test.html HTTP/1.1 \r\n
    \_/ \____________/ \______/
     |         |          |
    Method    URL       Version
    
 ----------------------------------------------------------------
 
-2  Host: my-server.com
+2  Host: my-server.com \r\n
 .  ...
-5  User-Agent: Mozilla/4.0
+5  User-Agent: Mozilla/4.0 \r\n\r\n
    \_________/ \_________/
         |           |
        Name       Value
        
 ----------------------------------------------------------------
 
-6
 7  userName=Edoardo&userSurname=Riggio
 \end{lcverbatim}
 \textbf{Line 1}: Request Line; \\
 \textbf{Lines 2-5}: Header Lines; \\
-\textbf{Line 6}: Blank line; \\
 \textbf{Line 7}: Body.
 
 \pagebreak
@@ -420,28 +437,26 @@ The following is an example of HTTP request:
 \noindent The following  is an example of HTTP response:
 
 \begin{lcverbatim}
-1  HTTP/1.1 200 OK
+1  HTTP/1.1 200 OK \r\n
    \______/ \_/ \/
        |     |   Phrase
     Version Status
     
 ----------------------------------------------------------------
 
-2  Date: Sat, 27 March 2021 15:51:20 GMT
+2  Date: Sat, 27 March 2021 15:51:20 GMT \r\n
 .  ...
-5  Content-Type: text/html
+5  Content-Type: text/html \r\n\r\n
    \___________/ \_______/
          |           |
         Name       Value
         
 ----------------------------------------------------------------
 
-6
 7  <h1> Edoardo Riggio </h1>
 \end{lcverbatim}
 \textbf{Line 1}: Response Line; \\
 \textbf{Lines 2-5}: Header Lines; \\
-\textbf{Line 6}: Blank line; \\
 \textbf{Line 7}: Body. \\ \\
 The HTTP status codes are:
 
@@ -462,28 +477,41 @@ Since HTTP is a stateless protocol, in order to save info about the session we u
 	\item The client then does another HTTP request, this time including the \cverb|Cookie: xxxx| header;
 	\item The server now responds with a normal HTTP response.
 \end{enumerate}
+By using cookies, a server knows exactly which pages the user visited, in which order, and at what time.
 
 \subsection{Web Caching}
-A \textbf{web cache} is a network entity that satisfies HTTP requests on behalf of an origin web server. The goal of this type of cache is to satisfy requests without involving the origin server, The cache acts as both client -- for the main server -- and server -- for the clients. It is installed by the ISP. \\ \\
-Web caching is used in order to reduce the response time for the client requests and reduce the traffic on an institution's access link. \\ \\
+A \textbf{web cache} is a network entity that satisfies HTTP requests on behalf of an origin web server. The goal of this type of cache is to satisfy requests without involving the origin server, The cache acts as both client (for the main server) and server (for the clients). It is installed by the ISP. \\ \\
+Web caching is used in order to reduce the response time for the client requests, reduce the traffic on an institution's access link, and substantially reduce Web traffic in the Internet as a whole -- improving the performances for all applications. \\ \\
+Through the use of \textbf{CDNs} (Content Distribution Networks), Web caches are playing an important role in the Internet. The goal of CDNs is to localize traffic as much as possible.
+
+\subsubsection{Conditional GET}
 One problem that caches introduce are possible \textbf{stale objects}. HTTP can verify if it's actually stale with a \textbf{conditional GET}. This request includes the \cverb|If-Modified-Since: xxxx| header, so that the cache can always know if an object if stale or not.
 
 \subsection{SMTP}
 \textbf{SMTP} (Simple Mail Transfer Protocol) is a protocol that uses TCP to reliably transfer mail from client to server. Typically, a SMTP process is located on port 25 of a server. \\ \\
-An email server is directly sent from one SMTP server to another, no in-between server are used. SMTP is mainly a push protocol, and multiple objects in SMTP are sent in multipart messages (MIME -- Multipurpose Internet Mail Extensions).
+An email server is directly sent from one SMTP server to another, no in-between server are used. SMTP is mainly a push protocol, and multiple objects in SMTP are sent in multipart messages (MIME -- Multipurpose Internet Mail Extensions). \\
+
+\centerline{\includegraphics[width=9cm]{./assets/smtp.png}}
+\vspace{.6cm}
+\noindent SMTP uses TCP as its underlying transport service. The following is an example of an SMTP exchange:
 
 \begin{lcverbatim}
-
-        +------------+           +-------------+
-        |  Agent #1  | --SMTP--> |  Server #1  | -----+
-        +------------+           +-------------+      |
-                                                     SMTP
-        +------------+    POP3   +-------------+      |
-        |  Agent #2  | <--IMAP-- |  Server #2  | <----+
-        +------------+    HTTP   +-------------+      
-   
+S: 220 server.com
+C: HELO usi.ch
+S: 250 Hello, pleased to meet you
+C: MAIL FROM: <riggie@usi.ch>
+S: 250 riggie@usi.ch ... Sender ok
+C: RCPT TO: <mariosam@usi.ch>
+S: 250 mariosam@usi.ch ... Recipient ok
+C: DATA
+S: 354 Enter mail, end with "." on a line by itself
+C: Long time no see!
+C: Would you like to hang out sometime?
+C: .
+S: 250 Message accepted for delivery
+C: QUIT
+S: 221 server.com closing connection
 \end{lcverbatim}
-
 
 \subsection{Mail Access Protocols}
 Once the email has been delivered using SMTP, the user needs to access its mailbox in order to read emails. To do so, one of the following protocols is used:
@@ -491,7 +519,18 @@ Once the email has been delivered using SMTP, the user needs to access its mailb
 \begin{itemize}
 	\item \textbf{POP3}
 	\vspace{.2cm} \\
-	The \textbf{POP3} (Postal Office Protocol) protocol allows a user to download emails from a server to its mail client. The emails can also be consulted while offline. Emails that are dowloaded are then removed from the server, thus cannot be accessed from multiple devices.
+	The \textbf{POP3} (Postal Office Protocol version 3) protocol allows a user to download emails from a server to its computer. It is a stateless protocol. There are two modes available in POP3:
+	
+	\begin{itemize}
+		\item \textbf{Download-and-Delete Mode}
+		\vspace{.2cm} \\
+		The messages are downloaded to the computer and are later (when the user issues the \cverb|QUIT| command) deleted from the mailbox on the server.
+		
+		\item \textbf{Download-and-Keep Mode}
+		\vspace{.2cm} \\
+		The messages are kept in the mailbox even after the user has logged out.
+	\end{itemize}
+	
 	\item \textbf{IMAP}
 	\vspace{.2cm} \\
 	The \textbf{IMAP} (Internet Mail Access Protocol) protocol allows a user to consult their emails from a remote server. By doing so, it can be accessed simultaneously by multiple clients.
@@ -510,14 +549,14 @@ The DNS protocol runs over UDP and uses port 53. In addition to translating host
 	A host with a complicated name could have one or more alias names. In that case, one of them is said to be the \textbf{canonical name}.
 	\item \textbf{Mail Server Aliasing}
 	\vspace{.2cm} \\
-	Give a mail application the canonical address of a certain host.
+	DNS can be invoked by a mail application in order to obtain the canonical hostname for a supplied alias hostname as well as the IP address of the host. Moreover, the MX record of the DNS allows a company to use the same hostname for both their Web server and mail server.
 	\item \textbf{Load Distribution}
 	\vspace{.2cm} \\
 	A set of IP addresses could be associated with the canonical hostname (for example when dealing with websites with lots of incoming traffic). The DNS in this case rotates the address every time a request is made.
 \end{itemize}
 
 \subsubsection{DNS Servers Hierarchy}
-DNS uses a large number of servers displayed in a hierarchical fashion. There are three classes of DNS servers:
+DNS uses a large number of servers organized in a hierarchical fashion. There are four classes of DNS servers:
 
 \begin{itemize}
 	\item \textbf{Root DNS Server}
@@ -533,16 +572,17 @@ DNS uses a large number of servers displayed in a hierarchical fashion. There ar
 	\vspace{.2cm} \\
 	The local DNS server has a local cache of recent name-to-address translation pairs. This is the server where the user query first arrives.
 \end{itemize}
+DNS queries usually follow a recursive pattern from the requesting host to the local DNS, and an iterative pattern for the remaining steps.
+
+\subsubsection{DNS Caching}
+When a DNS server receives a DNS reply, this can be cached in the server's local memory. This is mainly done to improve the delay performance and to reduce the number of DNS messages. \\ \\
+DNS servers will discard the cached information after a certain period of time (usually set to two days).
 
 \subsubsection{DNS Records}
-The DNS servers that together implement the DNS distributed database store RRs (Resource Records). An RR is a four-tuple. For example:
+The DNS servers that together implement the DNS distributed database store \textbf{RRs} (Resource Records). An RR is a four-tuple. For example: \\
 
-\begin{lcverbatim}
-(www.google.com, 74.125.131.103, A, 600)	
- \____________/  \____________/  |  \_/
-        |               |        |   |
-       Name           Value    Type  TTL
-\end{lcverbatim}
+\centerline{\includegraphics[width=6cm]{./assets/dns.png}}
+\vspace{.6cm}
 There are four types of RRs:
 
 \begin{itemize}
@@ -551,7 +591,7 @@ There are four types of RRs:
 	\cverb|Name| is the hostname and \cverb|Value| is the hostname's IP address. This is a standard hostname-to-IP address mapping.
 	\item \textbf{Type = NS}
 	\vspace{.2cm} \\
-	\cverb|Name| is the domain and \cverb|Value| is the domain's hostname or an authoritative DNS server for the domain. This RR is used to route DNS queries further along in the query chain.
+	\cverb|Name| is the domain and \cverb|Value| is the domain's hostname of an authoritative DNS server that knows how to obtain the domain. This RR is used to route DNS queries further along in the query chain.
 	\item \textbf{Type = CNAME}
 	\vspace{.2cm} \\
 	\cverb|Name| is the alias hostname and \cverb|Value| is the hostname's canonical hostname.
@@ -559,26 +599,38 @@ There are four types of RRs:
 	\vspace{.2cm} \\
 	\cverb|Name| is the alias hostname and \cverb|Value| is the mail server hostname's canonical hostname.
 \end{itemize}
+If a DNS server is authoritative for a particular hostname, then the DNS server will contain \textbf{Type A} records for that hostname. \\ \\
+If a DNS server is not authoritative for a particular hostname, then the server will contain a \textbf{Type NS} record for the domain that includes the hostname. Furthermore, it will also contain a \textbf{Type A} record that provides the IP address of the DNS server contained in the \cverb|Value| field of the NS record.
 
 \subsubsection{DNS Messages}
 The DNS query and reply messages are structured as follows:
+\vspace{.5cm}
+
+\centerline{\includegraphics[width=11cm]{./assets/dns_message.png}}
+\vspace{.5cm}
+\noindent The following are the fields of a DNS message:
 
 \begin{itemize}
 	\item \textbf{Identification}
 	\vspace{.2cm} \\
 	It is a 16-bit number that identifies the query. The same identifier is set to the corresponding answer.
+	
 	\item \textbf{Flags}
 	\vspace{.2cm} \\
 	There are a series of flags that identify the message. For example we have 1 bit describing if the message is a query or a response, 1 bit to identify if the server is an authoritative server...
+	
 	\item \textbf{Questions}
 	\vspace{.2cm} \\
-	Contains information about the query that is being made.
+	Contains information about the query that is being made. This section includes: a \textbf{name field} containing the name that is being queried, and a \textbf{type field} which indicates the type of question being asked about the name.
+	
 	\item \textbf{Answers}
 	\vspace{.2cm} \\
 	Resource records for the name that was queried. It can contain multiple RRs.
+	
 	\item \textbf{Authority}
 	\vspace{.2cm} \\
 	It contains records of other authoritative servers.
+	
 	\item \textbf{Additional Information}
 	\vspace{.2cm} \\
 	It contains additional information, for example info about the canonical hostname of a server in response to an MX or CNAME query.
@@ -615,18 +667,11 @@ In the P2P paradigm, \textbf{peers} are pairs of intermittently connected hosts.
 \end{itemize} \
 
 \subsection{BitTorrent}
-BitTorrent is a communication protocol for P2P, which enables users to distribute data and electronic files over the internet in a decentralised manner. The BitTorrent network is composed of:
-
-\begin{itemize}
-	\item \textbf{Trackers}
-	\vspace{.2cm} \\
-	These are servers that track peers participating in a torrent.
-	
-	\item \textbf{Torrent}
-	\vspace{.2cm} \\
-	This is a group of peers exchanging chunks of a file.
-\end{itemize}
-During the request process, the rarest missing chunks are requested first.
+BitTorrent is a popular P2P protocol for file distribution. In BitTorrent, a collection of peers participating in the distribution of a particular file is called a \textbf{torrent}. Peers in a torrent download equal-sized chunks of size 256 kbytes. Once a peer has acquired the entire file, it can choose to either leave the torrent, or stay in the torrent. Once a torrent is left, it can later be rejoined. \\ \\
+Each torrent has an infrastructure node called a \textbf{tracker}. This tracker will provide the user with a subset of peers from the participating peers on the list. The new peer now tries to establish a concurrent TCP connection with all of its peers. \\ \\
+As time goes on, some peers might leave the torrent, and some others might join the torrent. The \textbf{rarest chunks} are requested first, this is done in order to equalize the numbers of copies of each chunk in a torrent. \\ \\
+The peer gives priority to the neighbors that are supplying data at the highest rate. The peer reciprocates by sending data to the best four peers, any other peer is said to be \textbf{choked}, meaning that the user does not send chunks to them. \\ \\
+Every 10 seconds, the peer recalculates the rates of its neighbors and possibly modifies its set of four peers -- which are said to be \textbf{unchoked}. Every 30 seconds, the user also picks up a new peer -- which is said to be \textbf{optimistically unchoked}, since it may become one of the user's top four uploaders.
 
 \subsection{Video Streaming}
 Videos are pre-recorded and saved onto a server. Users can request these videos on-demand from their end systems. These videos are compressed to a desired bit-rate. The higher the bit-rate, the better the image quality. There are two main methods to encode videos:
@@ -640,8 +685,7 @@ Videos are pre-recorded and saved onto a server. Users can request these videos 
 	\vspace{.2cm} \\
 	This is when instead of sending a complete frame $i+1$ (where $i$ is the current frame), only the differences from frame $i$ are sent.
 \end{itemize}
-
-Here are some of the bitrates of different codings:
+Here are some of the bitrates of different encodings:
 
 \begin{itemize}
 	\item \textbf{MPEG 1} - 1.5 Mbps
@@ -650,12 +694,11 @@ Here are some of the bitrates of different codings:
 \end{itemize}
 
 \subsection{DASH}
-\textbf{DASH} (Dynamic Adaptive Streaming over HTTP) is an HTTP-based streaming protocol. In DASH, the video is encoded into several different formats, everyone with different bit-rates. The servers keeps each version, and offers a manifest file. In this file there are all the bit-rates offered by the server and the location of the corresponding video. \\ \\
+\textbf{DASH} (Dynamic Adaptive Streaming over HTTP) is an HTTP-based streaming protocol. In DASH, the video is encoded into several different formats, everyone with different bit-rates. The servers keeps each version, and offers a \textbf{manifest file}. In this file there are all the bit-rates offered by the server and the location of the corresponding video. \\ \\
 The client can choose the bit-rate which is suitable to its needs, namely the current bandwidth of the client.
 
 \subsection{CDN}
-A \textbf{CDN} (Content Distribution Network) manages servers located in multiple geographically distributed locations. It stores a copy of each video in these servers, and attempts to direct each user request to a CDN location that will provide the best user experience. \\ \\
-There are two main server placement strategies for CDNs:
+A \textbf{CDN} (Content Distribution Network) manages servers located in multiple geographically distributed locations. CDNs replicates content across its clusters. Many CDNs may not want to push videos to their clusters, but instead use a simple pull strategy. If a client is requesting a video that is not on that cluster, then the cluster retrieves the video and stores a local copy. There are two main server placement strategies for CDNs:
 
 \begin{itemize}
 	\item \textbf{Enter Deep}
@@ -665,6 +708,17 @@ There are two main server placement strategies for CDNs:
 	\item \textbf{Bring Home}
 	\vspace{.2cm} \\
 	Build larger server clusters at a smaller number of sites. These CDNs are usually placed in IXPs. This approach has a lower maintenance overhead.
+\end{itemize}
+A CDN must intercept the video request made by a client and perform two operations: determine a suitable CDN server cluster for that client at that time, and redirect the client's request to a server in that cluster. To do so most CDNs take advantage of DNS to intercept and redirect requests. \\ \\
+In order to select the best cluster for a user a particular time, two methods ca be used:
+\begin{itemize}
+	\item \textbf{Geographically Closest Cluster}
+	\vspace{.2cm} \\
+	Simply assign the cluster that is geographically closer to the client. This is not always a good idea, because the closest client might be the one with the greatest number of hops, thus the client might experience big delays.
+	
+	\item \textbf{Current Traffic Conditions}
+	\vspace{.2cm} \\
+	In this case the CDN periodically computes the current traffic conditions and, based on these calculations, decides which server cluster the client must be connected to.
 \end{itemize}
 
 \section{Transport Layer}
