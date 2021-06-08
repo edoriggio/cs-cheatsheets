@@ -956,7 +956,8 @@ Where: \\
 Here typically we have $\beta = 0.25$.
 
 \subsection{TCP Flow Control}
-The \textbf{receive window} field inside of the TCP segment controls the sender. This means that the sender will never overflow the receiver's buffer by transmitting too much, too quickly.
+The \textbf{receive window} field inside of the TCP segment controls the sender. This means that the sender will never overflow the receiver's buffer by transmitting too much, too quickly. The size of the window is computed as: \\ \\
+\cverb|rwnd = RcvBuffer - [LastByteRcv - LastByteRead]|
 
 \subsection{TCP Connection Management}
 Before sending and receiving data, the sender and receiver handshake. This is done in order to agree to establish connection, and on the connection parameters. \\ \\
@@ -1024,10 +1025,10 @@ There are also two main elements in the network layer:
 \end{itemize}
 
 \subsection{Network Service Model}
-There are no guarantees on the following:
+The Internet Network Layer does not guarantee the following:
 
 \begin{itemize}
-	\item Successful datagram delivery to destination
+	\item Successful packet delivery to destination
 	\item Timing or order of delivery
 	\item Bandwidth available to end-to-end flow
 \end{itemize}
@@ -1038,6 +1039,9 @@ The four core components of a router are:
 
 \begin{itemize}
 	\item \textbf{Input Ports}
+	\vspace{.2cm} \\
+		
+	
 	\item \textbf{Output Ports}
 	\item \textbf{Switching Fabric}
 	\item \textbf{Routing Processor}
@@ -1056,10 +1060,11 @@ Input ports are composed of three layers:
 	\item \textbf{Lookup, Forwarding and Queuing}
 	\vspace{.2cm} \\
 	If the datagrams arrive faster than anticipated, then they will enter a queue. The header of the packet is used in order to lookup the output port -- which is the second function of this layer. \\ \\
-	When looking in the forwarding table for a given destination address, the router uses the \textbf{longest prefix} that matches the destination address.
+	When looking in the forwarding table for a given destination address, the router uses the \textbf{longest prefix} that matches the destination address. \\ \\
+	If a control packet is received, then the switch forwards it directly to the routing processor.
 \end{itemize}
 
-\subsubsection{Switching Fabrics}
+\subsubsection{Switching Fabric}
 The goal of the switching fabric is to transfer the packet from the input port to the appropriate output port. \\ \\
 The \textbf{switching rate} is the rate at which packets can be transferred from input to output ports. \\ \\
 There are three main types of switching fabrics:
@@ -1067,20 +1072,18 @@ There are three main types of switching fabrics:
 \begin{itemize}
 	\item \textbf{Memory}
 	\vspace{.2cm} \\ \\
-	\centerline{\includegraphics[width=8cm]{./assets/memory.png}} \\ \\
+	\centerline{\includegraphics[width=6cm]{./assets/memory.png}} \\ \\
 	The packet is copied to the system's memory, and then transferred to the correct output port. The speed is limited by the memory bandwidth and by its physical space.
 	
 	\item \textbf{Bus}
 	\vspace{.2cm} \\ \\
-	\centerline{\includegraphics[width=8cm]{./assets/bus.png}} \\ \\
+	\centerline{\includegraphics[width=6cm]{./assets/bus.png}} \\ \\
 	The datagram is passed from the input port to the output port via a shared bus. The switching speed is limited by the bus' bandwidth.
-
-	\newpage	
 	
 	\item \textbf{Interconnection Network}
 	\vspace{.2cm} \\ \\
-	\centerline{\includegraphics[width=7cm]{./assets/interconnection.png}} \\ \\
-	It is a $n \cdot n$ multiple-stage switch made up from smaller switches. In this case parallelism can be exploited for better performances.
+	\centerline{\includegraphics[width=5cm]{./assets/interconnection.png}} \\ \\
+	It is an interconnection network consisting of $2N$ buses that connect $N$ input ports to $N$ output ports. The crosspoints at which the buses intersect with each other can be opened or closed by the switching fabric.
 \end{itemize}
 
 \subsubsection{Input Port Queuing}
@@ -1114,12 +1117,12 @@ The router buffers drop packets whenever they are full. There are two ways packe
 \end{itemize}
 
 \subsection{Packet Scheduling}
-The scheduling decides which packet to send next on the link. There are several scheduling algorithms, such as:
+The scheduling algorithm decides which packet to send next on the link. There are several scheduling algorithms, such as:
 
 \begin{itemize}
 	\item \textbf{FCFS/FIFO}
 	\vspace{.2cm} \\
-	FCFS (FIst Come, First Served) is when packets are transmitted in order of arrival, to the output port.
+	FCFS (First Come, First Served) is when packets are transmitted in order of arrival, to the output port.
 	
 	\item \textbf{Priority}
 	\vspace{.2cm	} \\
@@ -1127,7 +1130,7 @@ The scheduling decides which packet to send next on the link. There are several 
 	
 	\item \textbf{Round Robin}
 	\vspace{.2cm} \\
-	The arriving packets are classified by any header field of the packet. The server now cyclically scans the queues, sending on complete package from each input in turn.
+	The arriving packets are classified by any header field of the packet. The server now cyclically scans the queues, sending on complete packets from each input in turn.
 	
 	\item \textbf{WFQ}
 	\vspace{.2cm} \\
@@ -1137,7 +1140,7 @@ The scheduling decides which packet to send next on the link. There are several 
 
 \subsection{IPv4 Datagram Format}
 The IPv4 datagram is composed by several field. The following is its visual representation: \\
-\centerline{\includegraphics[width=13cm]{./assets/ipv4_datagram.png}} \\ \\ 
+\centerline{\includegraphics[width=11cm]{./assets/ipv4.png}} \\ \\ 
 Some of the fields are:
 \begin{itemize}
 	\item \textbf{Version}
@@ -1156,13 +1159,13 @@ Some of the fields are:
 	\vspace{.2cm} \\
 	It is composed of 3 bits. \textbf{Bit 1} must be 0, \textbf{Bit 2} indicates if the datagram may fragment (0 - Yes, 1 - No), and \textbf{Bit 3} indicates if this is the last fragment (0 - Yes, 1 - No).
 	
-	\item \textbf{Time-To-Live}
+	\item \textbf{Time To Live}
 	\vspace{.2cm} \\
-	It is decremented by one for every time that the datagram is processed by a router. If the TTL == 0, the datagram is dropped.
+	It is decremented by one for every time that the datagram is processed by a router. If \cverb|TTL == 0|, the datagram is dropped.
 	
 	\item \textbf{Upper-Layer Protocol}
 	\vspace{.2cm} \\
-	Indicates the protocol to which to pass the datagram at the final destination (e.g. 6 = TCP, 17 = UDP...).
+	Indicates the protocol to which to pass the datagram at the final destination (e.g. 6 $\rightarrow$ TCP, 17 $\rightarrow$ UDP...).
 	
 	\item \textbf{Header Checksum}
 	\vspace{.2cm} \\
@@ -1188,14 +1191,15 @@ The boundary between the host and the physical link is called an \textbf{interfa
 Each interface on every router and host must have an IP address that is globally unique.
 
 \subsection{Subnet Mask}
+A \textbf{subnet mask} is indicated by the leftmost $x$ bits (e.g. 223.1.1.0/24, it would indicate the 24 leftmost digits) of an IP address. \\ \\
 In order to determine the subnets, detach each interface from its host/router, creating islands of isolated networks. Each of these isolated networks is called a \textbf{subnet}.
 
 \subsection{IP Assignment}
 IP can be assigned using classful addressing -- which is obsolete, or by \textbf{CIDR} (Classless InterDomain Routing). \\ \\
-When a host sends a datagram with destination address 255.255.255.255, the message is delivered to all hosts on the same subnet. This address is also commonly referred as the \textbf{broadcast address}.
+When a host sends a datagram with destination address 255.255.255.255, the message is delivered to all hosts on the same subnet. This address is also commonly referred to as the \textbf{broadcast address}.
 
 \subsubsection{Internet Number Registry System}
-The \textbf{ICANN} (Internet Corporation for Assigned Names and Numbers) distributes IP addresses. It also manage DNS root servers, assigns domains... \\ \\
+The \textbf{ICANN} (Internet Corporation for Assigned Names and Numbers) distributes IP addresses. It also manages DNS root servers, assigns domains... \\ \\
 While router addresses are manually configured by network administrators, host addresses are configured using \textbf{DHCP} (Dynamic Host Configuration Protocol). The goal of DHCP is to dynamically assign an IP address to the host, the moment it joins the network. The following are the steps of the DHCP:
 
 \begin{enumerate}
@@ -1213,7 +1217,7 @@ A DHCP server can return much more than just the allocated IP address on the sub
 \end{itemize}
 
 \subsubsection{Network Address Translation}
-Thanks to the NAT, as far as the rest of the Internet is concerned, on one IPv4 address is used by a local network. \\ \\
+Thanks to the NAT, as far as the rest of the Internet is concerned, only one IPv4 address is used by a local network. \\ \\
 All of the devices in the local network have a 32-bit address in a private IP space. Some of the possible masks are:
 
 \begin{itemize}
@@ -1238,8 +1242,23 @@ The NAT has several jobs, such as:
 \end{itemize}
 
 \subsection{Internet Protocol Version 6}
-IPv6 was created because of the exhaustion of 32-bit IPv4 addresses. The following is a visual representation of an IPv6 datagram: \\ \\ \\
-\centerline{\includegraphics[width=13cm]{./assets/ipv6_datagram.png}} \\ \\ 
+IPv6 was created because of the exhaustion of 32-bit IPv4 addresses. It also introduces some new features, such as:
+
+\begin{itemize}
+	\item \textbf{Expanded Addressing Capabilities}
+	\vspace{.2cm} \\
+	The \textbf{anycast address} has been introduced with IPv6, and allows a datagram to be delivered to any one of a group of hosts (for example, an HTTP GET request can be sent to a number of mirror sites that contain a given document).
+	
+	\item \textbf{40-byte Header}
+	\vspace{.2cm} \\
+	This allows for a faster processing by routers.
+	
+	\item \textbf{Flow Labeling}
+	\vspace{.2cm} \\
+	A \textbf{flow} allows the labeling of packets belonging to particular flows for which the sender requests special handling (e.g. audio or video transmission, or traffic carried out by a high-priority user).
+\end{itemize}
+The following is a visual representation of an IPv6 datagram: \\ \\
+\centerline{\includegraphics[width=10cm]{./assets/ipv6.png}} \\ \\ 
 Some of the fields are:
 
 \begin{itemize}
@@ -1261,14 +1280,14 @@ Some of the fields are:
 	
 	\item \textbf{Hop Limit}
 	\vspace{.2cm} \\
-	Same as TTL in IPv4 datagrams.
+	Same as TTL in IPv4 datagrams. In this case, the counter decrements with each hop the datagram makes (i.e. with each intermediate router it goes through).
 \end{itemize}
 
 \subsection{Transition from IPv4 to IPv6}
-The Internet can operate with mixed IPv4 and IPv6 router thanks to \textbf{tunneling}. Tunneling enables for IPv6 datagramsto be transmitted as the payload of IPv4 datagrams among IPv4 routers.
+The Internet can operate with mixed IPv4 and IPv6 router thanks to \textbf{tunneling}. Tunneling enables for IPv6 datagrams to be transmitted as the payload of IPv4 datagrams among IPv4 routers.
 
 \subsection{Generalized Forwarding}
-In order to forward packets, each router has a \textbf{forwarding table}. Routers also follow a \textbf{match+action} abstraction, meaning that they match the bits in the arriving packet, and then take action. \\ \\
+In order to forward packets, each router has a \textbf{forwarding table}. Routers also follow a \textbf{match plus  action} abstraction, meaning that they match the bits in the arriving packet, and then take action. \\ \\
 There exist two main types of forwarding:
 
 \begin{itemize}
