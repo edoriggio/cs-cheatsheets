@@ -1258,7 +1258,7 @@ IPv6 was created because of the exhaustion of 32-bit IPv4 addresses. It also int
 	A \textbf{flow} allows the labeling of packets belonging to particular flows for which the sender requests special handling (e.g. audio or video transmission, or traffic carried out by a high-priority user).
 \end{itemize}
 The following is a visual representation of an IPv6 datagram: \\ \\
-\centerline{\includegraphics[width=10cm]{./assets/ipv6.png}} \\ \\ 
+\centerline{\includegraphics[width=11cm]{./assets/ipv6.png}} \\ \\ 
 Some of the fields are:
 
 \begin{itemize}
@@ -1327,16 +1327,13 @@ The services provided by the middleboxes can also be divided into three main cat
 Although middleboxes were initially proprietary, they have now moved towards \textbf{"whitebox" hardware} implementing an open API. \\ \\
 \textbf{NFV}s (Network Functions Virtualization) are programmable services that operate over whitebox networking.
 
-\subsection{Architectural Principles of the Internet}
-The goal of the Internet is connectivity, the tool is the Internet Protocol, and the intelligence is the end-to-end rather than hidden in the network.
-
 \section{Control Plane}
 The main function of the control plane is \textbf{routing}. This means that it needs to determine the route that packets need to take to arrive to their destination.
 
 \subsection{Routing Protocols}
 Routing protocols are used to determine the best path, from sending to receiving host, through the network of routers. \\ \\
 A \textbf{path} is a sequence of routers, packets need to traverse from a given initial source host to a final destination host. \\ \\ \\
-\centerline{\includegraphics[width=7cm]{./assets/graph.png}} \\ \\ \\
+\centerline{\includegraphics[width=9cm]{./assets/graph.png}} \\ \\ \\
 There are four types of routing algorithms:
 \begin{itemize}
 	\item \textbf{Centralized}
@@ -1354,18 +1351,26 @@ There are four types of routing algorithms:
 	\item \textbf{Static}
 	\vspace{.2cm} \\
 	The routes change slowly over time.
+	
+	\item \textbf{Load-Sensitive}
+	\vspace{.2cm} \\
+	The link costs vary dynamically to reflect the current level of congestion of the underlying link.
+	
+	\item \textbf{Load-Insensitive}
+	\vspace{.2cm} \\
+	A link's cost does not explicitly reflect its level of congestion.
 \end{itemize}
 
 \subsubsection{Dijkstra's Link-State Routing Algorithm}
-This is a \textbf{centralized} algorithm, which computes the least cost paths from one node to all other nodes. \\ \\
+This is a \textbf{centralized} algorithm, which computes the least cost paths from one node to all other nodes in the network. This algorithm is iterative, and after the $k$th iteration of it the least-cost path are known up to $k$ destination nodes. \\ \\
 For example, the following graph: \\ \\ \\
-\centerline{\includegraphics[width=8cm]{./assets/dls_1.png}} \\ \\ \\
+\centerline{\includegraphics[width=9cm]{./assets/dls_1.png}} \\ \\ \\
 Would generate the following least-cost-path tree -- from the left-most router: \\ \\ \\
-\centerline{\includegraphics[width=8cm]{./assets/dls_2.png}} \\ \\ \\
+\centerline{\includegraphics[width=9cm]{./assets/dls_2.png}} \\
 
 \subsubsection{Distance-Vector Algorithm}
-This algorithm is based on the Bellman-Ford equation. The equation is the following:
-\[ D_x(y) = \min_v\{ c_{x, v} + D_v(y) \} \]
+This algorithm is based on the Bellman-Ford equation. The equation is the following: \\
+\[ D_x(y) = \min_v\{ c_{x, v} + D_v(y) \} \] \\
 The cost of the least-cost path from \textit{x} to \textit{y} is calculated as the minimum -- taken over all neighbors \textit{v} of \textit{x} -- of the sum the direct cost of the link from \textit{x} to \textit{v}, plus the least-cost path from \textit{v} to \textit{y}. \\ \\
 This algorithm is \textbf{distributed}, as well as self-stopping, iterative and asynchronous. \\ \\
 Whenever a link cost changes, the node detects the change and recalculates the local DV. In the case that the DV changes, then the neighbors are notified.
@@ -1387,81 +1392,108 @@ There are two types of routing -- regarding scalable routing:
 \subsubsection{Interconnected ASs}
 Being ASs interconnected, the forwarding table of each router is configured accordingly. \textbf{Intra-AS routing} determines the entries for destinations within the AS, while \textbf{Intra- and Inter-AS} both determine the entries for external destinations.
 
-\subsubsection{Routing Protocols}
-The most common Intra-AS routing protocols are the following:
+\subsection{Intra-AS Routing Protocols}
+
+\subsubsection{RIP}
+RIP (Routing Information Protocol) is DV based, where DVs are exchanged between routers every 30 seconds. This protocol is no longer used.
+
+\subsubsection{EIGRP}
+EIGRP (Enhanced Interior Gateway Routing Protocol) is also DV based. This protocol was formerly CISCO-proprietary software.
+
+\subsubsection{OSPF}
+OSPF (Open Shortest Path First) is a link-state protocol that uses \textbf{flooding of link state information} and \textbf{Dijkstra's least-cost path algorithm}. Each router constructs an entire topological map of the entire AS. Each router locally runs the Dijkstra algorithm to determine the shortest-path tree to all subnets. \\ \\
+OSPF does not mandate a policy for how link weights are set. Whenever there is a change in a link's state, a router broadcasts this new link-state to all other routers. \\ \\
+Some of OSPF's advances are:
 
 \begin{itemize}
-	\item \textbf{RIP (Routing Information Protocol)}
+	\item \textbf{Security}
 	\vspace{.2cm} \\
-	Here the DVs are exchanged every 30 seconds. It is no longer widely used.
+	The exchanges between OSPF routers can be authenticated.
 	
-	\item \textbf{EIGRP (Enhanced Interior Gateway Routing Protocol)}
+	\item \textbf{Multiple Same-Cost Paths}
 	\vspace{.2cm} \\
-	It is DV based, and formerly a Cisco-proprietary software for decades.
+	When multiple paths to a destination have the same cost, OSPF allow multiple paths to be used.
 	
-	\item \textbf{OSPF (Open Shortest Path First)}
+	\item \textbf{Integrated Support For Unicast and Multicast Routing}
+	
+	\item \textbf{Support for Hierarchy within a Single AS}
 	\vspace{.2cm} \\
-	It is a link-state routing protocol. OSPF uses Dijkstra's algorithm in order to compute the forwarding table. All OSPF messages are authenticated. \\ \\
-	OSPF has two hierarchies: \textbf{local area} and \textbf{backbone}. Each node has a detailed area topology, and only knows the directions to reach other destinations.
-	
-	\item \textbf{BGP (Border Gateway Protocol)}
-	\vspace{.2cm} \\
-	This is a decentralized and asynchronous protocol, and is based on DV. BGP provides each AS means to:
-	
-	\begin{itemize}
-		\item Obtain subnet reachability information from neighboring ASs (\textbf{eBGP}).
-		\item Propagate reachability information to all AS-internal routers (\textbf{iBGP}).
-		\item Determine good routes to other networks based on the reachability information and policy.
-	\end{itemize}
-	The BGP advertised route is composed of a \textbf{Prefix + Attributes}. The prefix is the destination being advertised. While the attributes are: \textbf{AS-PATH}, which is a list of ASs through which prefix advertisement has passed; \textbf{NEXT-HOP}, indicates a specific internal-AS router to the next-hop AS. \\ \\
-	Gateways receiving route advertisements use \textbf{import policies} to accept or decline paths. \\ \\
-	The BGP messages are exchanged between peers over a TCP connection. These messages are:
-	
-	\begin{itemize}
-		\item \textbf{OPEN}
-		\vspace{.2cm} \\
-		Opens TCP connection to remote BGP peer and authenticates sending BGP peer.
-		
-		\item \textbf{UPDATE}
-		\vspace{.2cm} \\
-		Advertises a new path, or withdraws an old one.
-		
-		\item \textbf{KEEPALIVE}
-		\vspace{.2cm} \\
-		Keeps the connection alive in absence of UPDATEs, it also ACKs open requests.
-		
-		\item \textbf{NOTIFICATION}
-		\vspace{.2cm} \\
-		Reports errors in previous messages, it is also used to close opened connections.
-	\end{itemize}
-	The route selected is based on:
-	
-	\begin{itemize}
-		\item Local preference value attribute (\textbf{policy decision}).
-		\item Shortest AS-PATH.
-		\item Closest NEXT-HOP router (hot potato routing)
-		\item Additional criteria
-	\end{itemize}
-	
-	\item \textbf{Hot Potato Routing}
-	\vspace{.2cm} \\
-	The gateway that has the least intra-domain cost will be chosen for routing. In this case there is no need to worry about the inter-domain cost.
+	One OSPF area in the AS is configured to be the backbone area. The primary role of the backbone area is to route traffic between the other areas on the AS. The backbone area contains all area border routers in the AS and may also contain non-border routers as well.
 \end{itemize}
 
+\subsection{Inter-Autonomous Routing Protocols}
+
+\subsubsection{BGP}
+BGP (Border Gateway Protocol) is arguably the most important of all the Internet protocols, as it is the protocol that glues the thousands of ISPs in the Internet together. This protocol is decentralized and asynchronous, and uses DVs. \\ \\
+In BGP, packets are not routed to a specific destination address, but instead to CIDRized prefixes -- each prefix represents a subnet or a collection of subnets. \\ \\
+BGP provides each router a means to:
+
+\begin{itemize}
+	\item \textbf{Obtain Prefix Reachability Information from Neighboring ASs}
+	\vspace{.2cm} \\
+	This protocol allows each subnet to advertise its existence to the rest of the Internet.
+	
+	\item \textbf{Define the Best Routes to the Prefixes}
+	\vspace{.2cm} \\
+	A router may learn about two or more different routes to a specific prefix. In order to determine the best route, the router will locally run a BGP route-selection procedure.
+\end{itemize}
+Pairs of routers exchange routing information over semi-permanent \textbf{TCP} connections using port 179. Each such connections is called \textbf{BGP connection}. There are two types of BGP connections:
+
+\begin{itemize}
+	\item \textbf{Internal BGP (iBGP)}
+	\vspace{.2cm} \\
+	These are BGP sessions between routers in the same AS.
+	
+	\item \textbf{External BGP (eBGP)}
+	\vspace{.2cm} \\
+	These are BGP sessions that span two ASs.
+\end{itemize}
+When a router advertises a prefix across a BGP connection, it includes with the prefix several \textbf{BGP attributes}. Two of the most important attributes are:
+
+\begin{itemize}
+	\item \textbf{AS-PATH}
+	\vspace{.2cm} \\
+	It contains a list of ASs through which the advertisement has passed.
+	
+	\item \textbf{NEXT-HOP}
+	\vspace{.2cm} \\
+	This is the IP address of the router interface that begins the AS-PATH.
+\end{itemize}
+
+\subsubsection{Hot Potato Routing}
+This is a routing algorithm used by BGP. The hot potato routing algorithm will choose the gateway that has the least intra-domain cost. In this case there is no need to worry about the inter-domain cost.
+
+\subsection{Routing Policy}
+ISPs, in a real-world scenario, only want to route traffic to/from its customer networks. To do so, \textbf{routing policies} are enforced. These policies can trump all other considerations when selecting a route to destination.
+
 \subsection{ICMP}
-\textbf{ICMP} (Internet Control Message Protocol) is a protocol used by hosts and routers to communicate network-level information . \\ \\
+ICMP (Internet Control Message Protocol) is a protocol used by hosts and routers to communicate network-level information to each other. ICMP messages are sent as the payload of an IP address (as UDP and TCP). \\ \\
 A visual representation of an ICMP message is the following: \\ \\ \\
-\centerline{\includegraphics[width=13cm]{./assets/icmp.png}} \\ \\ \\
+\centerline{\includegraphics[width=11cm]{./assets/icmp.png}} \\ \\ \\
 Some fields are:
 \begin{itemize}
 	\item \textbf{Code}
 	\vspace{.2cm} \\
 	The ICMP subtype
 	
-	\item \textbf{Contents}
+	\item \textbf{Content}
 	\vspace{.2cm} \\
 	Copy of the IP header and at least 8 bytes of IP data.
 \end{itemize}
+
+\subsubsection{Ping}
+The ping program sends an ICMP type 8, code 0 message (echo request) to the specified host. The destination host, seeing the packet, sends back a type 0, code 0 message (echo reply) to the sender.
+
+\subsubsection{Traceroute}
+The traceroute program allows us to trace a route from a host, to any other host in the world. This program is implemented with the use of ICMP messages. These are the steps for a traceroute:
+
+\begin{enumerate}
+	\item Source sends a series of ordinary IP datagrams to the destination. Each of these datagrams is carrying a UDP message with an unlikely port number. each of these datagrams have a TTL of 1, 2, 3 ... $n$.
+	\item The source starts timers for each of the datagrams.
+	\item When the $n$th datagram reaches the $n$th router, that router will observe that the packet TTL is expired. The receiving router thus sends back to the source an ICMP type 11, code 0 message (TTL expired). This message includes the name and IP address of the router.
+	\item Once the source obtains the ICMP message, it stops the timer on that datagram and returns the RTT, name and IP address of the $n$th router.
+	\item The source stops sending packets when the destination host sends back an ICMP type 3, code 3 message (destination port unreachable) back to the source.
+\end{enumerate}
 
 \section{The Link Layer and LAN}
 The basic service of the link layer is to move a datagram from one node to an adjacent node over a single communication link.
@@ -1546,6 +1578,7 @@ Most of the Link layer is implemented in hardware, while high-level functionalit
 	\item \textbf{80, 8080, 8008} - HTTP
 	\item \textbf{110} - POP3
 	\item \textbf{143} - IMAP
+	\item \textbf{179} - BGP
     \item \textbf{465} - SMTP (secure)
     \item \textbf{853} - DNS (secure)
     \item \textbf{992} - Telnet (secure)

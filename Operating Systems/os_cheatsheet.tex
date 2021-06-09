@@ -666,11 +666,11 @@ There are some benefits that come with multithreaded programming, such as:
 	
 	\item \textbf{Resource Sharing}
 	\vspace{.2cm} \\
-	Threads share resources of the process, which is easier than both shared memory and message passing.
+	Threads share resources of the process, which is easier than both shared memory and message passing. The advantage is that an application can have several threads within the same address space.
 	
 	\item \textbf{Economy}
 	\vspace{.2cm} \\
-	Cheaper than process creation, thread switching has lower overhead compared to context switching.
+	Creating and context switching threads is generally faster than doing the same with processes.
 	
 	\item \textbf{Scalability}
 	\vspace{.2cm} \\
@@ -678,7 +678,8 @@ There are some benefits that come with multithreaded programming, such as:
 \end{itemize}
 
 \subsection{Multicore Programming}
-In a \textbf{multicore} system, multiple threads can run simultaneously. A system is said to be \textbf{parallel} if it can perform more than one task simultaneously. On the other hand, a system is said to be \textbf{concurrent} if it supports more than one task by allowing all the tasks to make progress. \\ \\
+In a \textbf{multicore} system, multiple threads can run simultaneously in parallel. \\ \\
+ A system is said to be \textbf{parallel} if it can perform more than one task simultaneously. On the other hand, a system is said to be \textbf{concurrent} if it supports more than one task by allowing all the tasks to make progress. \\ \\
 It is possible to have concurrency without parallelism. \\ \\
 The main challenges in programming for multicore systems are:
 
@@ -723,17 +724,17 @@ Support for threads might be provided at two levels:
 	
 	\item \textbf{Kernel Threads}
 	\vspace{.2cm} \\
-	Are supported directly by the operating system.
+	Are supported and managed directly by the operating system.
 \end{itemize}
 There is a relationship between user and kernel threads. Following are three common ways of establishing such relationships.
 
 \subsubsection{Many-to-One Model}
 This model maps \textbf{many user threads} to \textbf{one kernel thread}. \\ \\
-This is efficient, but the system halts whenever a blocking system call is executed. In this model threads are unable to run in parallel.
+This is efficient, but the system halts whenever a blocking system call is executed. In this model threads are unable to run in parallel on multicore systems.
 
 \subsubsection{One-to-One Model}
 This model maps \textbf{each user thread} with \textbf{one kernel thread}. \\ \\
-It has a degree of concurrency and threads can run in parallel. There is the overhead of creating the correspondent kernel thread to a user thread.
+It has a degree of concurrency and threads can run in parallel. There is the overhead of creating the kernel thread corresponding to a user thread.
 
 \subsubsection{Many-to-Many Model}
 This model multiplexes \textbf{many user threads} to a \textbf{smaller or equal number of kernel threads}. \\ \\
@@ -771,10 +772,11 @@ When working with threads, a series of issues can present to the developer. Thes
 \end{itemize}
 
 \subsection{Thread-Local Storage}
-In the case that a thread needed its own copy of some data, this is referred to as \textbf{TLS} (Thread-Local Storage). This kind of data is visible only during function invocations.
+In some circumstances, threads need its own copy of certain data. this data is called \textbf{TLS} (Thread-Local Storage). \\ \\
+Unlike local variables that are visible only during a single function invocation, TLS data are visible across function invocations.
 
 \subsection{Scheduler Activations}
-An intermediate data structure is implemented between the user and the kernel threads. This data structure, also known as \textbf{LWP} (LightWeight Process) is used for communication between the kernel and the thread library. \\ \\
+An intermediate data structure is implemented between the user and the kernel threads. This data structure, also known as \textbf{LWP} (LightWeight Process) is used for communication between the kernel and the thread library. This communication is also known as \textbf{scheduler activation}. \\ \\
 To the user-thread library, the LWP appears to be a virtual processor on which the application can schedule a user thread to run. If a kernel thread blocks, the LWP blocks as well. A user thread attached to that LWP would block too.
 
 \section{Process Scheduling}
