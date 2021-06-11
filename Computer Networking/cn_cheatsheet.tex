@@ -1394,14 +1394,14 @@ Being ASs interconnected, the forwarding table of each router is configured acco
 
 \subsection{Intra-AS Routing Protocols}
 
-\subsubsection{RIP}
-RIP (Routing Information Protocol) is DV based, where DVs are exchanged between routers every 30 seconds. This protocol is no longer used.
+\subsubsection{RIP (Routing Information Protocol)}
+RIP is DV based, where DVs are exchanged between routers every 30 seconds. This protocol is no longer used.
 
-\subsubsection{EIGRP}
-EIGRP (Enhanced Interior Gateway Routing Protocol) is also DV based. This protocol was formerly CISCO-proprietary software.
+\subsubsection{EIGRP (Enhanced Interior Gateway Routing Protocol)}
+EIGRP is also DV based. This protocol was formerly CISCO-proprietary software.
 
-\subsubsection{OSPF}
-OSPF (Open Shortest Path First) is a link-state protocol that uses \textbf{flooding of link state information} and \textbf{Dijkstra's least-cost path algorithm}. Each router constructs an entire topological map of the entire AS. Each router locally runs the Dijkstra algorithm to determine the shortest-path tree to all subnets. \\ \\
+\subsubsection{OSPF (Open Shortest Path First)}
+OSPF is a link-state protocol that uses \textbf{flooding of link state information} and \textbf{Dijkstra's least-cost path algorithm}. Each router constructs an entire topological map of the entire AS. Each router locally runs the Dijkstra algorithm to determine the shortest-path tree to all subnets. \\ \\
 OSPF does not mandate a policy for how link weights are set. Whenever there is a change in a link's state, a router broadcasts this new link-state to all other routers. \\ \\
 Some of OSPF's advances are:
 
@@ -1496,7 +1496,7 @@ The traceroute program allows us to trace a route from a host, to any other host
 \end{enumerate}
 
 \section{The Link Layer and LAN}
-The basic service of the link layer is to move a datagram from one node to an adjacent node over a single communication link.
+The basic service of the link layer is to move a datagram from one node to an adjacent node over a single communication link. Most of the link layer is implemented in hardware, while high-level functionalities may be implemented in software that runs on the host's CPU.
 
 \subsection{Definitions}
 A \textbf{communication network} is a system that allows two or more endpoints to be connected and to exchange data. \\ \\
@@ -1504,9 +1504,367 @@ An \textbf{endpoint} is any kind of equipment that is able to connect to the net
 A \textbf{node} is any device that runs a link-layer protocol. \\ \\
 A \textbf{link} is a communication channel that connects adjacent nodes along the communication path.
 
-\subsection{MAC and LLC}
-\textbf{MAC} (Medium Access Control) and \textbf{LLC} (Logical Link Control), are two sublayers of the Data Link layer.\\ \\
-Most of the Link layer is implemented in hardware, while high-level functionalities may be implemented in software that runs on the host's CPU.
+\subsection{Communication Media}
+Both \textbf{wired} and \textbf{wireless} communication links exist. \textbf{Wired} links are:
+
+\begin{itemize}
+	\item \textbf{Fiber Optic Cable}
+	\item \textbf{Coaxial Cable}
+	\item \textbf{Twisted Pair Copper Cable}
+\end{itemize}
+\textbf{Wireless} links are:
+
+\begin{itemize}
+	\item \textbf{Radio Waves}
+\end{itemize}
+
+\subsection{Communication Links}
+Some communication link types are:
+
+\begin{itemize}
+	\item \textbf{Point-to-Point}
+	\vspace{.2cm} \\
+	When there is a single sender at one end of the link and a single receiver at the end of the link.
+	
+	\item \textbf{Broadcast}
+	\vspace{.2cm} \\
+	When there are multiple sending and receiving nodes all connected to the same, single and shared broadcast channel.
+	
+	\item \textbf{Unidirectional}
+	\vspace{.2cm} \\
+	Also called simplex. It provides one-way communication.
+	
+	\item \textbf{Bidirectional}
+	\vspace{.2cm} \\
+	Can be either \textbf{full-duplex} (two one-way channels) or \textbf{half-duplex} (one two-way channel). For example Ethernet an Fiber Optics are full-duplex, while coaxial is half-duplex.
+\end{itemize}
+
+\subsection{Link Access}
+The \textbf{MAC} (Medium Access Control) protocol specifies the rules by which a frame is transmitted onto the link. \\ \\
+This is easy for point-to-point links, but gets complex for broadcast links. \\ \\
+The types of multiple access protocol are:
+
+\begin{itemize}
+	\item \textbf{Channel Partitioning Protocols}
+	\item \textbf{Taking-Turns Protocols}
+	\item \textbf{Random Access Protocols}
+\end{itemize}
+
+The Link Layer guarantees reliable delivery. That is, network-layer datagrams are guaranteed to be relayed across the link. This is typically achieved by means of retransmissions and acknowledgments.
+
+\subsection{Multiple Access Problem}
+In order to solve the issue of multiple nodes sharing the same single broadcast link, there is the need of a MAC protocol in order to coordinate the frame transmission of the nodes.
+
+\subsubsection{Channel Partitioning Protocols}
+In \textbf{TDM} (Time Division Multiplexing), time is divided into rounds, and each round is divided into $N$ slots. Each node gets a fixed length slot in each round, and unused slots remain idle. \\ \\
+
+\centerline{\includegraphics[width=9cm]{./assets/tdm.png}}
+\vspace{.9cm}
+\noindent The advantages are that there are no collisions and perfect fairness. \\ \\
+The disadvantages are that the max rate is always $\frac{R}{N} bps$ -- even when only one node has frames to send, and that there is a fixed latency before a node can send data. \\ \\
+In \textbf{FDM} (Frequency-Division Multiplexing), a channel is divided into $N$ different frequency bands -- each with a bandwidth of $\frac{R}{N}$. Each node is assigned to one of the $N$ fixed frequency bands, and the unused transmission time in frequency bands go idle. \\ \\
+
+\centerline{\includegraphics[width=8cm]{./assets/fdm.png}}
+\vspace{.9cm}
+This method has the same advantages and disadvantages as TDM.
+
+\subsubsection{Taking-Turns Protocols}
+In \textbf{polling protocols}, the master node polls each node in a Round-Robin fashion. \\ \\
+The advantages are that there are no collisions and fairness. \\ \\
+The disadvantages are that the rate is less than $R~bps$ even if only one node is active, and the master node is a single point of failure. \\ \\
+In \textbf{token-passing protocols}, there is no master node. Instead, a small frame, called \textbf{token}, is exchanged among the nodes. Only the node that has the token is allowed to transmit. \\ \\
+The advantages are that this protocol is fully decentralized, and that it is efficient. \\ \\
+The disadvantage is that the token could be lost.
+
+\subsubsection{Random Access Protocol}
+The transmitting nodes always sent at the full $R~bps$ rate. But if there is a collision, a back-off mechanism is used in order to decide when to retransmit the packet. Some examples of random access protocols are:
+
+\begin{itemize}
+	\item \textbf{ALOHA}
+	\vspace{.2cm} \\
+	This was used by Hawaiians to connect all of their islands with a central computer located on the university campus of the main island. \\ \\
+	This setup was composed of one main host and many client machines, a downlink from the host to the clients with frequency $f_1$, and an uplink from the clients to the host with frequency $f_2$.
+	
+	\item \textbf{Slotted ALOHA}
+	Time is divided into slots. The length of a slot is $\frac{L}{R}$ seconds -- where $L$ is the number of bits in the frame and $R$ is the channel rate). \\ \\
+	All of the nodes are synchronized, meaning that each node knows when a slot begins. These nodes only transmit frames to the hub at the beginning of slots. \\ \\
+	
+	\centerline{\includegraphics[width=10cm]{./assets/slotted-aloha.png}}
+	\vspace{.4cm}
+	
+	\item \textbf{CSMA/CD}
+	\vspace{.2cm} \\
+	\textbf{CSMA} (Carrier Sensing Multiple Access) is when a node listens to the channel before transmitting. If a frame from another node is being transmitted, the node trying to send the frame waits and tries again later. \\ \\
+	\textbf{CD} (Collision Detection) is when a transmitting node listens to the channel while it is transmitting. If it detects that another node is transmitting an interfering frame, the node trying to send stops transmitting, it waits and tries again later. \\ \\
+	\textbf{CSMA/CD} are mechanisms used in the Ethernet protocol.	
+	
+	\item \textbf{Ethernet}
+\end{itemize}
+
+\subsection{Link-Layer Address}
+A link-layer address is the unique address of a network adapter. A \textbf{network adapter} is a piece of hardware that connects a computer to a network. Network adapters contain both the physical and link layers. \\ \\
+Each adapter has its own MAC address. This address is permanent and usually burned into its ROM (Read-Only Memory).
+
+\subsection{MAC Address}
+\subsubsection{MAC Address Format}
+There are several different MAC address formats. One example is \textbf{EUI-48} (Extended Unique Identifiers). This type of MAC address is used in both Ethernet and Wi-Fi. \\ \\
+This MAC address is made up of 6 bytes -- $2^48$ addresses are possible. These 6 bytes are divided in two parts:
+
+\begin{itemize}
+	\item \textbf{OUI (Organizational Unique Identifier)}
+	\vspace{.2cm} \\
+	24 bits are used for the OUI. This is assigned by IEEE and is globally unique.
+	
+	\item  \textbf{NIC (Network Internet Controller)}
+	\vspace{.2cm} \\
+	24 bits are used for the NIC.
+\end{itemize}
+
+\subsubsection{MAC Address Spoofing}
+This is a technique used in order to change the factory-assigned MAC address of a network interface on a network device. \\ \\
+MAC address randomization can be used to prevent the tracking of devices in Wi-Fi rich environments.
+
+\subsection{Frame Forwarding at the Link Layer}
+The link-level frames contain the MAC address of the intended destination of the frame. The broadcast address of MAC addresses is FF-FF-FF-FF-FF-FF.
+
+\subsection{Address Resolution Protocol}
+Since there are two types of both network- and link-layer addresses -- IP and MAC addresses, there is the need to translate between them. \\ \\
+The ARP (Address Resolution Protocol) protocol allows a host to find the MAC address of a node given the node's IP address. This is done by building an ARP table with all IP - MAC mappings.\\ \\
+	
+\centerline{\includegraphics[width=11cm]{./assets/arp.png}}
+\vspace{.3cm}
+
+\subsubsection{ARP Query}
+An ARP query is sent when the ARP does not find an entry in the table for a given IP address. \\ \\
+The ARP query packet is sent to the broadcast address of the subnet, thus being received by all hosts in the subnet.
+
+\subsubsection{ARP Response}
+If a host matches the \textbf{TPA} (Target Protocol Address), it replies to the query with an ARP response packet. \\ \\
+If the destination node is in another subnet, then the frame must be passed to the router that interconnects the two subnets.
+
+\subsubsection{ARP vs DNS}
+\textbf{ARP} is used to resolve addresses for hosts that are in the same subnet. \\ \\
+\textbf{DNS} is used to resolve host names for hosts that are anywhere in the Internet.
+
+\subsection{Ethernet}
+Ethernet is a family of computer networking technologies commonly used in LANs (Local Area Networks), MANs (Metropolitan Area Networks) and WANs (Wide Area Networks). The first Ethernet standard was the \textbf{10BASE-5} (10 Mbps rate, baseband signalling and max length of 500 m). \\ \\
+\textbf{IEEE 802.3} is a collection of standards defining the physical layer an data-link layer's MAC of wired Ethernet.
+
+\subsubsection{Ethernet Frame}
+Here is a graphical representation of the Ethernet frame:\\ \\
+	
+\centerline{\includegraphics[width=12cm]{./assets/ethernet.png}}
+\vspace{.6cm}
+\noindent The following are its fields:
+
+\begin{itemize}
+	\item \textbf{Preamble}
+	\vspace{.2cm} \\	
+	7 bytes of alternating 0s and 1s.
+	
+	\item \textbf{SFD}
+	\vspace{.2cm} \\
+	The SFD (Start of Frame Delimiter) signals the end of the preamble and the start of the packet.
+	
+	\item \textbf{Destination a Source MAC Addresses}
+	
+	\item \textbf{EtherType}
+	\vspace{.2cm} \\
+	Identifies the high-level protocol to which this frame should be delivered.
+	
+	\item \textbf{Payload}
+	
+	\item \textbf{FCS}
+	\vspace{.2cm} \\
+	The FCS (Frame Check Sequence) is a checksum used to verify the integrity of the packet.
+\end{itemize}
+
+\subsection{Bus Topology with 10BASE-5 Ethernet}
+All stations a connected to each other through a coaxial cable. The maximum length of the signal is of 500 meters. The stations connect to the cable by means of an AUI (Attachment User Interface). \\ \\
+Multiple segments are joined by repeaters. A maximum of 4 repeaters can be but between any pair of hosts, thus making the maximum length of the signal 2500 meters.
+
+\subsubsection{Collision Domain}
+Any signal placed on an Ethernet segment by a host is broadcasted over the entire segment. \\ \\
+All hosts that compete for access to the same link are said to be in the same collision domain.
+
+\subsubsection{Receiver Algorithm}
+An Ethernet 10BASE-5 adapter receives all frames sent by any host and accepts:
+
+\begin{itemize}
+	\item Frames to its own address
+	\item Frames to the broadcast address (all 1s)
+	\item Frames to the multicast address (starts with 1), if the adapter was instructed to do so
+	\item All frames, if it has been set in promiscuous mode
+\end{itemize}
+There are three techniques used for transmitting frames:
+
+\begin{itemize}
+	\item \textbf{CSMA (Carrier Sensing Multiple Access)} 
+	\vspace{.2cm} \\
+	The station that wants to send some data measures the level of current of the wire. If the level is over a certain threshold, this means that the carrier is busy.
+	
+	\item \textbf{CD (Collision Detection)}
+	\vspace{.2cm} \\
+	The sending station continuously measures the signal of the wire. If the signal is higher or lower than the transmitted signal, then there is a collision.
+	
+	\item \textbf{Binary Exponential Back-off}
+	\vspace{.2cm} \\
+	It measures the time to wait for retransmission after a collision has been detected.
+\end{itemize}
+
+\subsection{Link-Layer Switches}
+\subsubsection{Hub vs Switch}
+A \textbf{hub} has the following characteristics:
+
+\begin{itemize}
+	\item Multiple inputs
+	\item Multiple outputs
+	\item \textbf{Repeats an incoming signal to all of its output ports}
+	\item \textbf{Has no buffer}
+\end{itemize}
+A \textbf{switch} has the following characteristics:
+
+\begin{itemize}
+	\item Multiple inputs
+	\item Multiple outputs
+	\item \textbf{Forwards an incoming signal to a specific output port}
+	\item \textbf{Has a buffer}
+\end{itemize}
+While \textbf{hub-based topologies} need collision-preventing algorithms (such as CSMA and CD), \textbf{switch-based topologies} have no collisions.
+
+\subsubsection{Switch Ports}
+Each device connected to a switch port can transfer data to any of the other ports at any time. \\ \\
+Switches can also store incoming data and forward it to the target interface.
+
+\subsubsection{Operations of a Switch}
+Two of the main operations of a switch are:
+
+\begin{itemize}
+	\item \textbf{Filtering}
+	\vspace{.2cm} \\
+	Determine if an incoming frame needs to be dropped or not.
+	
+	\item \textbf{Forwarding}
+	\vspace{.2cm} \\
+	Determine the interface to which incoming frames should be directed to, and move those frames.
+\end{itemize}
+All of this is done by the \textbf{switch table}. There are also some rules that apply to switch tables, namely:
+
+\begin{itemize}
+	\item If there is no entry in the table for a particular frame, it will be forwarded to all interfaces.
+	\item If there is an entry in the table associated to the same port the frame is coming from, the frame is dropped.
+	\item If there is an entry in the table associated to a port, then the frame is forwarded to that interface
+\end{itemize}
+
+\subsubsection{Characteristics of a Switch}
+Switches have many interesting characteristics, such as:
+
+\begin{itemize}
+	\item \textbf{Self Learning}
+	\vspace{.2cm} \\
+	Each incoming frame is stored in the switch table (which is initially empty). Entries that are in the table for more than the aging time are deleted.
+	
+	\item \textbf{Plug \& Play}
+	
+	\item \textbf{Full-Duplex}
+	Any switch interface can send and receive at the same time.
+	
+	\item \textbf{No Collisions}
+	
+	\item \textbf{Heterogeneous Links}
+	\vspace{.2cm}
+	Each link can run at different speeds and over different media.
+	
+	\item \textbf{Easy Network Management}
+\end{itemize}
+
+\subsubsection{Switch vs Router}
+A \textbf{switch} is a two-layered packet switch, where the upper layer is the link layer. \\ \\
+A \textbf{router} is a three-layered packet switch, where the upper layer is the network layer.
+
+\subsection{Transmission of Bits}
+Electromagnetic waves transport energy through empty space, stored in the propagating electric and magnetic field. The magnetic field variation is perpendicular to the electric field. \\ \\
+A single frequency electromagnetic wave exhibits a sinusoidal variation of electric and magnetic fields on space. \\ \\
+Transmission of bits may happen in two different ways:
+
+\begin{itemize}
+	\item \textbf{Amplitude Modulation}
+	\vspace{.4cm} \\
+	\centerline{\includegraphics[width=7cm]{./assets/amplitude.png}}
+	\vspace{.4cm}
+	
+	\item \textbf{Frequency Modulation}
+	\vspace{.2cm} \\
+	\centerline{\includegraphics[width=7cm]{./assets/frequency.png}}
+\end{itemize}
+Amplitude and frequency may change due to, for example, reflection and refractions during propagation.
+
+\subsection{Bit Errors}
+The \textbf{BER} (Bit Error Ratio) can be computed by the following formula:
+
+\[ BER = \frac{N_{err}}{N_{tot}} \] \\
+\noindent The typical value for the BER in Ethernet links is $10^{-7}$ to $10^{-13}$, while for wireless, the BER is $10^{-3}$ to $10^{-6}$.
+
+\subsubsection{Bit Errors Detection and Correction}
+There are two types of error correction:
+
+\begin{itemize}
+	\item \textbf{FEC (Forward Error Correction)}
+	\vspace{.2cm} \\
+	Correction is done from the sender to the receiver. Additional error correcting bits are added to the sender.
+	
+	\item \textbf{ARQ (Automatic Repeat reQuest)}
+	\vspace{.2cm} \\
+	Correction is done from the receiver to the sender. Acknowledgments are sent by the receiver to signal a successful/unsuccessful reception.
+\end{itemize}
+
+\subsubsection{FEC Techniques}
+The following are the FEC techniques used:
+
+\begin{itemize}
+	\item \textbf{Parity check}
+	\vspace{.2cm} \\
+	The sender adds a 1 bit so that the number of bits equal to 1 in the sequence is even. \\ \\
+	The receiver checks the number of 1s in the sequence + EDC (Error Detection and Correction) bits. If the number is odd, then there is an error. \\ \\
+	Most of the times, if there is one bit flip, there can also be more than one. This is why there exist more advanced parity checks -- such as two-dimensional parity.
+	
+	\item \textbf{Checksums}
+	\vspace{.2cm} \\
+	The field frames are treated as integers used as input to a checksum function. \\ \\
+	A checksum is needed at the UDP level, because there is no guarantee there is error checking at lower levels. It could also be that bit errors are introduced when a UDP segment is stored in the router's memory.
+	
+	\item \textbf{CRC (Cyclic Redundancy Check)}
+	\vspace{.2cm} \\
+	A CRC field $R$ of $r$ bits is added to a piece of data $D$.
+	
+	\[ R = \text{remainder of}~ \frac{D \cdot 2^r}{G} \] \\
+	$G$ is called the \textbf{generator}, which is composed of $r+1$ bits, and is known to both sender and receiver. \\ \\
+	The sender chooses $r$ bits such that $d+r$ is exactly divisible by $G$. If the remainder of the division is not 0, then there is an error.
+\end{itemize}
+
+\section{Wireless Networks}
+\subsubsection{Wireless Propagation}
+Propagation is error prone because of three main reasons:
+
+\begin{itemize}
+	\item \textbf{Interfaces}
+	\vspace{.2cm} \\
+	This occurs when two or more waves overlap. This could be caused by other radio devices or other electromagnetic noise. Waves can either be constructive or destructive. \\ \\
+	The power of Wi-Fi devices is limited to 100 mW in Europe.
+	
+	\item \textbf{Path Loss}
+	\vspace{.2cm} \\
+	There is a difference between the transmitted power (P$_{tx}$) and received power (P$_{rx}$):
+	
+	\[ P_{rx}(d) \approx \beta \cdot P_{tx} \cdot \frac{1}{d^\alpha} \]
+	
+	\item \textbf{Multiplicative Propagation}
+	\vspace{.2cm} \\
+	Portions of the electromagnetic wave may reflect off objects and the ground, taking paths of different lengths between sender and receiver.	
+\end{itemize}
+
+\subsection{Wi-Fi}
+The Wi-Fi alliance is a "global non-profit association with the goal of driving the best user experience with a new wireless networking technology".
 
 
 % -----------
@@ -1518,6 +1876,14 @@ Most of the Link layer is implemented in hardware, while high-level functionalit
 \section{APPENDIX A - Formulae Glossary}
 
 \begin{itemize}
+	\item \textbf{$\alpha$}
+	\vspace{.2cm} \\
+	Path loss exponent. It depends on the medium in which the signal propagates.
+	
+	\item \textbf{$\beta$}
+	\vspace{.2cm} \\
+	Multiplicative attenuation factor.	
+	
 	\item \textbf{a}
 	\vspace{.2cm} \\
 	Average rate of packets per second.
@@ -1538,6 +1904,10 @@ Most of the Link layer is implemented in hardware, while high-level functionalit
 	\vspace{.2cm} \\
 	File size in bits. \textbf{Unit:} bits
 	
+	\item \textbf{G}
+	\vspace{.2cm} \\
+	Bit pattern of $r+1$ bits.
+	
 	\item \textbf{L}
 	\vspace{.2cm} \\
 	Length of a packet in bits. \textbf{Unit:} bits
@@ -1545,6 +1915,14 @@ Most of the Link layer is implemented in hardware, while high-level functionalit
 	\item \textbf{N}
 	\vspace{.2cm} \\
 	Number of hops/peers/ports.
+	
+	\item \textbf{N$_{err}$}
+	\vspace{.2cm} \\
+	Number of bit errors.
+	
+	\item \textbf{N$_{tot}$}
+	\vspace{.2cm} \\
+	Total number of bits sent.
 	
 	\item \textbf{R}
 	\vspace{.2cm} \\
