@@ -1866,6 +1866,149 @@ Propagation is error prone because of three main reasons:
 \subsection{Wi-Fi}
 The Wi-Fi alliance is a "global non-profit association with the goal of driving the best user experience with a new wireless networking technology".
 
+\subsubsection{Wi-Fi Access Point}
+A Wi-Fi access point is a Wi-Fi certified device that provide wireless connectivity. These access points act as a gateway to other networks -- which can either be wired or wireless. \\ \\
+Most access points are static, but they could also be mobile. Wi-Fi devices are all those that are based on the \textbf{IEEE 802.11} standards.
+
+\subsection{IEEE 802.11}
+IEEE 802.11 is a MAC and physical layer specification. It is designed for use in a limited geographical area. \\ \\
+This protocol extends the common wired Ethernet local network into the wireless domain.
+
+\subsubsection{Channels}
+Depending on the specific standard, IEEE 802.11 transmits in the 900 MHz, 2.4, 3.6, 5 and 60 GHz frequency bands. It operates in the \textbf{ISM} (Industrial, Scientific and Medical) radio bands.
+
+\subsubsection{Logical Architecture}
+The main components of a wireless network are:
+
+\begin{itemize}
+	\item \textbf{STA (STAtion)}
+	\vspace{.2cm} \\
+	It is a device that has the capabilities of using the 802.11 protocol.
+	
+	\item \textbf{AP (wireless Access Point)}
+	\vspace{.2cm} \\
+	A networking hardware device that allows STAs to connect to the wired Internet.
+	
+	\item \textbf{BSS (Basic Service Set)}
+	\vspace{.2cm} \\
+	Term used to describe the collection of STAs which may communicate together within an 802.11 network. An AP may or may not be part of the BSS.
+	
+	\item \textbf{DS (Distribution System)}
+	\vspace{.2cm} \\
+	It interconnects BSSs.
+	
+	\item \textbf{IBSS (Independent Basic Service Set)}
+	\vspace{.2cm} \\
+	It is comprised of one or more STAs which communicate directly with each other.
+	
+	\item \textbf{ESS (Extended Service Set)}
+	\vspace{.2cm} \\
+	Is one or more interconnected BSSs
+\end{itemize}
+
+\subsubsection{Operating Modes}
+There are two possible modes of operations:
+
+\begin{itemize}
+	\item \textbf{Infrastructure Mode}
+	\vspace{.2cm}
+	Here STAs are connected wirelessly to an AP, forming a BSS.
+	
+	\item \textbf{Ad Hoc Mode}
+	\vspace{.2cm} \\
+	Here STAs are directly connected to each other, forming a IBSS.
+\end{itemize}
+
+\subsubsection{SSID (Service Set IDentifier)}
+A SSID, identifies the wireless network. The SSID is a name configured on the wireless AP or an initial wireless client that identifies the wireless network. The SSID is periodically advertised by the wireless AP or the initial wireless client using a special 802.11 MAC management frame -- known as the \textbf{beacon frame}.
+
+\subsection{RSSI (Received Signal Strength Indicator)}
+The RSSI measures the strength of the signal that arrives at the receiver. It can be computed with the following formula:
+
+\[ RSSI = 10 log_{10}(\frac{P_rx}{1~mW}) \] \\
+The value of the RSSI may vary depending on several factors, such as:
+
+\begin{itemize}
+	\item \textbf{Transmission power}
+	\item \textbf{Multipath effects}
+	\item \textbf{Presence of obstacles}
+	\item \textbf{Antennas not being isotropic}
+	\vspace{.2cm} \\	
+	Different values are measured in different directions)
+\end{itemize}
+
+\subsection{IEEE 802.11 MAC}
+\subsubsection{Acknowledgments}
+When the destination host receives a frame, it checks the CRC of that frame. \\ \\
+If the CRC check \textbf{passes}, then the destination host waits a short time -- called SIFS (Short Inter-Frame Spacing), and finally sends a link-layer acknowledgment to the source. \\ \\
+If the CRC check \textbf{does not pass}, then the destination discards the frame and does not send an acknowledgment. The source then re-sends the frame after a timeout.
+
+\subsubsection{CSMA/CA}
+Before sending a packet, the transmitter checks if the wireless channel is free or busy. \\ \\
+If the channel is \textbf{free}, then the transmitter waits for a short time -- called DIFS (Distributed Inter-Frame Space), and finally sends the packet. \\ \\
+If the channel is \textbf{busy}, then the transmitter uses binary exponential back-off to calculate when to resend the packet. \\ \\
+There are two collision issues with wireless networks:
+
+\begin{itemize}
+	\item \textbf{Hidden Terminal Problem}
+	\vspace{.2cm} \\
+	This happens when two hosts cannot directly hear each other, but their signal might still be able to collide.
+	
+	\item \textbf{Exposed Terminal Problem}
+	\vspace{.2cm} \\
+	This happens when a host can overhear another host, but the overhearing host should not hamper the host to communicate.
+\end{itemize}
+
+\subsubsection{RTS/CTS Handshake}
+An \textbf{RTS} (Request To Send) message is sent by a STA to an AP. It includes a field that indicates the length of the packet to transmit. \\ \\
+To the RTS message, the AP sends back a \textbf{CTS} (Clear To Send) message. This message lets the STA know it can initialize the transfer, and any other STAs now know one STA is transmitting and for how long. \\ \\
+All STAs must wait for an \textbf{ACK} message sent by the AP in order to try/re-try to transmit.
+
+\subsubsection{RTS Collisions}
+It might happen that an RTS packet sent from two or more STAs collide. \\ \\
+An RTS may also hamper the reception of a CTS packet. A solution is to make the CTS packets longer than the RTS packets -- in this way, collisions are detected.
+
+\subsubsection{MAC Frame Format}
+The IEEE 802.11 MAC frame can be graphically represented as such: \\ \\
+
+\noindent  \includegraphics[width=12.5 cm]{./assets/wifi-mac.png}
+\vspace{.4cm}
+Some fields are:
+
+\begin{itemize}
+	\item \textbf{Duration/ID}
+	\vspace{.2cm} \\
+	Used to indicate the remaining duration needed to receive the next frame transmission.
+	
+	\item \textbf{Address Fields}
+	\vspace{.2cm} \\
+	Depending upon the frame type, the four address fields will contain a combination of the following address types: \textbf{BSSID} (BSS IDentifier), \textbf{DA} (Destination Address), \textbf{SA} (Source Address), \textbf{RA} (Receiver Address) and \textbf{TA} (Transmitter Address)
+	
+	\item \textbf{Sequence Control}
+	\vspace{.2cm} \\
+	Indicates the sequence and fragment numbers of each frame.
+	
+	\item \textbf{Frame Body}
+	\vspace{.2cm} \\
+	It contains information from the higher levels.
+	
+	\item \textbf{FCS}
+	\vspace{.2cm} \\
+	It allows for integrity check of frames.
+\end{itemize}
+
+\subsection{Beaconing}
+\textbf{Beacons} are broadcast messages that contain information about a Wi-Fi access point, such as:
+
+\begin{itemize}
+	\item \textbf{MAC Address}
+	\item \textbf{SSID}
+	\item \textbf{Operation Mode}
+	\item \textbf{Active Channel}
+	\item ...
+\end{itemize}
+An AP sends beacons at regular time intervals. Each AP transmits on a specific channel. The host maintains a list of all available access points and selects one to associate with.
+
 
 % -----------
 %  EXERCISES
@@ -1966,201 +2109,201 @@ The Wi-Fi alliance is a "global non-profit association with the goal of driving 
 
 \newpage
 
-\section{APPENDIX C - Exercises}
+%\section{APPENDIX C - Exercises}
+%
+%\subsection{Chapter 1}
+%\subsubsection{Circuit Switching}
+%Consider the circuit-switched network shown in the figure below, with circuit switches A, B, C, and D. Suppose there are 16 circuits between A and B, 11 circuits between B and C, 14 circuits between C and D, and 13 circuits between D and A. \\
+%
+% 
+%\centerline{\includegraphics[width=8cm]{assets/ex1.png}}
+%\noindent Questions and answers:
+%
+%\begin{itemize}
+%	\item What is the maximum number of connections that can be ongoing in the network at any one time? - \textbf{54 (it is the sum of all the circuits)}
+%	\item Suppose that these maximum number of connections are all ongoing. What happens when another call connection request arrives to the network, will it be accepted? - \textbf{No (There are no free circuits available)}
+%	\item Suppose that every connection requires 2 consecutive hops, and calls are connected clockwise. For example, a connection can go from A to C, from B to D, from C to A, and from D to B. With these constraints, what is the is the maximum number of connections that can be ongoing in the network at any one time? - \textbf{11 + 13 = 24 (which are the sums of the minimum between ADC and ABC)}
+%	\item Suppose that 12 connections are needed from A to C, and 12 connections are needed from B to D. Can we route these calls through the four links to accommodate all 24 connections? - \textbf{Yes (ADC = 12 connections occupied and 1 connection AB free; BCD = 11 connections occupied, BAD = 1 connection occupied)}
+%\end{itemize}
+%
+%\subsubsection{Packet Switching and Circuit Switching}
+%A circuit-switching scenario in which  N$_{cs}$  users, each requiring a bandwidth of 25 Mbps, must share a link of capacity 200 Mbps. \\ \\
+%A packet-switching scenario with  N$_{ps}$  users sharing a 200 Mbps link, where each user again requires 25 Mbps when transmitting, but only needs to transmit 30 percent of the time. \\
+%
+%\centerline{\includegraphics[width=8cm]{./assets/ex2}}
+%\noindent Questions and answers:
+%
+%\begin{itemize}
+%	\item When circuit switching is used, what is the maximum number of users that can be supported? - \textbf{200 / 25 = 8 (connection speed divided by the bandwidth for each user)}
+%	\item Suppose packet switching is used. If there are 15 packet-switching users, can this many users be supported under circuit-switching? - \textbf{No (15 $\textgreater$ 8)}
+%	\item When one user is transmitting, what fraction of the link capacity will be used by this user? Write your answer as a decimal. - \textbf{25 / 200 = 1 / 8 = 0.125 (bandwidth divided by the connection speed)}
+%\end{itemize}
+%
+%\subsubsection{One-Hop Transmission Delay}
+%Consider the figure below, in which a single router is transmitting packets, each of length L bits, over a single link with transmission rate R Mbps to another router at the other end of the link. \\ \\
+%Suppose that the packet length is L = 4000 bits, and that the link transmission rate along the link to router on the right is R = 1000 Mbps. \\
+%
+%\centerline{\includegraphics[width=8cm]{./assets/ex3}}
+%\noindent Questions and answers:
+%
+%\begin{itemize}
+%	\item What is the transmission delay? - \textbf{L / R = 0.000004 ms}
+%	\item What is the maximum number of packets per second that can be transmitted by this link? - \textbf{R / L = 250000 packets}
+%\end{itemize}
+%
+%\subsubsection{Queuing Delay}
+%Consider the queuing delay in a router buffer, where the packet experiences a delay as it waits to be transmitted onto the link. The length of the queuing delay of a specific packet will depend on the number of earlier-arriving packets that are queued and waiting for transmission onto the link. If the queue is empty and no other packet is currently being transmitted, then our packet’s queuing delay will be zero. On the other hand, if the traffic is heavy and many other packets are also waiting to be transmitted, the queuing delay will be long. \\ \\
+%Assume a constant transmission rate of R = 1800000 bps, a constant packet-length L = 2400 bits, and a is the average rate of packets/second. Traffic intensity I = La / R, and the queuing delay is calculated as I(L / R)(1 - I). \\
+%
+%\noindent Questions and answers:
+%
+%\begin{itemize}
+%	\item In practice, does the queuing delay tend to vary a lot? - \textbf{Yes}
+%	\item Assuming that a = 24000, what is the queuing delay? - \textbf{(La / R) * (L / R) * (1 - (La / R)) * 1000 = 0.032 * (2400 / 1800000) * (1 - 0.032) * 1000 = 0.0413 ms}
+%	\item Assuming that a = 84, what is the queuing delay? - \textbf{(La / R) * (L / R) * (1 - (La / R)) * 1000 = 0.112 * (2400 / 1800000) * (1 - 0.112) * 1000 = 0.133 ms}
+%	\item Assuming the router's buffer is infinite, the queuing delay is 0.1326 ms, and 1443 packets arrive. How many packets will be in the buffer 1 second later? - \textbf{a - floor(1000/delay) = 1443 - floor(1000/0.1326) = 0 packets}
+%	\item If the buffer has a maximum size of 706 packets, how many of the 1443 packets would be dropped upon arrival from the previous question? - \textbf{1443 - 706 = 737}
+%\end{itemize}
+%
+%\subsubsection{End-to-End Delay}
+%Consider the figure below, with three links, each with the specified transmission rate and link length. \\
+%
+%\centerline{\includegraphics[width=8cm]{./assets/ex4}} \
+%
+%\noindent Consider the figure below, with three links, each with the specified transmission rate and link length.
+%Assume the length of a packet is 4000 bits. The speed of light propagation delay on each link is 3x10$^8$ m/sec. \\
+%
+%\noindent Questions and answers:
+%
+%\begin{itemize}
+%	\item What is the transmission delay of link 1? - \textbf{L / R = 0.004 / 1000 = 0.000004 ms}
+%	\item What is the propagation delay of link 1? - \textbf{d / s = 2000 / 300000000 = 0.00000667 ms}
+%	\item What is the total delay of link 1? - \textbf{0.000004 + 0.00000667 = 0.00001067 ms}
+%	\item What is the transmission delay of link 2? - \textbf{L / R = 0.004 / 1 = 0.004 ms}
+%	\item What is the propagation delay of link 2? - \textbf{d / s = 5000000 / 300000000 = 0.01666667 ms}
+%	\item What is the total delay of link 2? - \textbf{0.004 + 0.01666667 = 0.02066667 ms}
+%	\item What is the transmission delay of link 3? - \textbf{L / R = 0.004 / 1000 = 0.000004 ms}
+%	\item What is the propagation delay of link 3? - \textbf{d / s = 1000 / 300000000 = 0.00000333 ms}
+%	\item What is the total delay of link 3? - \textbf{0.000004 + 0.00000333 = 0.00000733 ms}
+%	\item What is the total delay? - \textbf{0.00001067 + 0.02066667 + 0.00000733 = 0.02068467 ms}
+%\end{itemize}
+%
+%\subsubsection{End-to-End Throughput}
+%Consider the scenario shown below, with four different servers connected to four different clients over four three-hop paths. The four pairs share a common middle hop with a transmission capacity of R = 400 Mbps. The four links from the servers to the shared link have a transmission capacity of R$_S$ = 40 Mbps. Each of the four links from the shared middle link to a client has a transmission capacity of R$_C$ = 70 Mbps. \\
+%
+%\centerline{\includegraphics[width=8cm]{./assets/ex5}}
+%
+%\noindent Questions and answers:
+%
+%\begin{itemize}
+%	\item What is the maximum achievable end-end throughput (in Mbps) for each of four client-to-server pairs, assuming that the middle link is fairly shared (divides its transmission rate equally)? - \textbf{50 Mbps}
+%	\item Which link is the bottleneck link? - \textbf{R$_S$}
+%	\item Assuming that the servers are sending at the maximum rate possible, what are the link utilisation for the server links (R$_S$)? - \textbf{R bottleneck / R$_S$ = 1}
+%	\item Assuming that the servers are sending at the maximum rate possible, what are the link utilisation for the client links (R$_C$)? - \textbf{R bottleneck / R$_C$ = 0.5714}
+%	\item Assuming that the servers are sending at the maximum rate possible, what is the link utilisation for the shared link (R)? - \textbf{R bottleneck / (R / 4) = 0.4}
+%\end{itemize}
+%
+%\subsection{Chapter 2}
+%\subsubsection{DNS -- Basics}
+%Imagine that you are trying to visit www.enterprise.com, but you don't remember the IP address the web-server is running on.
+%Assume the following records are on the TLD DNS server:
+%
+%\begin{itemize}
+%	\item (www.enterprise.com, dns.enterprise.com, NS)
+%	\item (dns.enterprise.com, 146.54.102.239, A)
+%\end{itemize}
+%Assume the following records are on the enterprise.com DNS server:
+%
+%\begin{itemize}
+%	\item (www.enterprise.com, west3.enterprise.com, CNAME)
+%	\item (west3.enterprise.com, 142.81.17.206, A)
+%	\item (www.enterprise.com, mail.enterprise.com, MX)
+%	\item (mail.enterprise.com, 247.29.55.224, A)
+%\end{itemize}
+%Assume your local DNS server only has the TLD DNS server cached. \\
+%
+%\centerline{\includegraphics[width=6cm]{assets/ex6}}
+%\noindent Questions and answers:
+%
+%\begin{itemize}
+%	\item What transport protocol(s) does DNS use: TCP, UDP, or Both? - \textbf{Both}
+%	\item What well-known port does DNS use? - \textbf{53}
+%	\item How many types of Resource Records (RR) are there? \textbf{4}
+%	\item Can you send multiple DNS questions and get multiple RR answers in one message? - \textbf{Yes}
+%	\item To which DNS server does a host send their requests to? - \textbf{Local DNS server}
+%	\item Which type of DNS server holds a company's DNS records? - \textbf{Authoritative DNS server}
+%	\item In the example given in the problem, what is the address of the DNS server for enterprise.com? - \textbf{dns.enterprise.com}
+%	\item When you make the request for www.enterprise.com, your local DNS requests the IP on your behalf. When it contacts the TLD server, how many answers (RR) are returned? - \textbf{2 (a NS record, and an A record)}
+%	\item In the previous question, there were two responses, one was a NS record and the other an A record. What was the content of the A record? - \textbf{dns.enterprise.com, 146.54.102.239}
+%	\item Assume that the enterprise.com website is actually hosted on west3.enterprise.com, what type of record is needed for this? - \textbf{CNAME record}
+%	\item Now imagine we are trying to send an email to admin@enterprise.com, and their mail server has the address mail.enterprise.com. What type of record will we receive? - \textbf{MX record}
+%	\item In that MX record, what are the contents? - \textbf{www.enterprise.com, mail.enterprise.com}
+%	\item Does your local DNS server take advantage of caching similar to web requests? - \textbf{Yes (the retrieval of content is faster)}
+%\end{itemize}
+%
+%\subsubsection{DNS -- Iterative vs Recursive}
+%Assume that a user is trying to visit gaia.cs.umass.edu, but his browser doesn't know the IP address of the website. In this example, examine the difference between an iterative and recursive DNS query. \\
+%
+%\centerline{\includegraphics[width=12cm]{assets/ex7}}
+%\noindent Questions and answers: \\
+%
+%\textbf{Iterative}
+%\begin{itemize}
+%	\item Between steps 1 and 2, where does the Local DNS server check first? - \textbf{DNS Root server}
+%	\item Between steps 2 and 3, assuming the root DNS server doesn't have the IP we want, where does the response link? - \textbf{DNS TLD server}
+%	\item Between steps 4 and 5, assuming the TLD DNS server doesn't have the IP we want, where does the response link? - \textbf{DNS Authoritative server}
+%	\item Between steps 6 and 7, the authoritative DNS server responds with the IP we want. What type of DNS record is returned? - \textbf{A}
+%	\item Which type of query is considered best practice: iterative or recursive? - \textbf{Iterative}
+%\end{itemize}
+%
+%\textbf{Recursive}
+%\begin{itemize}
+%	\item Between steps 1 and 2, where does the Local DNS server check first? - \textbf{DNS Root server}
+%	\item Between steps 2 and 3, where does the root DNS forward the request to? - \textbf{DNS TLD server}
+%	\item Between steps 4 and 5, where does the authoritative DNS forward the response to? - \textbf{DNS TLD server}
+%	\item In steps 6-8, the response is sent back in the reverse direction until it reaches the user. What type of DNS record is returned? - \textbf{A}
+%\end{itemize}
+%
+%\subsubsection{DNS and HTTP Delays}
+%Suppose within your Web browser you click on a link to obtain a Web page. The IP address for the associated URL is not cached in your local host, so a DNS lookup is necessary to obtain the IP address. Suppose that four DNS servers are visited before your host receives the IP address from DNS. The first DNS server visited is the local DNS cache, with an RTT delay of RTT0 = 1 ms. The second, third and fourth DNS servers contacted have RTTs of 21, 1, and 11 ms, respectively. Initially, let's suppose that the Web page associated with the link contains exactly one object, consisting of a small amount of HTML text. Suppose the RTT between the local host and the Web server containing the object is RTT$_{HTTP}$ = 3 ms. \\
+%
+%\noindent Questions and answers:
+%
+%\begin{itemize}
+%	\item Assuming zero transmission time for the HTML object, how much time (in ms) elapses from when the client clicks on the link until the client receives the object? - \textbf{1 + 21 + 1 + 11 + 6 = 40ms}
+%	\item Now suppose the HTML object references 9 very small objects on the same server. Neglecting transmission times, how much time (in ms) elapses from when the client clicks on the link until the base object and all 9 additional objects are received from web server at the client, assuming non-persistent HTTP and no parallel TCP connections? - \textbf{1 + 21 + 1 + 11 + (10 * 6) = 94 ms}
+%	\item Suppose the HTML object references 9 very small objects on the same server, but assume that the client is configured to support a maximum of 5 parallel TCP connections, with non-persistent HTTP. - \textbf{1 + 21 + 1 + 11 + (3 * 6) = 52 ms}
+%	\item Suppose the HTML object references 9 very small objects on the same server, but assume that the client is configured to support a maximum of 5 parallel TCP connections, with persistent HTTP. \textbf{1 + 21 + 1 + 11 + 6 + (3 * 6) = 46 ms}
+%	\item What's the fastest method we've explored: Non-persistent-serial, Non-persistent-parallel, or Persistent-parallel? - \textbf{Persistent parallel}
+%\end{itemize}
+%
+%\subsubsection{Browser Caching}
+%Consider an HTTP server and client as shown in the figure below. Suppose that the RTT delay between the client and server is 30 ms; the time a server needs to transmit an object into its outgoing link is 0.75 ms; and any other HTTP message not containing an object has a negligible (zero) transmission time. Suppose the client again makes 80 requests, one after the other, waiting for a reply to a request before sending the next request.
+%
+%\noindent Questions and answers:
+%
+%\begin{itemize}
+%	\item How much time elapses (in milliseconds) between the client transmitting the first request, and the completion of the last request? - \textbf{(30 * 80) + (80 * ((100-40) / 100) * 0.75) = 2436 ms ((RTT * NUM-PACKETS) + (NUM-PACKETS * (PERCENT-NOT-CACHED / 100) * TRANS-DELAY)}
+%\end{itemize}
+%
+%\subsubsection{Client-Server and P2P File Distribution Delays}
+%The problem is to distribute a file of size F = 6 Gbits to each of these 8 peers. Suppose the server has an upload rate of u = 72 Mbps. \\ \\
+%The 8 peers have upload rates of: u1 = 16 Mbps, u2 = 20 Mbps, u3 = 24 Mbps, u4 = 19 Mbps, u5 = 21 Mbps, u6 = 25 Mbps, u7 = 15 Mbps, and u8 = 22 Mbps \\ \\ 
+%The 8 peers have download rates of: d1 = 27 Mbps, d2 = 25 Mbps, d3 = 11 Mbps, d4 = 10 Mbps, d5 = 10 Mbps, d6 = 15 Mbps, d7 = 32 Mbps, and d8 = 33 Mbps \\
+%
+%\centerline{\includegraphics[width=10cm]{assets/ex9}}
+%\noindent Questions and answers:
+%
+%\begin{itemize}
+%	\item What is the minimum time needed to distribute this file from the central server to the 8 peers using the client-server model? - \textbf{D$_{CS}$ = max\{NF / us , F / dmin\} = max\{666.67 , 600\} = 666.67 s}
+%    \item For the previous question, what is the root cause of this specific minimum time? Answer as 's' or 'ci' where 'i' is the client's number - \textbf{s}
+%    \item What is the minimum time needed to distribute this file using peer-to-peer download? - \textbf{D2P = max\{F / us , F / dmin , NF / us + $\Sigma$(i=1, N) ui\} = max\{83.3, 600, 296, 296\} = 600 s}
+%    \item For question 3, what is the root case of this specific minimum time: the server (s), client (c), or the combined upload of the clients and the server (cu)? - \textbf{c}
+%\end{itemize}
 
-\subsection{Chapter 1}
-\subsubsection{Circuit Switching}
-Consider the circuit-switched network shown in the figure below, with circuit switches A, B, C, and D. Suppose there are 16 circuits between A and B, 11 circuits between B and C, 14 circuits between C and D, and 13 circuits between D and A. \\
+%\newpage
 
- 
-\centerline{\includegraphics[width=8cm]{assets/ex1.png}}
-\noindent Questions and answers:
-
-\begin{itemize}
-	\item What is the maximum number of connections that can be ongoing in the network at any one time? - \textbf{54 (it is the sum of all the circuits)}
-	\item Suppose that these maximum number of connections are all ongoing. What happens when another call connection request arrives to the network, will it be accepted? - \textbf{No (There are no free circuits available)}
-	\item Suppose that every connection requires 2 consecutive hops, and calls are connected clockwise. For example, a connection can go from A to C, from B to D, from C to A, and from D to B. With these constraints, what is the is the maximum number of connections that can be ongoing in the network at any one time? - \textbf{11 + 13 = 24 (which are the sums of the minimum between ADC and ABC)}
-	\item Suppose that 12 connections are needed from A to C, and 12 connections are needed from B to D. Can we route these calls through the four links to accommodate all 24 connections? - \textbf{Yes (ADC = 12 connections occupied and 1 connection AB free; BCD = 11 connections occupied, BAD = 1 connection occupied)}
-\end{itemize}
-
-\subsubsection{Packet Switching and Circuit Switching}
-A circuit-switching scenario in which  N$_{cs}$  users, each requiring a bandwidth of 25 Mbps, must share a link of capacity 200 Mbps. \\ \\
-A packet-switching scenario with  N$_{ps}$  users sharing a 200 Mbps link, where each user again requires 25 Mbps when transmitting, but only needs to transmit 30 percent of the time. \\
-
-\centerline{\includegraphics[width=8cm]{./assets/ex2}}
-\noindent Questions and answers:
-
-\begin{itemize}
-	\item When circuit switching is used, what is the maximum number of users that can be supported? - \textbf{200 / 25 = 8 (connection speed divided by the bandwidth for each user)}
-	\item Suppose packet switching is used. If there are 15 packet-switching users, can this many users be supported under circuit-switching? - \textbf{No (15 $\textgreater$ 8)}
-	\item When one user is transmitting, what fraction of the link capacity will be used by this user? Write your answer as a decimal. - \textbf{25 / 200 = 1 / 8 = 0.125 (bandwidth divided by the connection speed)}
-\end{itemize}
-
-\subsubsection{One-Hop Transmission Delay}
-Consider the figure below, in which a single router is transmitting packets, each of length L bits, over a single link with transmission rate R Mbps to another router at the other end of the link. \\ \\
-Suppose that the packet length is L = 4000 bits, and that the link transmission rate along the link to router on the right is R = 1000 Mbps. \\
-
-\centerline{\includegraphics[width=8cm]{./assets/ex3}}
-\noindent Questions and answers:
-
-\begin{itemize}
-	\item What is the transmission delay? - \textbf{L / R = 0.000004 ms}
-	\item What is the maximum number of packets per second that can be transmitted by this link? - \textbf{R / L = 250000 packets}
-\end{itemize}
-
-\subsubsection{Queuing Delay}
-Consider the queuing delay in a router buffer, where the packet experiences a delay as it waits to be transmitted onto the link. The length of the queuing delay of a specific packet will depend on the number of earlier-arriving packets that are queued and waiting for transmission onto the link. If the queue is empty and no other packet is currently being transmitted, then our packet’s queuing delay will be zero. On the other hand, if the traffic is heavy and many other packets are also waiting to be transmitted, the queuing delay will be long. \\ \\
-Assume a constant transmission rate of R = 1800000 bps, a constant packet-length L = 2400 bits, and a is the average rate of packets/second. Traffic intensity I = La / R, and the queuing delay is calculated as I(L / R)(1 - I). \\
-
-\noindent Questions and answers:
-
-\begin{itemize}
-	\item In practice, does the queuing delay tend to vary a lot? - \textbf{Yes}
-	\item Assuming that a = 24000, what is the queuing delay? - \textbf{(La / R) * (L / R) * (1 - (La / R)) * 1000 = 0.032 * (2400 / 1800000) * (1 - 0.032) * 1000 = 0.0413 ms}
-	\item Assuming that a = 84, what is the queuing delay? - \textbf{(La / R) * (L / R) * (1 - (La / R)) * 1000 = 0.112 * (2400 / 1800000) * (1 - 0.112) * 1000 = 0.133 ms}
-	\item Assuming the router's buffer is infinite, the queuing delay is 0.1326 ms, and 1443 packets arrive. How many packets will be in the buffer 1 second later? - \textbf{a - floor(1000/delay) = 1443 - floor(1000/0.1326) = 0 packets}
-	\item If the buffer has a maximum size of 706 packets, how many of the 1443 packets would be dropped upon arrival from the previous question? - \textbf{1443 - 706 = 737}
-\end{itemize}
-
-\subsubsection{End-to-End Delay}
-Consider the figure below, with three links, each with the specified transmission rate and link length. \\
-
-\centerline{\includegraphics[width=8cm]{./assets/ex4}} \
-
-\noindent Consider the figure below, with three links, each with the specified transmission rate and link length.
-Assume the length of a packet is 4000 bits. The speed of light propagation delay on each link is 3x10$^8$ m/sec. \\
-
-\noindent Questions and answers:
-
-\begin{itemize}
-	\item What is the transmission delay of link 1? - \textbf{L / R = 0.004 / 1000 = 0.000004 ms}
-	\item What is the propagation delay of link 1? - \textbf{d / s = 2000 / 300000000 = 0.00000667 ms}
-	\item What is the total delay of link 1? - \textbf{0.000004 + 0.00000667 = 0.00001067 ms}
-	\item What is the transmission delay of link 2? - \textbf{L / R = 0.004 / 1 = 0.004 ms}
-	\item What is the propagation delay of link 2? - \textbf{d / s = 5000000 / 300000000 = 0.01666667 ms}
-	\item What is the total delay of link 2? - \textbf{0.004 + 0.01666667 = 0.02066667 ms}
-	\item What is the transmission delay of link 3? - \textbf{L / R = 0.004 / 1000 = 0.000004 ms}
-	\item What is the propagation delay of link 3? - \textbf{d / s = 1000 / 300000000 = 0.00000333 ms}
-	\item What is the total delay of link 3? - \textbf{0.000004 + 0.00000333 = 0.00000733 ms}
-	\item What is the total delay? - \textbf{0.00001067 + 0.02066667 + 0.00000733 = 0.02068467 ms}
-\end{itemize}
-
-\subsubsection{End-to-End Throughput}
-Consider the scenario shown below, with four different servers connected to four different clients over four three-hop paths. The four pairs share a common middle hop with a transmission capacity of R = 400 Mbps. The four links from the servers to the shared link have a transmission capacity of R$_S$ = 40 Mbps. Each of the four links from the shared middle link to a client has a transmission capacity of R$_C$ = 70 Mbps. \\
-
-\centerline{\includegraphics[width=8cm]{./assets/ex5}}
-
-\noindent Questions and answers:
-
-\begin{itemize}
-	\item What is the maximum achievable end-end throughput (in Mbps) for each of four client-to-server pairs, assuming that the middle link is fairly shared (divides its transmission rate equally)? - \textbf{50 Mbps}
-	\item Which link is the bottleneck link? - \textbf{R$_S$}
-	\item Assuming that the servers are sending at the maximum rate possible, what are the link utilisation for the server links (R$_S$)? - \textbf{R bottleneck / R$_S$ = 1}
-	\item Assuming that the servers are sending at the maximum rate possible, what are the link utilisation for the client links (R$_C$)? - \textbf{R bottleneck / R$_C$ = 0.5714}
-	\item Assuming that the servers are sending at the maximum rate possible, what is the link utilisation for the shared link (R)? - \textbf{R bottleneck / (R / 4) = 0.4}
-\end{itemize}
-
-\subsection{Chapter 2}
-\subsubsection{DNS -- Basics}
-Imagine that you are trying to visit www.enterprise.com, but you don't remember the IP address the web-server is running on.
-Assume the following records are on the TLD DNS server:
-
-\begin{itemize}
-	\item (www.enterprise.com, dns.enterprise.com, NS)
-	\item (dns.enterprise.com, 146.54.102.239, A)
-\end{itemize}
-Assume the following records are on the enterprise.com DNS server:
-
-\begin{itemize}
-	\item (www.enterprise.com, west3.enterprise.com, CNAME)
-	\item (west3.enterprise.com, 142.81.17.206, A)
-	\item (www.enterprise.com, mail.enterprise.com, MX)
-	\item (mail.enterprise.com, 247.29.55.224, A)
-\end{itemize}
-Assume your local DNS server only has the TLD DNS server cached. \\
-
-\centerline{\includegraphics[width=6cm]{assets/ex6}}
-\noindent Questions and answers:
-
-\begin{itemize}
-	\item What transport protocol(s) does DNS use: TCP, UDP, or Both? - \textbf{Both}
-	\item What well-known port does DNS use? - \textbf{53}
-	\item How many types of Resource Records (RR) are there? \textbf{4}
-	\item Can you send multiple DNS questions and get multiple RR answers in one message? - \textbf{Yes}
-	\item To which DNS server does a host send their requests to? - \textbf{Local DNS server}
-	\item Which type of DNS server holds a company's DNS records? - \textbf{Authoritative DNS server}
-	\item In the example given in the problem, what is the address of the DNS server for enterprise.com? - \textbf{dns.enterprise.com}
-	\item When you make the request for www.enterprise.com, your local DNS requests the IP on your behalf. When it contacts the TLD server, how many answers (RR) are returned? - \textbf{2 (a NS record, and an A record)}
-	\item In the previous question, there were two responses, one was a NS record and the other an A record. What was the content of the A record? - \textbf{dns.enterprise.com, 146.54.102.239}
-	\item Assume that the enterprise.com website is actually hosted on west3.enterprise.com, what type of record is needed for this? - \textbf{CNAME record}
-	\item Now imagine we are trying to send an email to admin@enterprise.com, and their mail server has the address mail.enterprise.com. What type of record will we receive? - \textbf{MX record}
-	\item In that MX record, what are the contents? - \textbf{www.enterprise.com, mail.enterprise.com}
-	\item Does your local DNS server take advantage of caching similar to web requests? - \textbf{Yes (the retrieval of content is faster)}
-\end{itemize}
-
-\subsubsection{DNS -- Iterative vs Recursive}
-Assume that a user is trying to visit gaia.cs.umass.edu, but his browser doesn't know the IP address of the website. In this example, examine the difference between an iterative and recursive DNS query. \\
-
-\centerline{\includegraphics[width=12cm]{assets/ex7}}
-\noindent Questions and answers: \\
-
-\textbf{Iterative}
-\begin{itemize}
-	\item Between steps 1 and 2, where does the Local DNS server check first? - \textbf{DNS Root server}
-	\item Between steps 2 and 3, assuming the root DNS server doesn't have the IP we want, where does the response link? - \textbf{DNS TLD server}
-	\item Between steps 4 and 5, assuming the TLD DNS server doesn't have the IP we want, where does the response link? - \textbf{DNS Authoritative server}
-	\item Between steps 6 and 7, the authoritative DNS server responds with the IP we want. What type of DNS record is returned? - \textbf{A}
-	\item Which type of query is considered best practice: iterative or recursive? - \textbf{Iterative}
-\end{itemize}
-
-\textbf{Recursive}
-\begin{itemize}
-	\item Between steps 1 and 2, where does the Local DNS server check first? - \textbf{DNS Root server}
-	\item Between steps 2 and 3, where does the root DNS forward the request to? - \textbf{DNS TLD server}
-	\item Between steps 4 and 5, where does the authoritative DNS forward the response to? - \textbf{DNS TLD server}
-	\item In steps 6-8, the response is sent back in the reverse direction until it reaches the user. What type of DNS record is returned? - \textbf{A}
-\end{itemize}
-
-\subsubsection{DNS and HTTP Delays}
-Suppose within your Web browser you click on a link to obtain a Web page. The IP address for the associated URL is not cached in your local host, so a DNS lookup is necessary to obtain the IP address. Suppose that four DNS servers are visited before your host receives the IP address from DNS. The first DNS server visited is the local DNS cache, with an RTT delay of RTT0 = 1 ms. The second, third and fourth DNS servers contacted have RTTs of 21, 1, and 11 ms, respectively. Initially, let's suppose that the Web page associated with the link contains exactly one object, consisting of a small amount of HTML text. Suppose the RTT between the local host and the Web server containing the object is RTT$_{HTTP}$ = 3 ms. \\
-
-\noindent Questions and answers:
-
-\begin{itemize}
-	\item Assuming zero transmission time for the HTML object, how much time (in ms) elapses from when the client clicks on the link until the client receives the object? - \textbf{1 + 21 + 1 + 11 + 6 = 40ms}
-	\item Now suppose the HTML object references 9 very small objects on the same server. Neglecting transmission times, how much time (in ms) elapses from when the client clicks on the link until the base object and all 9 additional objects are received from web server at the client, assuming non-persistent HTTP and no parallel TCP connections? - \textbf{1 + 21 + 1 + 11 + (10 * 6) = 94 ms}
-	\item Suppose the HTML object references 9 very small objects on the same server, but assume that the client is configured to support a maximum of 5 parallel TCP connections, with non-persistent HTTP. - \textbf{1 + 21 + 1 + 11 + (3 * 6) = 52 ms}
-	\item Suppose the HTML object references 9 very small objects on the same server, but assume that the client is configured to support a maximum of 5 parallel TCP connections, with persistent HTTP. \textbf{1 + 21 + 1 + 11 + 6 + (3 * 6) = 46 ms}
-	\item What's the fastest method we've explored: Non-persistent-serial, Non-persistent-parallel, or Persistent-parallel? - \textbf{Persistent parallel}
-\end{itemize}
-
-\subsubsection{Browser Caching}
-Consider an HTTP server and client as shown in the figure below. Suppose that the RTT delay between the client and server is 30 ms; the time a server needs to transmit an object into its outgoing link is 0.75 ms; and any other HTTP message not containing an object has a negligible (zero) transmission time. Suppose the client again makes 80 requests, one after the other, waiting for a reply to a request before sending the next request.
-
-\noindent Questions and answers:
-
-\begin{itemize}
-	\item How much time elapses (in milliseconds) between the client transmitting the first request, and the completion of the last request? - \textbf{(30 * 80) + (80 * ((100-40) / 100) * 0.75) = 2436 ms ((RTT * NUM-PACKETS) + (NUM-PACKETS * (PERCENT-NOT-CACHED / 100) * TRANS-DELAY)}
-\end{itemize}
-
-\subsubsection{Client-Server and P2P File Distribution Delays}
-The problem is to distribute a file of size F = 6 Gbits to each of these 8 peers. Suppose the server has an upload rate of u = 72 Mbps. \\ \\
-The 8 peers have upload rates of: u1 = 16 Mbps, u2 = 20 Mbps, u3 = 24 Mbps, u4 = 19 Mbps, u5 = 21 Mbps, u6 = 25 Mbps, u7 = 15 Mbps, and u8 = 22 Mbps \\ \\ 
-The 8 peers have download rates of: d1 = 27 Mbps, d2 = 25 Mbps, d3 = 11 Mbps, d4 = 10 Mbps, d5 = 10 Mbps, d6 = 15 Mbps, d7 = 32 Mbps, and d8 = 33 Mbps \\
-
-\centerline{\includegraphics[width=10cm]{assets/ex9}}
-\noindent Questions and answers:
-
-\begin{itemize}
-	\item What is the minimum time needed to distribute this file from the central server to the 8 peers using the client-server model? - \textbf{D$_{CS}$ = max\{NF / us , F / dmin\} = max\{666.67 , 600\} = 666.67 s}
-    \item For the previous question, what is the root cause of this specific minimum time? Answer as 's' or 'ci' where 'i' is the client's number - \textbf{s}
-    \item What is the minimum time needed to distribute this file using peer-to-peer download? - \textbf{D2P = max\{F / us , F / dmin , NF / us + $\Sigma$(i=1, N) ui\} = max\{83.3, 600, 296, 296\} = 600 s}
-    \item For question 3, what is the root case of this specific minimum time: the server (s), client (c), or the combined upload of the clients and the server (cu)? - \textbf{c}
-\end{itemize}
-
-\newpage
-
-\section{APPENDIX D - Useful Links}
+\section{APPENDIX C - Useful Links}
 \begin{itemize}
 	\item \textbf{Interactive Exercises}: \underline{\textit{\hyperlink{https://gaia.cs.umass.edu/kurose_ross/interactive/}{interactive end-of-chapter exercises}}}
 	\item \textbf{Unit converter}: \underline{\textit{\hyperlink{https://www.google.com/search?q=unit+converter}{google unit converter}}}
