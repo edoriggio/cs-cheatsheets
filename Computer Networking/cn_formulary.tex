@@ -1,0 +1,186 @@
+% Copyright 2021 Edoardo Riggio
+
+% Licensed under the Apache License, Version 2.0 (the "License");
+% you may not use this file except in compliance with the License.
+% You may obtain a copy of the License at
+
+% 	http://www.apache.org/licenses/LICENSE-2.0
+
+% Unless required by applicable law or agreed to in writing, software
+% distributed under the License is distributed on an "AS IS" BASIS,
+% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+% See the License for the specific language governing permissions and
+% limitations under the License.
+
+\documentclass{article}
+
+\usepackage{amsmath, graphicx, hyperref}
+\usepackage{fancyvrb, newverbs, xcolor}
+
+\definecolor{cverbbg}{gray}{0.93}
+
+\newenvironment{cverbatim}
+ {\SaveVerbatim{cverb}}
+ {\endSaveVerbatim
+  \flushleft\fboxrule=0pt\fboxsep=.5em
+  \colorbox{cverbbg}{\BUseVerbatim{cverb}}%
+  \endflushleft
+}
+
+\newenvironment{lcverbatim}
+ {\SaveVerbatim{cverb}}
+ {\endSaveVerbatim
+  \flushleft\fboxrule=0pt\fboxsep=.5em
+  \colorbox{cverbbg}{%
+    \makebox[\dimexpr\linewidth-2\fboxsep][l]{\BUseVerbatim{cverb}}%
+  }
+  \endflushleft
+}
+
+\newcommand{\ctexttt}[1]{\colorbox{cverbbg}{\texttt{#1}}}
+\newverbcommand{\cverb}
+  {\setbox\verbbox\hbox\bgroup}
+  {\egroup\colorbox{cverbbg}{\box\verbbox}}
+
+\begin{document}
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+        
+        \Huge
+        \textbf{Computer Networking Formulary}
+        
+        \vspace{0.5cm}
+        \LARGE
+        
+        \vspace{.5cm}
+        
+        Edoardo Riggio
+   		  \vspace{1.5cm}
+       
+        \vfill
+        
+        \today
+        
+        \vspace{.8cm}
+          \Large
+          Computer Networking - SP. 2021 \\
+        Computer Science\\
+        Universit\`{a} della Svizzera Italiana, Lugano\\
+        
+    \end{center}
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+
+\section{Computer Networking and the Internet}
+\subsection{Queuing Delay}
+\vspace{.3cm}
+\[ d_{queue} = \frac{L \cdot a}{R} \cdot \frac{L}{R} \cdot \left( 1 - \frac{L \cdot a}{R} \right) \] \\
+Where \textbf{L} is the length of the packet, \textbf{a} is the average rate of packets per second, and \textbf{R} is the transmission rate of the link.
+
+\subsection{Transmission Delay}
+\vspace{.3cm}
+\[ d_{transmission} = \frac{L}{R} \] \\
+Where \textbf{L} is the length of the packet, and \textbf{R} is the transmission rate of the link.
+
+\subsection{Propagation Delay}
+\vspace{.3cm}
+\[ d_{propagation} = \frac{d}{s} \] \\
+Where \textbf{d} is the length of the link, and \textbf{s} is the propagation speed of the link.
+
+\subsection{Nodal Delay}
+\vspace{.3cm}
+\[ d_{nodal} = d_{processing} + d_{queue} + d_{transmission} + d_{propagation} \]
+
+\subsection{End-to-End Delay}
+\vspace{.3cm}
+\[ d_{end-to-end} = N \cdot (d_{processing} + d_{queue} + d_{transmission} + d_{propagation}) \] \\
+Where \textbf{N} is the number of nodes. This can be used if all nodes have the same nodal delay.
+\[ d_{end-to-end} = \sum^N_1 d_{nodal~i} \] \\
+Where \textbf{N} is the number of nodes, and $d_{nodal~i}$ is the nodal delay of the $i$th node.
+
+\subsection{End-to-End Throughput}
+\vspace{.3cm}
+\[ t_{end-to-end} = \frac{F}{T} \] \\
+Where \textbf{F} is the length of the packet, and \textbf{T} is the transfer rate of the link.
+
+\section{Application Layer}
+\subsection{Client-Server File Distribution}
+\vspace{.3cm}
+\[ D_{CS} = \max \left\{ \frac{NF}{u_s}, \frac{F}{d_{min}} \right\} \] \\
+Where \textbf{F} is the length of the packet, \textbf{d} is the length of a link, \textbf{N} is the number of clients, $u_s$ is the server's upload rate.
+
+\subsection{P2P File Distribution}
+\vspace{.3cm}
+\[ D_{P2P} = \max \left\{ \frac{F}{u_s}, \frac{F}{d_{min}}, \frac{NF}{u_s + \sum^N_{i=1}u_i} \right\} \] \\
+Where \textbf{F} is the length of the packet, \textbf{d} is the length of a link, \textbf{N} is the number of peers, $u_s$ is the server's upload rate, and $u$ is the peer's upload rate.
+
+\section{Transport Layer}
+\subsection{Estimating the RTT}
+\vspace{.3cm}
+\[ RTT_{est} = (1 - \alpha) \cdot RTT_{est} + \alpha \cdot RTT_{sample} \] \\
+Where $RTT_{est}$ is the currently computed estimate, and $RTT_{sample}$ is the RTT measurement.
+
+\subsection{Estimating the Timeout}
+\vspace{.3cm}
+\[ T = RTT_{est} + 4 \cdot ((1-\beta) \cdot RTT_{dev} + \beta \cdot | RTT_{sample} - RTT_{est} |) \] \\
+Where $RTT_{est}$ is the currently computed estimate, and $RTT_{sample}$ is the RTT measurement.
+
+\section{Network Layer}
+\subsection{Output Port Queuing}
+\vspace{.3cm}
+\[ Buff = RTT \cdot \frac{C}{N} \] \\
+Where \textbf{C} is the link capacity, and \textbf{N} is the number of packets.
+
+\subsection{Weighted Fair Queuing}
+\vspace{.3cm}
+\[ W_a = \frac{W_i}{\sum_i i} \] \\
+Where \textbf{W} is the weight of the $i$th packet, and \textbf{i} is the number of the packet.
+
+\section{Link Layer}
+\subsection{Bit Errors}
+\vspace{.3cm}
+\[ BER = \frac{N_{err}}{N_{tot}} \] \\
+Where $N_{err}$ is the number of bit errors, and $N_{tot}$ is the number of bit errors.
+
+\subsection{Cyclic Redundancy Check}
+\vspace{.3cm}
+\[ R = (D \cdot 2^r) \% (G) \] \\
+Where \textbf{D} is a piece of data where a CRC field is added, \textbf{r} is the length of the CRC field, and \textbf{G} is the generator -- bit pattern of $r + 1$ bits.
+
+\section{Wireless Networks}
+\subsection{Power Difference}
+\vspace{.3cm}
+\[ P_{rx}(d) \approx \beta \cdot P_{tx} \cdot \frac{1}{d^\alpha} \] \\
+Where $P_{rx}$ is the received power, $\beta$ is the multiplicative attenuation factor, $P_{tx}$ is the transmitted power, \textbf{d} is the distance between transmitter and receiver, and $\alpha$ is the path loss exponent.
+
+\subsection{Received Signal Strength Indicator}
+\vspace{.3cm}
+\[ RSSI = 10~log_{10}\left(\frac{P_{rx}}{1~mW}\right) \] \\
+Where $P_{rx}$ is the received power
+
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
