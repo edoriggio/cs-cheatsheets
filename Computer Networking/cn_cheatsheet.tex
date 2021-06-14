@@ -2109,202 +2109,70 @@ An AP sends beacons at regular time intervals. Each AP transmits on a specific c
 
 \newpage
 
-%\section{APPENDIX C - Exercises}
-%
-%\subsection{Chapter 1}
+\section{APPENDIX C - Exercises}
 
-%
-%\subsection{Chapter 1}
-%\subsubsection{Circuit Switching}
-%Consider the circuit-switched network shown in the figure below, with circuit switches A, B, C, and D. Suppose there are 16 circuits between A and B, 11 circuits between B and C, 14 circuits between C and D, and 13 circuits between D and A. \\
-%
-% 
-%\centerline{\includegraphics[width=8cm]{assets/ex1.png}}
-%\noindent Questions and answers:
-%
-%\begin{itemize}
-%	\item What is the maximum number of connections that can be ongoing in the network at any one time? - \textbf{54 (it is the sum of all the circuits)}
-%	\item Suppose that these maximum number of connections are all ongoing. What happens when another call connection request arrives to the network, will it be accepted? - \textbf{No (There are no free circuits available)}
-%	\item Suppose that every connection requires 2 consecutive hops, and calls are connected clockwise. For example, a connection can go from A to C, from B to D, from C to A, and from D to B. With these constraints, what is the is the maximum number of connections that can be ongoing in the network at any one time? - \textbf{11 + 13 = 24 (which are the sums of the minimum between ADC and ABC)}
-%	\item Suppose that 12 connections are needed from A to C, and 12 connections are needed from B to D. Can we route these calls through the four links to accommodate all 24 connections? - \textbf{Yes (ADC = 12 connections occupied and 1 connection AB free; BCD = 11 connections occupied, BAD = 1 connection occupied)}
-%\end{itemize}
-%
-%\subsubsection{Packet Switching and Circuit Switching}
-%A circuit-switching scenario in which  N$_{cs}$  users, each requiring a bandwidth of 25 Mbps, must share a link of capacity 200 Mbps. \\ \\
-%A packet-switching scenario with  N$_{ps}$  users sharing a 200 Mbps link, where each user again requires 25 Mbps when transmitting, but only needs to transmit 30 percent of the time. \\
-%
-%\centerline{\includegraphics[width=8cm]{./assets/ex2}}
-%\noindent Questions and answers:
-%
-%\begin{itemize}
-%	\item When circuit switching is used, what is the maximum number of users that can be supported? - \textbf{200 / 25 = 8 (connection speed divided by the bandwidth for each user)}
-%	\item Suppose packet switching is used. If there are 15 packet-switching users, can this many users be supported under circuit-switching? - \textbf{No (15 $\textgreater$ 8)}
-%	\item When one user is transmitting, what fraction of the link capacity will be used by this user? Write your answer as a decimal. - \textbf{25 / 200 = 1 / 8 = 0.125 (bandwidth divided by the connection speed)}
-%\end{itemize}
-%
-%\subsubsection{One-Hop Transmission Delay}
-%Consider the figure below, in which a single router is transmitting packets, each of length L bits, over a single link with transmission rate R Mbps to another router at the other end of the link. \\ \\
-%Suppose that the packet length is L = 4000 bits, and that the link transmission rate along the link to router on the right is R = 1000 Mbps. \\
-%
-%\centerline{\includegraphics[width=8cm]{./assets/ex3}}
-%\noindent Questions and answers:
-%
-%\begin{itemize}
-%	\item What is the transmission delay? - \textbf{L / R = 0.000004 ms}
-%	\item What is the maximum number of packets per second that can be transmitted by this link? - \textbf{R / L = 250000 packets}
-%\end{itemize}
-%
-%\subsubsection{Queuing Delay}
-%Consider the queuing delay in a router buffer, where the packet experiences a delay as it waits to be transmitted onto the link. The length of the queuing delay of a specific packet will depend on the number of earlier-arriving packets that are queued and waiting for transmission onto the link. If the queue is empty and no other packet is currently being transmitted, then our packet’s queuing delay will be zero. On the other hand, if the traffic is heavy and many other packets are also waiting to be transmitted, the queuing delay will be long. \\ \\
-%Assume a constant transmission rate of R = 1800000 bps, a constant packet-length L = 2400 bits, and a is the average rate of packets/second. Traffic intensity I = La / R, and the queuing delay is calculated as I(L / R)(1 - I). \\
-%
-%\noindent Questions and answers:
-%
-%\begin{itemize}
-%	\item In practice, does the queuing delay tend to vary a lot? - \textbf{Yes}
-%	\item Assuming that a = 24000, what is the queuing delay? - \textbf{(La / R) * (L / R) * (1 - (La / R)) * 1000 = 0.032 * (2400 / 1800000) * (1 - 0.032) * 1000 = 0.0413 ms}
-%	\item Assuming that a = 84, what is the queuing delay? - \textbf{(La / R) * (L / R) * (1 - (La / R)) * 1000 = 0.112 * (2400 / 1800000) * (1 - 0.112) * 1000 = 0.133 ms}
-%	\item Assuming the router's buffer is infinite, the queuing delay is 0.1326 ms, and 1443 packets arrive. How many packets will be in the buffer 1 second later? - \textbf{a - floor(1000/delay) = 1443 - floor(1000/0.1326) = 0 packets}
-%	\item If the buffer has a maximum size of 706 packets, how many of the 1443 packets would be dropped upon arrival from the previous question? - \textbf{1443 - 706 = 737}
-%\end{itemize}
-%
-%\subsubsection{End-to-End Delay}
-%Consider the figure below, with three links, each with the specified transmission rate and link length. \\
-%
-%\centerline{\includegraphics[width=8cm]{./assets/ex4}} \
-%
-%\noindent Consider the figure below, with three links, each with the specified transmission rate and link length.
-%Assume the length of a packet is 4000 bits. The speed of light propagation delay on each link is 3x10$^8$ m/sec. \\
-%
-%\noindent Questions and answers:
-%
-%\begin{itemize}
-%	\item What is the transmission delay of link 1? - \textbf{L / R = 0.004 / 1000 = 0.000004 ms}
-%	\item What is the propagation delay of link 1? - \textbf{d / s = 2000 / 300000000 = 0.00000667 ms}
-%	\item What is the total delay of link 1? - \textbf{0.000004 + 0.00000667 = 0.00001067 ms}
-%	\item What is the transmission delay of link 2? - \textbf{L / R = 0.004 / 1 = 0.004 ms}
-%	\item What is the propagation delay of link 2? - \textbf{d / s = 5000000 / 300000000 = 0.01666667 ms}
-%	\item What is the total delay of link 2? - \textbf{0.004 + 0.01666667 = 0.02066667 ms}
-%	\item What is the transmission delay of link 3? - \textbf{L / R = 0.004 / 1000 = 0.000004 ms}
-%	\item What is the propagation delay of link 3? - \textbf{d / s = 1000 / 300000000 = 0.00000333 ms}
-%	\item What is the total delay of link 3? - \textbf{0.000004 + 0.00000333 = 0.00000733 ms}
-%	\item What is the total delay? - \textbf{0.00001067 + 0.02066667 + 0.00000733 = 0.02068467 ms}
-%\end{itemize}
-%
-%\subsubsection{End-to-End Throughput}
-%Consider the scenario shown below, with four different servers connected to four different clients over four three-hop paths. The four pairs share a common middle hop with a transmission capacity of R = 400 Mbps. The four links from the servers to the shared link have a transmission capacity of R$_S$ = 40 Mbps. Each of the four links from the shared middle link to a client has a transmission capacity of R$_C$ = 70 Mbps. \\
-%
-%\centerline{\includegraphics[width=8cm]{./assets/ex5}}
-%
-%\noindent Questions and answers:
-%
-%\begin{itemize}
-%	\item What is the maximum achievable end-end throughput (in Mbps) for each of four client-to-server pairs, assuming that the middle link is fairly shared (divides its transmission rate equally)? - \textbf{50 Mbps}
-%	\item Which link is the bottleneck link? - \textbf{R$_S$}
-%	\item Assuming that the servers are sending at the maximum rate possible, what are the link utilisation for the server links (R$_S$)? - \textbf{R bottleneck / R$_S$ = 1}
-%	\item Assuming that the servers are sending at the maximum rate possible, what are the link utilisation for the client links (R$_C$)? - \textbf{R bottleneck / R$_C$ = 0.5714}
-%	\item Assuming that the servers are sending at the maximum rate possible, what is the link utilisation for the shared link (R)? - \textbf{R bottleneck / (R / 4) = 0.4}
-%\end{itemize}
-%
-%\subsection{Chapter 2}
-%\subsubsection{DNS -- Basics}
-%Imagine that you are trying to visit www.enterprise.com, but you don't remember the IP address the web-server is running on.
-%Assume the following records are on the TLD DNS server:
-%
-%\begin{itemize}
-%	\item (www.enterprise.com, dns.enterprise.com, NS)
-%	\item (dns.enterprise.com, 146.54.102.239, A)
-%\end{itemize}
-%Assume the following records are on the enterprise.com DNS server:
-%
-%\begin{itemize}
-%	\item (www.enterprise.com, west3.enterprise.com, CNAME)
-%	\item (west3.enterprise.com, 142.81.17.206, A)
-%	\item (www.enterprise.com, mail.enterprise.com, MX)
-%	\item (mail.enterprise.com, 247.29.55.224, A)
-%\end{itemize}
-%Assume your local DNS server only has the TLD DNS server cached. \\
-%
-%\centerline{\includegraphics[width=6cm]{assets/ex6}}
-%\noindent Questions and answers:
-%
-%\begin{itemize}
-%	\item What transport protocol(s) does DNS use: TCP, UDP, or Both? - \textbf{Both}
-%	\item What well-known port does DNS use? - \textbf{53}
-%	\item How many types of Resource Records (RR) are there? \textbf{4}
-%	\item Can you send multiple DNS questions and get multiple RR answers in one message? - \textbf{Yes}
-%	\item To which DNS server does a host send their requests to? - \textbf{Local DNS server}
-%	\item Which type of DNS server holds a company's DNS records? - \textbf{Authoritative DNS server}
-%	\item In the example given in the problem, what is the address of the DNS server for enterprise.com? - \textbf{dns.enterprise.com}
-%	\item When you make the request for www.enterprise.com, your local DNS requests the IP on your behalf. When it contacts the TLD server, how many answers (RR) are returned? - \textbf{2 (a NS record, and an A record)}
-%	\item In the previous question, there were two responses, one was a NS record and the other an A record. What was the content of the A record? - \textbf{dns.enterprise.com, 146.54.102.239}
-%	\item Assume that the enterprise.com website is actually hosted on west3.enterprise.com, what type of record is needed for this? - \textbf{CNAME record}
-%	\item Now imagine we are trying to send an email to admin@enterprise.com, and their mail server has the address mail.enterprise.com. What type of record will we receive? - \textbf{MX record}
-%	\item In that MX record, what are the contents? - \textbf{www.enterprise.com, mail.enterprise.com}
-%	\item Does your local DNS server take advantage of caching similar to web requests? - \textbf{Yes (the retrieval of content is faster)}
-%\end{itemize}
-%
-%\subsubsection{DNS -- Iterative vs Recursive}
-%Assume that a user is trying to visit gaia.cs.umass.edu, but his browser doesn't know the IP address of the website. In this example, examine the difference between an iterative and recursive DNS query. \\
-%
-%\centerline{\includegraphics[width=12cm]{assets/ex7}}
-%\noindent Questions and answers: \\
-%
-%\textbf{Iterative}
-%\begin{itemize}
-%	\item Between steps 1 and 2, where does the Local DNS server check first? - \textbf{DNS Root server}
-%	\item Between steps 2 and 3, assuming the root DNS server doesn't have the IP we want, where does the response link? - \textbf{DNS TLD server}
-%	\item Between steps 4 and 5, assuming the TLD DNS server doesn't have the IP we want, where does the response link? - \textbf{DNS Authoritative server}
-%	\item Between steps 6 and 7, the authoritative DNS server responds with the IP we want. What type of DNS record is returned? - \textbf{A}
-%	\item Which type of query is considered best practice: iterative or recursive? - \textbf{Iterative}
-%\end{itemize}
-%
-%\textbf{Recursive}
-%\begin{itemize}
-%	\item Between steps 1 and 2, where does the Local DNS server check first? - \textbf{DNS Root server}
-%	\item Between steps 2 and 3, where does the root DNS forward the request to? - \textbf{DNS TLD server}
-%	\item Between steps 4 and 5, where does the authoritative DNS forward the response to? - \textbf{DNS TLD server}
-%	\item In steps 6-8, the response is sent back in the reverse direction until it reaches the user. What type of DNS record is returned? - \textbf{A}
-%\end{itemize}
-%
-%\subsubsection{DNS and HTTP Delays}
-%Suppose within your Web browser you click on a link to obtain a Web page. The IP address for the associated URL is not cached in your local host, so a DNS lookup is necessary to obtain the IP address. Suppose that four DNS servers are visited before your host receives the IP address from DNS. The first DNS server visited is the local DNS cache, with an RTT delay of RTT0 = 1 ms. The second, third and fourth DNS servers contacted have RTTs of 21, 1, and 11 ms, respectively. Initially, let's suppose that the Web page associated with the link contains exactly one object, consisting of a small amount of HTML text. Suppose the RTT between the local host and the Web server containing the object is RTT$_{HTTP}$ = 3 ms. \\
-%
-%\noindent Questions and answers:
-%
-%\begin{itemize}
-%	\item Assuming zero transmission time for the HTML object, how much time (in ms) elapses from when the client clicks on the link until the client receives the object? - \textbf{1 + 21 + 1 + 11 + 6 = 40ms}
-%	\item Now suppose the HTML object references 9 very small objects on the same server. Neglecting transmission times, how much time (in ms) elapses from when the client clicks on the link until the base object and all 9 additional objects are received from web server at the client, assuming non-persistent HTTP and no parallel TCP connections? - \textbf{1 + 21 + 1 + 11 + (10 * 6) = 94 ms}
-%	\item Suppose the HTML object references 9 very small objects on the same server, but assume that the client is configured to support a maximum of 5 parallel TCP connections, with non-persistent HTTP. - \textbf{1 + 21 + 1 + 11 + (3 * 6) = 52 ms}
-%	\item Suppose the HTML object references 9 very small objects on the same server, but assume that the client is configured to support a maximum of 5 parallel TCP connections, with persistent HTTP. \textbf{1 + 21 + 1 + 11 + 6 + (3 * 6) = 46 ms}
-%	\item What's the fastest method we've explored: Non-persistent-serial, Non-persistent-parallel, or Persistent-parallel? - \textbf{Persistent parallel}
-%\end{itemize}
-%
-%\subsubsection{Browser Caching}
-%Consider an HTTP server and client as shown in the figure below. Suppose that the RTT delay between the client and server is 30 ms; the time a server needs to transmit an object into its outgoing link is 0.75 ms; and any other HTTP message not containing an object has a negligible (zero) transmission time. Suppose the client again makes 80 requests, one after the other, waiting for a reply to a request before sending the next request.
-%
-%\noindent Questions and answers:
-%
-%\begin{itemize}
-%	\item How much time elapses (in milliseconds) between the client transmitting the first request, and the completion of the last request? - \textbf{(30 * 80) + (80 * ((100-40) / 100) * 0.75) = 2436 ms ((RTT * NUM-PACKETS) + (NUM-PACKETS * (PERCENT-NOT-CACHED / 100) * TRANS-DELAY)}
-%\end{itemize}
-%
-%\subsubsection{Client-Server and P2P File Distribution Delays}
-%The problem is to distribute a file of size F = 6 Gbits to each of these 8 peers. Suppose the server has an upload rate of u = 72 Mbps. \\ \\
-%The 8 peers have upload rates of: u1 = 16 Mbps, u2 = 20 Mbps, u3 = 24 Mbps, u4 = 19 Mbps, u5 = 21 Mbps, u6 = 25 Mbps, u7 = 15 Mbps, and u8 = 22 Mbps \\ \\ 
-%The 8 peers have download rates of: d1 = 27 Mbps, d2 = 25 Mbps, d3 = 11 Mbps, d4 = 10 Mbps, d5 = 10 Mbps, d6 = 15 Mbps, d7 = 32 Mbps, and d8 = 33 Mbps \\
-%
-%\centerline{\includegraphics[width=10cm]{assets/ex9}}
-%\noindent Questions and answers:
-%
-%\begin{itemize}
-%	\item What is the minimum time needed to distribute this file from the central server to the 8 peers using the client-server model? - \textbf{D$_{CS}$ = max\{NF / us , F / dmin\} = max\{666.67 , 600\} = 666.67 s}
-%    \item For the previous question, what is the root cause of this specific minimum time? Answer as 's' or 'ci' where 'i' is the client's number - \textbf{s}
-%    \item What is the minimum time needed to distribute this file using peer-to-peer download? - \textbf{D2P = max\{F / us , F / dmin , NF / us + $\Sigma$(i=1, N) ui\} = max\{83.3, 600, 296, 296\} = 600 s}
-%    \item For question 3, what is the root case of this specific minimum time: the server (s), client (c), or the combined upload of the clients and the server (cu)? - \textbf{c}
-%\end{itemize}
+\subsection{Chapter 1}
+\begin{itemize}
+	\item \textbf{Consider a circuit-switched network with four routers, positioned at the corner of an imaginary square. Label the four switches A, B, C, and D, starting from the top left corner and going in the clockwise direction. Assume there are five connections between any two adjacent routers. What is the maximum number of simultaneous connections that can be in progress at any one time in this network?}
+	\vspace{.2cm} \\
+	Number of nodes times the number of connections for each node $\rightarrow$ 5 * 4 = 20
+	
+	\item \textbf{Suppose Host A wants to send a large file to Host B. The path from Host A to Host B has three links, of rates R1 = 500 kbps, R2 = 2 Mbps; R3 = 1 Mbps. Assuming no other traffic in the network, what is the throughput R$_t$ for the file transfer?}
+	\vspace{.2cm} \\
+	The lowest rate $\rightarrow$ 500 kbps
+	
+	\item \textbf{Calculate how long it would take to transfer 40 GB of data from A to B on a 1 Mbps link.}
+	\vspace{.2cm} \\
+	Convert from GB to mbit and divide by link rate. Then convert seconds to hours. $\rightarrow$ $\frac{320000}{1} = 320000~s \rightarrow 88.8~h$
+	
+	\item \textbf{Assume a packet of length 1000 bytes must be transmitted between router A and router B. The link between A and B is 2.5 km long, enables a propagation speed of 2.5 10$^8$ m/s, and a transmission rate of 2 Mbps. Assume the first bit of the packet leaves router A at time t$_0$ = 0 s. After which delay t$_1$ does the first bit of the packet reach router B?}
+	\vspace{.2cm} \\
+	Convert km in m, and divide it by the propagation speed (propagation delay) $\rightarrow$ $\frac{2500}{2.5 \cdot 10^8} = 0.00001~s \rightarrow 10~\mu s$
+	
+	\item \textbf{Suppose Host A wants to send a large file to Host B. The path from Host A to Host B has three links, of rates R1 = 500 kbps, R2 = 100 kbps, R3 = 1 Mbps. Suppose the file is 60 MB. Assuming all other delays are negligible with respect to the transmission delay, how long will it take to transfer the file to Host B? Please give your answer in minutes.}
+	\vspace{.2cm} \\
+	The throughput is the slowest link, thus is 100 kbps. Convert MB to kilobit and divide by throughput (transmission delay) $\rightarrow$ $\frac{480000}{100} = 4800~s = 80~min$
+	
+	\item \textbf{Assume a packet of length 1000 bytes must be transmitted between router A and router B. The link between A and B is 2.5 km. long, enables a propagation speed of 2.5 10$^8$ m/s, and a transmission rate of 2 Mbps. Assume the first bit of the packet leaves router A at time t$_0$ = 0 s. After which delay x = t$_0$ + t$_2$ does the last bit of the packet leave router A?}
+	\vspace{.2cm} \\
+	Convert bytes in Mbits, then divide by the transmission rate (transmission delay) $\rightarrow$ $\frac{0.008}{2} = 0.004~s = 4~\mu s$
+\end{itemize}
 
-%\newpage
+\subsection{Chapter 2}
+\begin{itemize}
+	\item \textbf{Consider a link over which hosts can transmit at a rate of 2048 kbps in both directions. Suppose that packets containing data are 128 kbits long, and packets containing only control (e.g., ACK or handshaking) are 256 bits long. Now suppose that a client issues an HTTP/1.1 request to a server to retrieve an object. Suppose that the downloaded object fills a single data packet. Assuming that propagation, queuing and processing delays are negligible, how much time would it take a client to obtain the object from the server?}
+	\vspace{.2cm} \\
+	Convert bits in kbits, multiply by 3 (which is the number of packets containing control) and add it to the length of the data $\rightarrow$ $3*\left(\frac{0.256}{2048}\right)+\frac{128}{2048} = (3 * 0.000125) + 0.0625 = 0.000375 + 0.0625 = 0.062875 = 62.875 ms$
+	
+	\item \textbf{Consider a link over which a sender can transmit at a rate of 2 Mibps in both directions. Assuming an object of size 256 kibit must be transmitted, how much is the transmission delay?}
+	\vspace{.2cm} \\
+	Convert kibit to Mibit and divide it by the transmission rate (transmission delay) $\rightarrow$ $\frac{0.25}{2} = 0.125~s = 125~ms$
+\end{itemize}
+
+\subsection{Chapter 3 \& 4}
+\begin{itemize}
+	\item \textbf{Suppose Host A sends a TCP segments to Host B over a TCP connection. The segment has sequence number X and carries Y bytes of payload. In the acknowledgment that Host B sends to Host A, what will be the acknowledgment number?}
+	\vspace{.2cm} \\
+	Y bytes of the payload are added to the X of the sequence number $\rightarrow$ $Y + X$
+	
+	\item \textbf{Suppose Host A sends a TCP segments to Host B over a TCP connection. The segment has sequence number X and carries Y bytes of payload. In the acknowledgment that Host B sends to Host A, what will be the sequence number?}
+	\vspace{.2cm} \\
+	It cannot be derived by the data
+	
+	\item \textbf{Assume that the current estimated round-trip-time (RTT) in a TCP connection is 250 ms. Assuming that the exponential weighted moving average with alpha = 0.1 is used to compute the estimate of RTT, what will be the new value of such estimate, after a new measurement of RTT equal to 200 ms is recorded?}
+	\vspace{.2cm} \\
+	Use the RTT estimation formula $\rightarrow$ $(1 - 0.1) \cdot 250 + 0.1 \cdot 200 = 0.9 \cdot 250 + 0.1 \cdot 200 = 225 + 20 = 245~ms$
+	
+	\item \textbf{Consider 8 TCP connections, each with a different end-to-end path, but all passing through a bottleneck link with transmission rate R = 64 MBps. If the congestion control mechanism used on these connections is fair, what will be the average transmission rate over each connection?}
+	\vspace{.2cm} \\
+	Since the TCP connection is fair, then we simply divide the transmission rate by the number of connections $\rightarrow$ $\frac{64}{8} = 8$ \textit{MBps}
+	
+	\item \textbf{Assume that the slow start threshold of a TCP connection is 32 MSS when a loss event is first detected. Immediately after another loss event is detected at the sender, what will be the value of the threshold?}
+	\vspace{.2cm} \\
+	For every loss detected, the MSS is divided by two. Since we have two losses detected, we divide two times by two $\rightarrow$ $\frac{32}{2} = 16$ \textit{MSS} and then $\frac{16}{2} = 8$ \textit{MSS}
+\end{itemize}
+
+\newpage
 
 \section{APPENDIX C - Useful Links}
 \begin{itemize}
