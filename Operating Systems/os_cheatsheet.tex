@@ -132,12 +132,12 @@ A possible way of defining an operating system is that this is the one program r
 
 \subsection{Computer System Organisation}
 Modern computers consist of 1 or more CPUs and a number of device controllers connected through a common bus that provides access to shared memory. \\ \\
-In order for a computer to start running, it needs an initial program to run. Such program is called \textbf{bootstrap program}. This initialises all aspects of an operating system. This program tends to be simple, and is typically stored in ROM (Read-Only Memory) or in EEPROM (Electrically Erasable Programmable Read-Only Memory).\\ \\
+In order for a computer to start running, it needs an initial program to run. Such program is called \textbf{bootstrap program}. This initializes all aspects of an operating system. This program tends to be simple, and is typically stored in ROM (Read-Only Memory) or in EEPROM (Electrically Erasable Programmable Read-Only Memory).\\ \\
 When the kernel is loaded and executing, it starts providing services to the system and its users. Some services, though, are provided outside of the kernel, by system programs that are loaded into memory at boot time. Such programs are called \textbf{system daemons} and are those that run the entire time that the kernel is running.\\ \\
-In an operating system, the occurrence of events are usually signalled by an \textbf{interrupt} either from the hardware or the software. Hardware may trigger interrupts by sending a signal to the CPU, while software may trigger interrupts by executing a \textbf{system call}. When the CPU is interrupted, it stops what it's doing and immediately transfers execution to a fixed location. Since interrupts must be handled quickly, a table of pointers to interrupt routines can be used in order to provide the necessary speed. Such table is called an \textbf{interrupt vector}, and is stored in the first hundred or so locations in low memory.
+In an operating system, the occurrence of events are usually signaled by an \textbf{interrupt} either from the hardware or the software. Hardware may trigger interrupts by sending a signal to the CPU, while software may trigger interrupts by executing a \textbf{system call}. When the CPU is interrupted, it stops what it's doing and immediately transfers execution to a fixed location. Since interrupts must be handled quickly, a table of pointers to interrupt routines can be used in order to provide the necessary speed. Such table is called an \textbf{interrupt vector}, and is stored in the first hundred or so locations in low memory.
 
 \subsection{Storage Structure}
-The CPU can load instructions only from memory, so any program to run must be stored there. Computers run most of their programs from rewritable main memory such as RAM (Random Access Memory) or DRAM (Dynamic Random Access Memory) -- which is used as main memory. Static programs are instead stored in ROM or EEPROM. There are problems with main memory, two of which being:
+The CPU can load instructions only from memory, so any program to run must be stored there. Computers run most of their programs from re-writable main memory such as RAM (Random Access Memory) or DRAM (Dynamic Random Access Memory) -- which is used as main memory. Static programs are instead stored in ROM or EEPROM. There are problems with main memory, two of which being:
 
 \begin{itemize}
 	\item It is usually too small to store all programs and data permanently
@@ -205,12 +205,12 @@ Multiple-processor systems in use today are of two types:
 \end{itemize}
 
 \subsection{Operating System Structure}
-One of the most important aspects of operating systems is the ability to \textbf{multiprogram}. Multiprogramming increases CPU utilisation by organising jobs so that the CPU always has one to execute. The operating system keeps several jobs in memory simultaneously. Jobs are initially kept on the disk in the \textbf{job pool}. This pool consists of all processes residing on the disk awaiting for allocation of main memory. \\ \\ \textbf{Multitasking} is a logical extension of multiprogramming. In time-sharing systems, the CPU executes multiple jobs by switching among them. Switching occurs so frequently that users can interact with each program while it's running. A time-shared machine allows multiple users to share the computer simultaneously. This type of machine uses CPU scheduling and multiprogramming in order to provide each user with a part of the computer. Each user has at least one separate program in memory. Such programs are called \textbf{processes}. \\ \\
+One of the most important aspects of operating systems is the ability to \textbf{multiprogram}. Multiprogramming increases CPU utilization by organizing jobs so that the CPU always has one to execute. The operating system keeps several jobs in memory simultaneously. Jobs are initially kept on the disk in the \textbf{job pool}. This pool consists of all processes residing on the disk awaiting for allocation of main memory. \\ \\ \textbf{Multitasking} is a logical extension of multiprogramming. In time-sharing systems, the CPU executes multiple jobs by switching among them. Switching occurs so frequently that users can interact with each program while it's running. A time-shared machine allows multiple users to share the computer simultaneously. This type of machine uses CPU scheduling and multiprogramming in order to provide each user with a part of the computer. Each user has at least one separate program in memory. Such programs are called \textbf{processes}. \\ \\
 If several jobs are brought into memory, and there is not enough room for them, \textbf{job scheduling} is used in order to make the decision of choosing. If several jobs are ready to run at the same time, \textbf{CPU scheduling} is used in order to make the decision of which job to run first. \\ \\
 A method used in order to ensure reasonable response times is \textbf{virtual memory}. This technique allows for the execution of a process that is not completely in memory. The main advantage of virtual memory is that it enables users to run processes that are larger than actual physical memory.
 
 \subsection{Operating-Systems Operations}
-Modern operating systems are \textbf{interrupt driven}. Events are almost always signalled by the occurrence of either an interrupt or a trap. A \textbf{trap} is a software-generated interrupt caused by either an error or by a request from a user program. Operating systems also need to make sure that an interrupt or trap that happens for one user is propagated and affect other users as well.
+Modern operating systems are \textbf{interrupt driven}. Events are almost always signaled by the occurrence of either an interrupt or a trap. A \textbf{trap} is a software-generated interrupt caused by either an error or by a request from a user program. Operating systems also need to make sure that an interrupt or trap that happens for one user is propagated and affect other users as well.
 
 \subsubsection{Dual Mode Operation}
 In order to ensure the proper execution of the OS, we must be able to distinguish between user defined and OS code. In order to do this we need at lest two modes of operation:
@@ -251,7 +251,7 @@ These files generally represent programs or data. furthermore, files are organiz
 
 \begin{itemize}
 	\item Creating and deleting files
-	\item Creating and deleting directories to organise files
+	\item Creating and deleting directories to organize files
 	\item Supporting primitives for manipulating files and directories
 	\item Mapping files onto secondary storage
 	\item Backing up files on stable, nonvolatile storage media
@@ -296,7 +296,7 @@ An operating system provides a set of services, such as:
 	
 	\item \textbf{File-System Manipulation}
 	\vspace{.2cm} \\
-	The ability of being able to delete, create or modify files and directories. The operating system also offers a way to set permissions to files and directories such that only authorised users can access them.
+	The ability of being able to delete, create or modify files and directories. The operating system also offers a way to set permissions to files and directories such that only authorized users can access them.
 	
 	\item \textbf{Communications}
 	\vspace{.2cm} \\
@@ -319,7 +319,7 @@ Another set of services in place to ensure the efficient operation of a system i
 	
 	\item \textbf{Protection and Security}
 	\vspace{.2cm} \\
-	When several separate processes execute concurrently, it should not be possible for one process to interfere with the others or with the operating system itself. Also authentication is a form of security. In this way non-authorised users cannot access sensitive data.
+	When several separate processes execute concurrently, it should not be possible for one process to interfere with the others or with the operating system itself. Also authentication is a form of security. In this way non-authorized users cannot access sensitive data.
 \end{itemize}
 
 \subsection{Command Interpreters}
@@ -379,7 +379,7 @@ System calls can be roughly divided into six major categories:
 	
 	\item \textbf{Information Maintenance}
 	\vspace{.2cm} \\
-	A user might want to knoe the current time and date, or know some more information about the system. \\ \\
+	A user might want to know the current time and date, or know some more information about the system. \\ \\
 	Memory dumps are also available in order to debug the system or a program.
 	
 	\item \textbf{Communications}
@@ -556,7 +556,7 @@ The constant switching of context is known as \textbf{content switching}, and it
 
 \subsubsection{Process Creation}
 Parent processes can create children processes which in turn can create other children processes. This forms a tree of processes. \\ \\
-A child process may be able to obtain its resources directly from the operating system, or it may be constraint to a subset of the resources of the parent process. Parent processes may also pass along some initialisation data to the children processes. \\ \\
+A child process may be able to obtain its resources directly from the operating system, or it may be constraint to a subset of the resources of the parent process. Parent processes may also pass along some initialization data to the children processes. \\ \\
 Two options are possible when processes are initiated, they can either run concurrently or the parent will wait for the children to finish executing. \\ \\
 There are also two address-space possibilities for new processes. The first is that the child process is a duplicate of the parent process (same program and data as the parent). The second possibility is that the child process has a new program loaded into it. \\ \\
 The following is a graph displaying what happens when a \cverb|fork()| method is called on a process: \\ \\
@@ -653,7 +653,7 @@ Named pipes provide bi-directional communication, and no parent-child relationsh
 
 \section{Multithreaded Programming}
 \subsection{Thread}
-A \textbf{thread} is a basic unit of CPU utilisation. It comprises a thread ID, a program counter, a register set and a stack. It shares with other threads belonging to the same process its code section, data section and other operating system resources. \\ \\
+A \textbf{thread} is a basic unit of CPU utilization. It comprises a thread ID, a program counter, a register set and a stack. It shares with other threads belonging to the same process its code section, data section and other operating system resources. \\ \\
 A process can either be \textbf{single-threaded} or \textbf{multithreaded}. In this second case, the program can perform multiple tasks at the same time.
 
 \subsection{Benefits}
@@ -756,8 +756,8 @@ When working with threads, a series of issues can present to the developer. Thes
 	
 	\item \textbf{Thread Cancellation}
 	\vspace{.2cm} \\
-	This involves terminating a thread before it has completed. A thread that is to be cancelled is referred to as the \textbf{target thread}. \\ \\
-	There are two ways in which a thread can be cancelled:
+	This involves terminating a thread before it has completed. A thread that is to be canceled is referred to as the \textbf{target thread}. \\ \\
+	There are two ways in which a thread can be canceled:
 	
 	\begin{itemize}
 		\item \textbf{Asynchronous Cancellation}
@@ -799,7 +799,7 @@ The time it is needed for the dispatcher to stop one process and start another i
 The following are the criteria used in order to compare CPU-scheduling algorithms -- following each parameter is which quantity of that measurement is best:
 
 \begin{itemize}
-	\item \textbf{CPU Utilisation} - Max
+	\item \textbf{CPU Utilization} - Max
 	\vspace{.2cm} \\
 	Keep the CPU as busy as possible.
 	
@@ -1029,11 +1029,11 @@ This method is very simple, fast, and offers a direct comparison between the alg
 
 \subsubsection{Queuing Models}
 The distribution of CPU and I/O bursts is calculated and used to determine the performance of a scheduling algorithm. \\ \\
-In order to analyse the algorithm, we can use \textbf{Little's Formula}, which is the following:
+In order to analyze the algorithm, we can use \textbf{Little's Formula}, which is the following:
 
 \[ n = \lambda \cdot W \] \\
 Where $n$ is the average queue length, $\lambda$ is the average arrival time at the queue, and $W$ is the average waiting time. This formula is particularly useful, because it is valid for any scheduling algorithm and any arrival distribution. \\ \\
-This method is more general than the deterministic modelling. But it can be difficult to handle, especially for complex distributions.
+This method is more general than the deterministic modeling. But it can be difficult to handle, especially for complex distributions.
 
 \subsubsection{Simulations}
 In this case we use a simplified programming model of the actual computer system. The workload is synthetic and based on distributions. The data collected is empirical, meaning that is based on actual system measurements. \\ \\
@@ -1044,7 +1044,7 @@ In this method the algorithm is directly introduced into the existing operating 
 This method is the ultimate representation of environment, where no detail is left out. But it could be very difficult to implement, and the result depends on the representative workload.
 
 \section{Synchronisation}
-A process is said to be \textbf{cooperating} if it can be affected or can affect by other processes executing in the system. These processes can either directly share a logical space, or they can be allowed to share data only through files or messages.
+A process is said to be \textbf{cooperating} if it can be affected by or can affect other processes executing in the system. These processes can either directly share a logical space, or they can be allowed to share data only through files or messages.
 
 \subsection{The Critical Section Problem}
 A \textbf{critical section} is a section of code in which the process may be changing common variables, writing a file... \\ \\
@@ -1088,12 +1088,12 @@ This solution is restricted to two processes that alternate their execution betw
 	It indicates if a process is ready to enter its critical section.
 \end{itemize}
 
-\subsection{Synchronisation Hardware}
+\subsection{Synchronization Hardware}
 \textbf{Locking} is the action of protecting critical regions trough the use of locks. \\ \\
 \textbf{Atomic hardware instructions} are those implemented in modern machines in order to provide solutions to the critical section problem.
 
 \subsection{Semaphores}
-A \textbf{semaphore} is a synchronisation tool that does not require busy waiting. There are two atomic operations provided to modify a semaphore:
+A \textbf{semaphore} is a synchronization tool that does not require busy waiting. There are two atomic operations provided to modify a semaphore:
 
 \begin{itemize}
 	\item \cverb|wait()|
@@ -1101,13 +1101,110 @@ A \textbf{semaphore} is a synchronisation tool that does not require busy waitin
 \end{itemize}
 
 \subsection{Monitors}
-\textbf{Monitors} are a high level synchronisation tool that provide a convenient and effective mechanism for process synchronisation. Only one process may be active within the monitor at a time.
+\textbf{Monitors} are a high level synchronization tool that provide a convenient and effective mechanism for process synchronization. Only one process may be active within the monitor at a time.
 
 \subsection{Deadlocks and Starvation}
 A \textbf{deadlock} happens when two or more processes are waiting indefinitely for an event that can be caused by only one of the waiting processes. \\ \\
 \textbf{Starvation} is when a process may never be removed from the semaphore queue in which it is suspended.
 
+\section{Memory Management Strategies}
+In order for a program to be run, it must first be loaded into memory and placed within a process. \\ \\
+The CPU can only access main memory and registers directly. The memory unit only sees a stream of addresses and read requests, or addresses, data and read requests. \\ \\
+In order for a correct operation of the system, memory protection is required.
+
+\subsection{Address Binding}
+The binding of instructions and data to memory addresses can happen at three different stages:
+
+\begin{itemize}
+	\item \textbf{Compile Time}
+	\vspace{.2cm} \\
+	If a memory location is known beforehand, an absolute code can be generated. The code must be recompiled whenever the starting location changes.
+	
+	\item \textbf{Load Time}
+	\vspace{.2cm} \\
+	If the memory location is not known at compile time, then a relocatable code must be generated.
+	
+	\item \textbf{Execution Time}
+	\vspace{.2cm} \\
+	If the process can be moved during its execution from one memory segment to another, then address binding must be delayed until run time. In order for this to work, special hardware is needed.
+\end{itemize}
+
+\subsection{Logical vs Physical Address Space}
+The \textbf{Logical address} is the address generated by the CPU. It is also referred to as virtual address. \\ \\
+The \textbf{Physical address} is the address seen by the memory unit, and the one loaded into the memory-access register of memory. \\ \\
+\textbf{Compile-time} and \textbf{load-time} methods generate identical logical and physical addresses. \textbf{Execution-time} address-binding scheme results in different logical and physical addresses.
+
+\subsection{MMU (Memory Management Unit)}
+MMU in a hardware device that maps virtual to physical addresses. In the MMU scheme, the value in the relocation register is added to every address generated by user processes. \\ \\
+The user program only deals with logical addresses. It never sees the real physical address.
+
+\subsection{Contiguous Allocation}
+Main memory is usually divided in two partitions:
+
+\begin{itemize}
+	\item \textbf{Low Memory}
+	\vspace{.2cm} \\
+	It contains the resident operating system and the interrupt vector.
+	
+	\item \textbf{High Memory}
+	\vspace{.2cm} \\
+	It contains the user processes
+\end{itemize}
+Usually, it is desired for multiple user processes to reside in memory at the same time. In contiguous memory allocation, each process is contained in a single section of memory that is contiguous to the section containing the next process.
+
+\subsection{Memory Protection}
+A \textbf{relocation-register scheme} is used in order to protect users from accessing each others' files, and from changing operating-system code and data. \\ \\
+The \textbf{relocation register} contains the value of the smallest physical address. \\ \\
+Thew \textbf{limit register} contains a range of logical addresses. each logical address must be less than the limit register. \\ \\ \\
+
+\centerline{\includegraphics[width=10cm]{./assets/mem-protection.png}}
+
+\subsection{Memory Allocation}
+\subsubsection{Multiple Partition Allocation}
+One of the simplest methods of allocating memory is to divide it into several fix-sized partitions. In the multiple-partition method, when a partition is free, a process is selected from the input queue and is loaded into the free partition. \\ \\
+A \textbf{hole} is a block of available memory. When a process arrives, memory is allocated inside of a hole large enough to accommodate it. \\ \\
+The Operating system always maintains information about the allocated and free partitions. \\ \\ \\
+
+\centerline{\includegraphics[width=10cm]{./assets/mult-partition.png}}
+\vspace{.4cm}
+
+\subsubsection{Dynamic Storage-Allocation Problem}
+This problem concerns how to satisfy a request of size $n$ from a list of free holes. Some possible solutions to this problem are:
+
+\begin{itemize}
+	\item \textbf{First-Fit}
+	\vspace{.2cm} \\
+	Allocate the first hole that is big enough to fit the process.
+	
+	\item \textbf{Best-Fit}
+	\vspace{.2cm} \\
+	Allocate the smallest hole that is big enough. The whole list must be searched (unless it is ordered by size). It produces the smallest leftover hole.
+	
+	\item \textbf{Worst-Fit}
+	\vspace{.2cm} \\
+	Allocate the largest hole. The whole list must be searched (unless it is ordered by size). It produces the largest leftover hole.
+\end{itemize}
+In terms of speed and storage utilization, the first two options are best.
+
+\subsection{Fragmentation}
+\subsubsection{External Fragmentation}
+Both first-fit and best-fit suffer from \textbf{external fragmentation}. As the processes are loaded and removed from memory, the free memory is broken down into smaller pieces. External fragmentation exists when there is enough total memory space to satisfy a request, but the available spaces are not continuous. This leaves free gaps in memory. \\ \\
+Statistical analysis on first-fit shows that, given $n$ allocated blocks, $\frac{1}{2}n$ blocks will be lost to external fragmentation.
+
+\subsubsection{Internal Fragmentation}
+In the case of a multiple-partition allocation scheme, consider a hole of 1249 bytes. If we allocate 1247 bytes, then we are left with just 2 bytes. These 2 bytes are not enough to keep track of the hole. In order to solve this problem, the memory allocated to the process may be larger than the requested memory. The difference between these two numbers is known as \textbf{internal fragmentation}. \\ \\
+A solution to internal fragmentation is given by \textbf{compacting} the memory. This consists in shuffling the memory content in order to place all of the free memory together in one large block. This is possible only with dynamic relocation. It is also done at execution time.
+
+\subsection{Swapping}
+A process can be swapped temporarily out of memory to a backing store. Then this process is brought back into memory for continued execution. \\ \\
+A \textbf{backing store} is a fast disk that is large enough to accommodate copies of all memory images for all users. It must provide direct memory access to those images. \\ \\
+Most of the swap time is transfer time. The total transfer time is directly proportional to the amount of memory swapped.
+
 \newpage
+
+
+% Pintos Projects
+
 \section{Appendix A - Pintos Project}
 \subsection{Pintos Project 2 - Timer Sleep}
 Methods implemented are:
