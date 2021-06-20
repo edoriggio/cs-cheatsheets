@@ -469,29 +469,93 @@ In order to recover after a crash, we start by scanning the log \textbf{backward
 For every transaction that have a commit record, it is added to the redo list. For each transaction that have a start record but no commit record, it is added to the undo list. Finally, for each transaction that is listed in the checkpoint record for which there is no commit record, it is added to the undo list. \\ \\
 All of the transactions in the undo list are undone, and all the transactions in the redo list are redone.
 
+\section{Transaction Processing - Concurrency}
+\subsection{Concurrency}
+Concurrency does \textbf{I} while possibly supporting \textbf{ACD}. Each transaction should run as if there were no other transactions in the system. \\ \\
+A \textbf{history} is a trace of behavior of a set of transactions, listing the reads and writes in order of execution.
+
+\subsection{Serial Histories}
+A history is \textbf{serial} if it describes a serial execution, meaning that transactions follow each other -- without concurrency. A concurrent execution that happens to be serial is a correct concurrent execution.
+
+\subsection{Serializable Histories}
+A history H is said to be \textbf{serializable} if it is equivalent to some history H' of this set of transactions on this database in this initial state. \\ \\
+If the conflict graph is acyclic, then the history is serializable.
+
+\subsection{Locks}
+Two types of lock can be set on each item:
+
+\begin{itemize}
+	\item \textbf{X-lock (eXclusive lock)}
+	\vspace{.2cm} \\
+	If any transaction holds an X-lock on one item, then no transaction may hold any lock on the item. In order to write an item, a transaction must hold an X-lock on it.
+	
+	\item \textbf{S-lock (Shared lock)}
+	\vspace{.2cm} \\
+	Any number of transactions can hold S-locks on the item. In order to read an item, a transaction must hold an S-lock (or X-lock) on it.
+\end{itemize}
+
+\subsubsection{Two-Phase Locking}
+2PL (Two-Phase Locking) satisfies the following constraint: during its execution each transaction is divided into two phases:
+
+\begin{itemize}
+	\item \textbf{Growing Phase}
+	\vspace{.2cm} \\
+	During this phase, only lock requests are issued.
+	
+	\item \textbf{Shrinking Phase}
+	\vspace{.2cm} \\
+	During this phase, only lock releases are issued.
+\end{itemize}
+For each transaction $Ti$, we can define a time point ($Li$ -- lock point), which indicates the boundary between the first and the second phase. This will be the point when the transaction requires its last lock (i.e. the last action of the growing phase). \\ \\
+If all the transactions in the system follow the 2PL protocol, then the conflict graph is acyclic. This means that the history is \textbf{serializable}.
+
+\subsubsection{Strict Two-Phase Locking}
+In this case, all the conditions of 2PL are satisfied. Moreover, all exclusive locks are released only after a commit or an abort. \\ \\
+Strict 2PL makes sure that the history is always \textbf{strict}.
+
+\subsubsection{Rigorous Two-Phase Locking}
+Whenever a transaction attempts to access a variable for the first time in some mode, the DB OS tries to give it the appropriate lock. This transaction might have to wait to give the lock. All of the locks are released after a commit or an abort. \\ \\
+Rigorous 2PL makes sure that the history is always \textbf{strict}, \textbf{without cascading aborts}, and \textbf{recoverable}.
+
+\subsection{Phantoms}
+If new items are added to a database, \textbf{phantoms} may appear. This could happen when modifying all of the elements of a database, and in the middle of the operation an item is added. This modifications are not applied to this item which is saved as is. \\ \\
+In order to handle phantoms, \textbf{range locks} can be used.
+
+\section{NoSQL}
+No SQL databases run on clusters of machines. The new issue that arises is to coordinate the concurrent execution of several machines.
+
+\subsection{Global Recovery}
+A local recovery manager is present on each machine. It is able to guarantee \textbf{ACD} for transactions that run on more than one machine. Such a transaction must be either committed or aborted globally.
+
+\subsection{Global Concurrency}
+We need to guarantee \textbf{I} for all transactions that run on more than one machine. Each machine is running a local concurrency manager. \\ \\
+All locks are held until after local commit or abort on each machine. In case of a global commit, all locks are held until after the global commit decision. This guarantees \textbf{global serializability}.
+
+\subsection{Data Replication}
+It may be useful to replicate some data, in order to both improve fault-tolerance and efficiency. The problem is that replicated data must be kept consistent.
+
+\subsection{Thomas Majority Rule}
+Let's assume we have a data item $X$ that is replicated on 5 machines. The majority of these machines is 3. \\ \\
+In order to \textbf{write} $X$, access a majority -- at least 3 -- sites and replace the existing pair of values ($X$, $T$) with the new pair. \\ \\
+In order to \textbf{read} $X$, access a majority -- equal to 3 -- sites and read the three pairs of values. Find which $T$ is the largest, and return the corresponding $X$.
+
+\subsection{CAP Theorem}
+Only 2 of the following 3 properties can be obtained:
+
+\begin{itemize}
+	\item \textbf{Consistency}
+	\vspace{.2cm} \\
+	When accessing data, a consistent state will always be seen.
+	
+	\item \textbf{Availability}
+	\vspace{.2cm} \\
+	If a machine can be accessed, then it can read and write the items it stores.
+	
+	\item \textbf{Partition Tolerance}
+	\vspace{.2cm} \\
+	You can work in the presence of partitions.
+\end{itemize}
+In order to get \textbf{A} and \textbf{B}, you may be willing to sacrifice \textbf{C}.
+
+
 \end{document}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
