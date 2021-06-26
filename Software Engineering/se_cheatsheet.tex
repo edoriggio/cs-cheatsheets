@@ -1,0 +1,477 @@
+% Copyright 2021 Edoardo Riggio
+
+% Licensed under the Apache License, Version 2.0 (the "License");
+% you may not use this file except in compliance with the License.
+% You may obtain a copy of the License at
+
+% 	http://www.apache.org/licenses/LICENSE-2.0
+
+% Unless required by applicable law or agreed to in writing, software
+% distributed under the License is distributed on an "AS IS" BASIS,
+% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+% See the License for the specific language governing permissions and
+% limitations under the License.
+
+\documentclass{article}
+
+\usepackage{hyperref, amsmath, graphicx}
+\usepackage{fancyvrb,newverbs,xcolor}
+
+\definecolor{cverbbg}{gray}{0.93}
+
+\newenvironment{cverbatim}
+ {\SaveVerbatim{cverb}}
+ {\endSaveVerbatim
+  \flushleft\fboxrule=0pt\fboxsep=.5em
+  \colorbox{cverbbg}{\BUseVerbatim{cverb}}%
+  \endflushleft
+}
+
+\newenvironment{lcverbatim}
+ {\SaveVerbatim{cverb}}
+ {\endSaveVerbatim
+  \flushleft\fboxrule=0pt\fboxsep=.5em
+  \colorbox{cverbbg}{%
+    \makebox[\dimexpr\linewidth-2\fboxsep][l]{\BUseVerbatim{cverb}}%
+  }
+  \endflushleft
+}
+
+\newcommand{\ctexttt}[1]{\colorbox{cverbbg}{\texttt{#1}}}
+\newverbcommand{\cverb}
+  {\setbox\verbbox\hbox\bgroup}
+  {\egroup\colorbox{cverbbg}{\box\verbbox}}
+
+\begin{document}
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+        
+        \Huge
+        \textbf{Software Engineering Cheatsheet}
+        
+        \vspace{0.5cm}
+        \LARGE
+        
+        \vspace{.5cm}
+        
+        Edoardo Riggio
+   		  \vspace{1.5cm}
+       
+        \vfill
+        
+        \today
+        
+        \vspace{.8cm}
+          \Large
+          Operating Systems - SP. 2021 \\
+        Computer Science\\
+        Universit\`{a} della Svizzera Italiana, Lugano\\
+        
+    \end{center}
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+
+\section{Software Development Life Cycle}
+\subsection{Waterfall Model}
+This is a family of models. They identify phases and activities, forcing a linear progression from a phase to the next. No return is allowed (i.e. you cannot go from a phase to one before it).
+
+\subsection{Royce's Waterfall}
+\subsubsection{Feasibility Study}
+This is a cost/benefits analysis. \\ \\
+It determines whether the project should be started, explore possible alternatives and needed resources. \\ \\
+Output $\rightarrow$ \textbf{Feasibility Study Document} - This document contains a preliminary problem description, scenarios with alternatives, and costs for these alternatives.
+
+\subsubsection{Requirement Analysis and Specification}
+This is a domain analysis. \\ \\
+It is needed in order to identify requirements and derive specifications for the software. It requires an interaction with the user, and an understanding of the properties of the domain. \\ \\
+Output $\rightarrow$ \textbf{RASD} (Requirements Analysis and Specification Document)
+
+\subsubsection{Design}
+Defines the software architecture. \\ \\
+It determines all the aspects of the software, such as: components/modules, relations among components and interactions among components. It also enables concurrent development and separates responsibilities. \\ \\
+Output $\rightarrow$ \textbf{Design Document}
+
+\subsubsection{Coding and Unit Testing}
+It is used to produce and test code. \\ \\
+Each module is implemented using the chosen programming language. Each module is then tested in isolation by the module's developer. \\ \\
+Output $\rightarrow$ \textbf{Software} - Composed of classes and modules.
+
+\subsubsection{Integration and System Test}
+All of the modules are integrated. \\ \\
+Modules are integrated into (sub)systems and all of the latter are tested. A complete system test is needed in order to verify the overall properties of the software. Sometimes \textbf{alpha tests} and \textbf{beta tests} are used. \\ \\
+Output $\rightarrow$ \textbf{Software} - Integrated modules.
+
+\subsubsection{Deployment}
+The goal is to distribute the application and manage the different installations and configurations at the clients' sites.
+
+\subsubsection{Maintenance}
+These are all the changes that are done after the delivery. It often is more than 50\% of the total cost. \\ \\
+Maintenance can be of three types:
+
+\begin{itemize}
+	\item \textbf{Corrective Maintenance}
+	\vspace{.2cm} \\
+	It is made up of diagnosing and fixing errors, which are possibly found by users.
+	
+	\item \textbf{Adaptive Maintenance}
+	\vspace{.2cm} \\
+	Modify the system to cope with changes in the software environment.
+	
+	\item \textbf{Perfective Maintenance}
+	\vspace{.2cm} \\
+	Implement new or changed user requirements.
+\end{itemize}
+
+\subsection{Spiral Model}
+In a spiral model, \textbf{prototypes} are produced at each new spiral. Prototypes are useful because they are an approximation of the model of the application. There exist two types of prototypes:
+
+\begin{itemize}
+	\item \textbf{Throw-Away}
+	\vspace{.2cm} \\
+	There is little to no reuse of the components of the prototype.
+	
+	\item \textbf{Evolutionary}
+	\vspace{.2cm} \\
+	The components of the prototype are reused even in the final product.
+\end{itemize}
+
+\subsection{Boehm's Spiral Model}
+\subsubsection{Determine Goals, Alternatives and Constraints}
+This enables to identify specific objectives, alternatives and constraints for that specific phase.
+
+\subsubsection{Evaluate Alternatives and Risks}
+Access each alternative in order to reduce the potential risks.
+
+\subsubsection{Develop and Test}
+Artifacts are produced for the next phase. This also includes code.
+
+\subsubsection{Plan}
+Review the project and plan the next phase of the spiral.
+
+\subsection{Synchronize and Stabilize}
+What people are doing as individuals and as members of parallel teams is continually \textbf{synchronized}, and the product increments are periodically \textbf{stabilized} as the project proceeds.
+
+\subsubsection{Planning Phase}
+This phase is itself divided into three more phases:
+
+\begin{itemize}
+	\item \textbf{Vision Statement}
+	\vspace{.2cm} \\
+	The product and program management create a vision statement defining the goals for the new product. Product features based on costumer input are identified and prioritized.
+	
+	\item \textbf{Specification Document}
+	\vspace{.2cm} \\
+	This is written by the program management and the developer teams. It defines the functional features, architectural issues, and interdependent components. It does not cover all the details of each feature, and does not lock the feature set of the project.
+	
+	\item \textbf{Schedule and Team Formation}
+	\vspace{.2cm} \\
+	The program management defines the schedule and arranges the teams. The teams are small and have a 1:1 ratio between developers and testers. The project is divided into sequential sub-projects containing priority-ordered features. The schedule is divided into milestone cycles.
+\end{itemize}
+
+\subsubsection{Development Phase}
+All teams have to go through a complete cycle of development, which includes: development, integration, testing and fixing problems. \\ \\
+Teams and individuals work in parallel, and revise the feature set as they learn. \\ \\
+Whenever developers commit code, regression testing is automatically performed. Debugging and synchronization between teams happen on a daily basis.
+
+\subsubsection{Stabilization Phase}
+In this phase program managers coordinate and monitor the customer's feedback. Developers perform final debugging and code stabilization. \\ \\
+The \textbf{golden master disks and documentation} are prepared for final release.
+
+\subsection{Extreme Programming}
+\subsubsection{Release Planning}
+This is made up of four different phases:
+
+\begin{itemize}
+	\item \textbf{User Stories}
+	\vspace{.2cm} \\
+	User stories are written by customers as things that the system is expected to accomplish. They are short, three sentences format of written text without technicalities.
+	
+	\item \textbf{Architectural Spike}
+	\vspace{.2cm} \\
+	Find the simplest system metaphor which allows to explain the system to new people without resorting to huge documents. The design must be kept as simple as possible. Naming of classes and methods must be kept simple and consistent.
+	
+	\item \textbf{Project Velocity}
+	\vspace{.2cm} \\
+	This is a measure of how much work is getting don on the project. It is also used as an indicator of how many user stories can be done before a deadline.
+	
+	\item \textbf{Release Plan}
+	\vspace{.2cm} \\
+	The development team estimates the ideal developing time needed for each user story. The customer must indicate which of the user stories must have higher priority.
+\end{itemize}
+
+\subsubsection{Iteration}
+This is made up of several phases:
+
+\begin{itemize}
+	\item \textbf{Iteration Planning}
+	\vspace{.2cm} \\
+	During iteration planning meetings, customers select the user stories from the release plan. User stories and failed tests are broken down into programming tasks. These tasks are done by developers.
+	
+	\item \textbf{Stand-up Meetings}
+	\vspace{.2cm} \\
+	These meetings are scheduled at the beginning of every day.
+	
+	\item \textbf{CRC Cards}
+	\vspace{.2cm} \\
+	Class, Responsibilities and Collaboration should be used to design systems. \textbf{Responsibilities} represent anything an object knows or does, while \textbf{collaborators} represent the classes to collaborate with in order to fulfill the responsibilities. Individual cards are used to represent objects.
+	
+	\item \textbf{Unit Test First}
+	\vspace{.2cm} \\
+	Unit tests are created before any coding activity. This is known as \textbf{Test Driven Development} (TDD).
+	
+	\item \textbf{Pair Programming}
+	\vspace{.2cm} \\
+	All code is created by two people working together at a single computer. One of the couple is the \textbf{navigator}, which reviews the code, and one is the \textbf{driver}, which writes the code.
+	
+	\item \textbf{Continuous Integration}
+	\vspace{.2cm} \\
+	Developers should be integrating code every few hours. All unit tests must pass in order to detect any compatibility problem early.
+\end{itemize}
+
+\subsubsection{Acceptance Tests}
+Here we have two phases:
+
+\begin{itemize}
+	\item \textbf{Creation}
+	\vspace{.2cm} \\
+	Acceptance tests are created from user stories. The customer specifies some scenarios in which to test for a user story. These are used as regression tests prior to production release.
+	
+	\item \textbf{Customer Approval}
+	\vspace{.2cm} \\
+	Customers are responsible for verifying the correctness of the acceptance tests. Customers decide which failed tests are of highest priority. A user story is not considered completed until it passes all acceptance tests.
+\end{itemize}
+
+\subsection{Scrum}
+Scrum is a framework that has \textbf{three roles} -- product owner, scrum master and scrum team, \textbf{three ceremonies} -- sprint planning, daily scrum meetings and sprint review, and \textbf{three artifacts} -- product backlog, string backlog and burndown chart.
+
+\subsubsection{Roles}
+There are three different roles in Scrum:
+
+\begin{itemize}
+	\item \textbf{Product Owner}
+	\vspace{.2cm} \\
+	This could be a customer representative or a customer proxy. He devises the vision, business plan and releases. He is also responsible for defining the features of the product prioritized on the return of investment. He also builds the product backlog and leads the scrum planning.
+	
+	\item \textbf{Scrum Master}
+	\vspace{.2cm} \\
+	Does whatever it's necessary to help the team be successful, by supporting the practices of Scrum. He manages conflicts within the team, identifies and prioritizes impediments, and implements remediation plans. The Scrum master is not a project manager, he does not assigning tasks to people.
+	
+	\item \textbf{Scrum Team}
+	\vspace{.2cm} \\
+	A team is typically composed by 5 to 10 people. These teams are cross functional and include all the expertise needed. Teams are also self-organizing. They set their sprint goals, and do everything within the boundaries of a project to achieve them.
+\end{itemize}
+
+\subsubsection{Ceremonies}
+There are three ceremonies in Scrum:
+
+\begin{itemize}
+	\item \textbf{Sprint Planning}
+	\vspace{.2cm} \\
+	This takes place at the beginning of each sprint, and sets the goals of the sprint. The project owner and the team review the product backlog, and discuss goals. The items selected are then broken down into tasks and added to the sprint backlog.
+	
+	\item \textbf{Daily Scrum Meetings}
+	\vspace{.2cm} \\
+	These are short, 15 minutes meetings, where tams report what they have done and what they are going to do. After the meeting, the Scrum master updates the burndown chart with the data of the completed tasks.
+	
+	\item \textbf{Sprint Review}
+	\vspace{.2cm} \\
+	The team demos the work they have done to everyone in the three roles. Presentations are not allowed.
+\end{itemize}
+
+\subsection{Agile}
+The 12 rules of the Agile manifesto are the following:
+
+\begin{enumerate}
+	\item Our highest priority is to satisfy the customer through early and continuous delivery of valuable software.
+	\item Welcome changing requirements, even late in development. Agile processes harness change for the customer's competitive advantage.
+	\item Deliver working software frequently, from a couple of weeks to a couple of months, with a preference to a shorter timescale.
+	\item Business people and developers must work together daily throughout the project.
+	\item Build projects around motivated individuals. Give them the environment and support they need, and trust them to get the job done.
+	\item The most efficient and effective method of conveying information to and within a development team is face-to-face conversation.
+	\item Working software is the primary measure of progress.
+	\item Agile processes promote sustainable development. The sponsors, developers, and users should be able to maintain a constant pace indefinitely.
+	\item Continuous attention to technical excellence and good design enhances agility.
+	\item Simplicity -- the art of maximizing the amount of work not done -- is essential.
+	\item The best architectures, requirements, and designs emerge from self-organizing teams.
+	\item At regular intervals, the team reflects on how to become more effective, then tunes and adjusts its behavior accordingly.
+\end{enumerate}
+
+\subsection{Hacker Way}
+In the hacker way, command is decentralized. This means that subordinate leaders must use their initiative in order to accomplish tasks supporting their senior's intent. The goals of a layer are set by the immediate upper layer, and this is a continuous feedback loop. Three levels of command are:
+
+\begin{itemize}
+	\item \textbf{Senior Leadership}
+	\vspace{.2cm} \\
+	It sets the strategic long-term direction, and ensures that the feedback engine runs smoothly. It is also responsible for the overall people management, meaning acquiring new capabilities, expelling obsolete capabilities and react to external changes.
+	
+	\item \textbf{Management}
+	\vspace{.2cm} \\
+	It provides operational context (goals) by linking strategy with tactics. They also devise the constraints that are aligned with the strategy of the company under which the developers operate. There is trust towards developers, and it provides them with all the software and hardware needed.
+	
+	\item \textbf{Developers}
+	\vspace{.2cm} \\
+	They are responsible for the tactical level of operations. The teams are composed of about 10 developers.
+\end{itemize}
+The decision is data-driven, and every layer must have a data scientist to help analyze data. \\ \\
+The philosophy of this method is to deploy, and if it fails, fix it. Some companies release versions of the product only to a subset of the users in order to test it. If the version is broken, they simply rollback to the previous working version.
+
+\section{Requirement Engineering}
+Requirement engineering analyses the context in which the problem to be solved lies, and finds out what needs to be developed, purchased or installed in order to fix the problem. \\ \\
+It is divided into two overlapping sets. The first is the \textbf{problem world's phenomena} set, and the second is the \textbf{machine solutions' phenomena} set. The intersection of these two sets is called \textbf{shared phenomena}. \\ \\
+There is also the distinction to be made between \textbf{system-as-is}, which is the system as it exists before the machine is built into it, and the \textbf{system-to-be}, which is the system as it should be when the machine will be built and operated in it.
+
+\begin{itemize}
+	\item \textbf{System-As-Is}
+	\vspace{.2cm} \\
+	Contains the problems, opportunities and domain knowledge.
+	
+	\item \textbf{System-To-Be}
+	\vspace{.2cm} \\
+	Contains the who, what and why.
+\end{itemize}
+
+\subsection{Categories of Requirements}
+\subsubsection{Environmental Phenomena}
+This set is subdivided into:
+
+\begin{itemize}
+	\item \textbf{Domain Properties}
+	\vspace{.2cm} \\
+	These are descriptive statements about the problem world that is expected to hold regardless of how the system will behave.
+	
+	\item \textbf{Assumptions}
+	\vspace{.2cm} \\
+	Statements that need to be satisfied by the environment and formulated in terms of environmental phenomena.
+	
+	\item \textbf{System Requirements}
+	\vspace{.2cm} \\
+	Prescriptive statements to be enforced by the \textbf{software-to-be}, possibly in cooperation with other system components, and formulated in terms of environmental phenomena. They are divided into:
+	
+	\begin{itemize}
+		\item \textbf{Functional Requirements}
+		\vspace{.2cm} \\
+		They define the functional effects that the \textbf{software-to-be} is required to have in its environment. They may also refer to environmental conditions under which such operations should be applied. They are also known as \textbf{features}.
+		
+		\item \textbf{Non-Functional Requirements}
+		\vspace{.2cm} \\
+		They define constraints on the way the \textbf{software-to-be} should satisfy functional requirements or on the way it should be developed. There could be several such requirements, such as:
+		
+		\begin{itemize}
+			\item \textbf{Quality Requirements}
+			\item \textbf{Compliance Requirements}
+			\item \textbf{Architectural Requirements}
+			\item \textbf{Development Requirements}
+		\end{itemize}
+	\end{itemize}
+\end{itemize}
+
+\subsubsection{Shared Phenomena}
+These are:
+
+\begin{itemize}
+	\item \textbf{Software Requirements}
+	\vspace{.2cm} \\
+	Prescriptive statements to be enforced solely by the \textbf{software-to-be} and formulated only in terms of shared phenomena.
+\end{itemize}
+
+\subsection{Requirements Engineering Process}
+\subsubsection{Requirements Elicitation}
+This is the discovery of candidates requirements and assumptions that will shape the \textbf{system-to-be} based on the weaknesses of the \textbf{system-as-is}. It requires a preliminary phase of knowledge acquisition and discovery about the application domain, the organization and the \textbf{system-as-is}. This phase can be of two types:
+
+\begin{itemize}
+	\item \textbf{Artifact Driven}
+	\vspace{.2cm} \\
+	Collect, read and synthesize relevant documentation about the \textbf{system-as-is}. Submit a list of specific questions to selected stakeholders with a list of possible answers and a brief context. Illustrate a typical sequence of interactions among system components that meet an implicit objective with concrete examples. Show positive/negative and normal/abnormal scenarios. Show mock-ups and prototypes of the final product to help understand and clarify its features.
+	
+	\item \textbf{Stakeholder Driven}
+	\vspace{.2cm} \\
+	Organize interviews with specific stakeholders to target the information we want to acquire. Interviews can be \textbf{structured}, which follow a sequence of pre-defined questions, or \textbf{unstructured}, where there is only a free informal discussion with the stakeholder about the \textbf{system-as-is}.
+\end{itemize}
+
+\subsubsection{Requirements Evaluation}
+This step is for the evaluation of the elicited requirements, in order to obtain a set of low-risk, conflict-free requirements that stakeholders agree on. This step too is divided into several parts:
+
+\begin{itemize}
+	\item \textbf{Conflict Handling}
+	\vspace{.2cm} \\
+	Negotiation may resolve conflicts there may be between stakeholders.
+	
+	\item \textbf{Risk Analysis}
+	\vspace{.2cm} \\
+	What is known as \textbf{functional risk} concerns the inability of the product to deliver the required services. \textbf{Non-functional risk}, on the other hand, concerns the inability of the product to deliver the required quality.
+	
+	\item \textbf{Prioritization}
+	\vspace{.2cm} \\
+	Some requirements often need to be prioritized. Unexpected circumstances might force re-planning of the development. Requirements with lower priority should be weakened or even dropped if necessary.
+\end{itemize}
+
+\subsubsection{Requirements Specification}
+This is to detail, structure and document the agreed characteristics of the \textbf{system-to-be} as they emerge from the evaluation activity. The output document of this phase is the \textbf{requirements document}, which contains objectives, domain properties, assumptions... This document should be easy to understand. These requirements can be of three different types:
+
+\begin{itemize}
+	\item \textbf{Informal}
+	\vspace{.2cm} \\
+	Make use of \textbf{natural language} to document all of the agreed requirements. Ambiguity and noise are inherent to natural language, and may lead to different interpretations.
+	
+	\item \textbf{Semi-Formal}
+	\vspace{.2cm} \\
+	Make use of diagrammatic notations to substitute or complement the natural language specifications. All items and relationships and items are declared formally. \textbf{UML} (Unified Modeling Language) is the industry standard for documenting object oriented systems.
+	
+	\item \textbf{Formal}
+	\vspace{.2cm} \\
+	Make use of formal notations that have a defined syntax, semantic and proof theory, in order to describe and derive requirements.
+\end{itemize}
+
+\subsubsection{Requirements Consolidation}
+In this steps we detect defects, report them, analyze their causes, and undertake the appropriate actions in order to fix them and ensure quality of the requirements. There are four steps to this process:
+
+\begin{itemize}
+	\item \textbf{Inspection Planning}
+	\vspace{.2cm} \\
+	Determine the size and members of the inspection team, schedule and formats of the reports.
+	
+	\item \textbf{Individual Reviewing}
+	\vspace{.2cm} \\
+	Each inspector reads the requirements document or parts of it to look for defects.
+	
+	\item \textbf{Defect Evaluation at Review Meetings}
+	\vspace{.2cm} \\
+	The defects found by each inspector are collected and discussed  to recommend appropriate actions.
+	
+	\item \textbf{Requirements Document Consolidation}
+	\vspace{.2cm} \\
+	The requirements document is revised to address all of the concerns expressed in the inspection report.
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
