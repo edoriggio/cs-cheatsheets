@@ -1,0 +1,104 @@
+% Copyright 2021 Edoardo Riggio
+
+% Licensed under the Apache License, Version 2.0 (the "License");
+% you may not use this file except in compliance with the License.
+% You may obtain a copy of the License at
+
+% 	http://www.apache.org/licenses/LICENSE-2.0
+
+% Unless required by applicable law or agreed to in writing, software
+% distributed under the License is distributed on an "AS IS" BASIS,
+% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+% See the License for the specific language governing permissions and
+% limitations under the License.
+
+\documentclass{article}
+
+\usepackage{hyperref, amsmath, graphicx}
+\usepackage{fancyvrb,newverbs,xcolor}
+
+\definecolor{cverbbg}{gray}{0.93}
+
+\newenvironment{cverbatim}
+ {\SaveVerbatim{cverb}}
+ {\endSaveVerbatim
+  \flushleft\fboxrule=0pt\fboxsep=.5em
+  \colorbox{cverbbg}{\BUseVerbatim{cverb}}%
+  \endflushleft
+}
+
+\newenvironment{lcverbatim}
+ {\SaveVerbatim{cverb}}
+ {\endSaveVerbatim
+  \flushleft\fboxrule=0pt\fboxsep=.5em
+  \colorbox{cverbbg}{%
+    \makebox[\dimexpr\linewidth-2\fboxsep][l]{\BUseVerbatim{cverb}}%
+  }
+  \endflushleft
+}
+
+\newcommand{\ctexttt}[1]{\colorbox{cverbbg}{\texttt{#1}}}
+\newverbcommand{\cverb}
+  {\setbox\verbbox\hbox\bgroup}
+  {\egroup\colorbox{cverbbg}{\box\verbbox}}
+
+\begin{document}
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+        
+        \Huge
+        \textbf{Information Retrieval Cheatsheet}
+        
+        \vspace{0.5cm}
+        \LARGE
+        
+        \vspace{.5cm}
+        
+        Edoardo Riggio
+   		  \vspace{1.5cm}
+       
+        \vfill
+        
+        \today
+        
+        \vspace{.8cm}
+          \Large
+          Operating Systems - SA. 2021 \\
+        Computer Science\\
+        Universit\`{a} della Svizzera Italiana, Lugano\\
+        
+    \end{center}
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+\subsection{Text Information Systems}
+Text Information Systems involve three main capabilities:
+
+\begin{itemize}
+	\item Text Retrieval
+	\vspace{.2cm} \\
+	Information Retrieval is a field concerned with the structure, analysis, organization, storage searching, and retrieval of information.
+	
+	\item Text Analysis
+	\vspace{.2cm} \\
+	Analyze large amounts of text data in order to discover interesting patterns buried in text.
+	
+	\item Text Organization
+	\vspace{.2cm} \\
+	Annotate a collection of text documents with meaningful topical structures so that scattered information can be connected and navigated.
+\end{itemize}
+While text retrieval is part of information retrieval, text analysis and text organization are part of text mining. \\ \\
+Differently from queries done on DBMS, queries in search engines make use of natural language. It is much harder to compare the text query to the document text and determining what is a good match and what is not a good match. This is the core issue of information retrieval. There are many different ways of writing the same thing, thus an identical matching of words is not enough.
+
+\subsection{Relevance}
+A document is said to be relevant when it contains the information that a person was looking for when he/she submitted the query tot eh search engine.\\ \\
+In order to understand what the user is asking for in the query, we use something that is known as \textbf{NLP} (Natural Language Processing). NLP is concerned with developing techniques for enabling computers to understand the meaning of natural language text.
+
+\section{Text Access}
+
+\end{document}
