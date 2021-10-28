@@ -14,8 +14,10 @@
 
 \documentclass{article}
 
-\usepackage{hyperref, amsmath, graphicx}
+\usepackage{hyperref, amsmath, graphicx, amssymb}
 \usepackage{fancyvrb,newverbs,xcolor}
+
+\graphicspath{ {./assets/} }
 
 \definecolor{cverbbg}{gray}{0.93}
 
@@ -100,5 +102,269 @@ A document is said to be relevant when it contains the information that a person
 In order to understand what the user is asking for in the query, we use something that is known as \textbf{NLP} (Natural Language Processing). NLP is concerned with developing techniques for enabling computers to understand the meaning of natural language text.
 
 \section{Text Access}
+Text data access is the foundation for text analysis. The general goal of text data access is to connect users with the right information at the right time. \\ \\
+Connection with users can be done in two ways:
+
+\begin{itemize}
+	\item \textbf{Pull}
+	\vspace{.2cm} \\
+	The user takes initiative in order to fetch relevant information from the system.
+	
+	\item \textbf{Push}
+	\vspace{.2cm} \\
+	The system takes initiative in order to offer relevant pieces of information to the users.
+\end{itemize}
+
+\subsubsection{Access Mode: Pull vs Push}
+In \textbf{pull} mode, the user initiates the access process in order to find the relevant text data. When a user has such need, then this can be done in two different ways:
+
+\begin{itemize}
+	\item \textbf{Querying}
+	\vspace{.2cm} \\
+	The user can use a query in order to obtain ad hoc information. This mode of research is done by using a few -- yet specific -- words.
+	
+	\item \textbf{Browsing}
+	\vspace{.2cm} \\
+	It is a way of accessing text data, and can be very useful for users when they do not know how to formulate an effective query.
+\end{itemize}
+In \textbf{push} mode, the system initiates the process to recommend a set of relevant information items to the user. \\ \\
+Broadly, there are two kinds of information needs:
+
+\begin{itemize}
+	\item \textbf{Short-Term Needs}
+	\vspace{.2cm} \\
+	These needs are often associated with pull mode. This type of information need is temporary and usually satisfied through searching or browsing.
+	
+	\item \textbf{Long-Term Needs}
+	\vspace{.2cm} \\
+	These needs are often associated will pull mode. This type of information need can be better satisfied through filtering or recommendation of the system to the user.
+\end{itemize}
+Finally we have \textbf{browsing traces}. These traces happen whenever a user does any kind of browsing. They are used in order to model the behaviour of the user, and make more precise recommendations.
+
+\subsection{Search Engine Architecture}
+A \textbf{software architecture} consists of software components, the interfaces provided by those components, and the relationships between them. \\ \\
+The software architecture of a search engine is determined by the following requirements:
+
+\begin{itemize}
+	\item \textbf{Effectiveness}
+	\item \textbf{Efficiency}
+\end{itemize}
+An information retrieval process can be divided into four subprocesses:
+
+\begin{enumerate}
+	\item \textbf{Indexing Process}
+	\vspace{.2cm} \\
+	This process is composed of several different stages. First we have \textbf{text acquisition}, in which the system identifies and stores documents for indexing. \\ \\
+	Second we have \textbf{text transformation}, in which the system transforms documents into index terms or features. \\ \\
+	Finally we have \textbf{index creation}, in which the system takes index terms and creates data structures to support fast searching.
+	
+	\item \textbf{Query and Retrieval Process}
+	\vspace{.2cm} \\
+	It is composed of the following stages. \textbf{User interaction}, which supports the creation of a query and displays the results. \\ \\
+	Next we have \textbf{ranking and retrieval}, in which the query and indices are used in order to generate a ranked list of documents. \\ \\
+	Finally we have \textbf{evaluation}, which monitors and measures the effectiveness and efficiency of the information retrieval system.
+	
+	\item \textbf{Relevance Feedback Process}
+	\vspace{.2cm} \\
+	It is composed of three parts. The first part is the \textbf{user evaluation}, where the user assesses the effectiveness of the system. \\ 
+	Then we have \textbf{user feedback}, which supports refinement of the query and display of the result.\\
+	Finally we have \textbf{ranking and retrieval}, where the system generates a ranked list of the documents.
+\end{enumerate}
+
+\subsection{Formal Definition of Information Retrieval}
+Information retrieval is composed of several elements, such as:
+
+\begin{itemize}
+	\item \textbf{Vocabulary}
+	\vspace{.2cm} \\
+	Vocabulary is defined as:
+	\[ V = \{ w_1, w_2, ..., w_n \} \]
+	This represents the vocabulary of a language.
+	
+	\item \textbf{Document}
+	\vspace{.2cm} \\
+	A document is defined as:
+	\[ d_i = d_{i1}, ..., d_{iM} \]
+	Where $d_{ij} \in V$.
+	
+	\item \textbf{Collection}
+	\vspace{.2cm} \\
+	A collection is defined as:
+	\[ C = \{d_1, ..., d_M\} \]
+	this represents a collection of documents.
+	
+	\item \textbf{Query}
+	\vspace{.2cm} \\
+	A query is defined as:
+	\[ q = q_1, ..., q_M \]
+	Where $q_j \in V$.
+	
+	\item \textbf{Relevant Documents}
+	\vspace{.2cm} \\
+	This set is defined as:
+	\[ R(q) \subseteq C \]
+	And it is generally unknown and user-dependent. The query acts as a hint on which the document must be contained in $R(q)$.
+\end{itemize}
+
+\subsection{How to Compute $R'(q)$}
+$R'(q)$ can be computed in one of two ways:
+
+\begin{itemize}
+	\item \textbf{Document Selection}
+	\vspace{.2cm} \\
+	This can be described as:
+	\[ R'(q) = \{ d \in C~|~f(d, q) = 1 \} \]
+	Where $f(d, q) \in \{0,1\}$ and is an indicator function/binary classifier. Here the system must decide whether a document is relevant or not -- i.e. \textbf{absolute relevance}. This is also known as \textbf{boolean retrieval}.
+	
+	\item \textbf{Document Ranking}
+	\vspace{.2cm} \\	
+	This can be defined as:
+	\[ R'(q) = \{ d \in C~|~f(d,q) > \Theta\} \]
+	Where $f(d,q) \in \mathbb{R}$ is a relevance measure function, and $\Theta$ is a cutoff determined by the user. Here the system only decides if one document is more likely relevant than another -- i.e. \textbf{relative measure}. This is also known as \textbf{ranked retrieval}.
+\end{itemize}
+
+\section{Implementation of an Information Retrieval System}
+An information retrieval system is mainly made up of four components:
+
+\begin{enumerate}
+	\item \textbf{Tokenizer}
+	\vspace{.2cm} \\
+	This component takes in documents as raw strings and determines how to separate the large document into separate tokens.
+	
+	\item \textbf{Indexer}
+	\vspace{.2cm} \\
+	This module processes documents and indexes them with appropriate data structures. This module can be ran offline.
+	
+	\item \textbf{Scorer/Ranker}
+	\vspace{.2cm} \\
+	This module takes a query and returns a ranked list of documents.
+\end{enumerate}
+
+\subsection{Indexing}
+The main role of the indexer is to convert documents into data structures in order to enable fast search. The \textbf{inverted index} is the dominant indexing method for supporting basic search algorithms. \\ \\
+This data structure is composed of two parts:
+
+\begin{itemize}
+    \item \textbf{Lexicon}
+	\vspace{.2cm} \\
+	It is a table of search-specific information, such as document frequency and where to find in the postings the per-document term counts
+	
+	\item \textbf{Posting File}
+	\vspace{.2cm} \\
+	It is a mapping that goes from any term integer ID to a list of documents IDs and frequency information of the term in those documents.
+\end{itemize}
+Before obtaining the inverted index we need to pre-process the documents in order to extract only the features we are interested in.
+
+\subsection{Zipf's Law}
+The distribution of words in documents is very skewed. This means that only a few words occur often, while many other words occur rarely. \\ \\
+Zipf's Law says that the rank $r$ of a word times its frequency $f$, is approximately a constant $k$ -- assuming that the words are ranked in decreasing order of frequency. Thus we have the following formula:
+\[ r \cdot f \approx k \] \\
+In the following case, for example, the words on the far right -- with $x = [0, 7.5)$ -- are high frequency words, thus useless, the words in the middle -- with $x = [7.5, 15)$ -- are intermediate frequency words, thus very useful, and the words in the far right -- with $x = [15,25]$ -- are rare words, thus they might be useful. \\ \\
+
+\begin{center}
+	\includegraphics[width=7cm]{zipf.png}
+\end{center}
+
+\subsection{Text Indexing}
+Text indexing can be divided into the following steps:
+
+\begin{enumerate}
+	\item \textbf{Tokenization}
+	\item \textbf{Stopword Removal}
+	\item \textbf{Stemming}
+	\item \textbf{Detecting Phrases}
+	\item \textbf{POS Tagging and N-Grams}
+	\item \textbf{Processing Document Structure and Markup}
+	\item \textbf{Named Entity Recognition}
+	\item \textbf{Link Analysis}
+	\item \textbf{Build the Inverted Index}
+	\item \textbf{Compress the Inverted Index}
+\end{enumerate}
+
+\subsubsection{Tokenizing}
+To tokenize means to break down words into appropriate sequences of characters. \\ \\
+The first step is to use the \textbf{parser} in order to identify the appropriate parts of the document that need to be tokenized.
+
+\subsubsection{Stopping Removal}
+Some words have little to no meaning on their own and occur very frequently. These are treated as stopwords and removed. Although, sometimes, they could be important in combination with other words.
+
+\subsubsection{Stemming}
+Many morphological variations of words exist. In most cases, these have the same or very similar meanings. The goal of \textbf{stemmers} is to attempt to reduce morphological variations of words to a common stem. \\ \\
+For example, the words \textit{consign}, \textit{consigned}, \textit{consigning} and \textit{consignment} can all be reduced down to \textbf{consign}. \\ \\
+There are two main types of stemming approaches:
+
+\begin{itemize}
+	\item \textbf{Algorithmic Approach}
+	\vspace{.2cm} \\
+	In this case it is a program that determines related words. This could give some false positives and many false negatives.
+	
+	\item \textbf{Dictionary-Based Approach}
+	\vspace{.2cm} \\
+	In this case a list of related words is used. Endings are removed based on a dictionary. This approach produces real words, not stems, and it's much more precise -- but more expensive to run.
+\end{itemize}
+Some used stemmers are:
+
+\begin{itemize}
+	\item \textbf{Porter Stemmer}
+	\vspace{.2cm} \\
+	This is an algorithm used since the 70s. It consists of a series of rules designed to remove the longest possible suffix from a word at each step. It produces stems, not real words. Sometimes this algorithm can be too aggressive or too weak. Porter2 stemmer was created in order to address some of the issues Porter had.
+	
+	\item \textbf{Krovertz Stemmer}
+	\vspace{.2cm} \\
+	This is a hybrid algorithmic-dictionary stemmer. The word is checked in a dictionary. If the word is present, then the word is either left alone or replaced with "exception", if the word is not present, the word is checked for suffixes that could be removed. Finally, after the removal, the dictionary is checked again. \\ \\
+	In this case words are generated, not stems. Furthermore, this stemmer has lower false positives, but higher false negatives.
+\end{itemize}
+
+\subsubsection{POS Tagger and N-Grams}
+\textbf{POS (Part Of Speech) tagging} is the process of marking up a word in a text as corresponding to a particular part of speech, based on both its definition and its context. POS taggers use statistical models of text in order to predict syntactic tags of words. \\ \\
+Since POS tagging is too slow for some collections, \textbf{N-Grams} also exist. These are typically formed from overlapping sequences of words. Frequent N-Grams are more likely to be useful phrases. N-Grams follow Zipf's distribution.
+
+\subsubsection{Build the Inverted Index}
+In order to construct an inverted index, we use sort-based methods by following these steps:
+
+\begin{enumerate}
+	\item Collect local tuples, such as term IDs, Doc IDs and frequency;
+	\item Sort the local tuples;
+	\item Perform pair-wise merge runs;
+	\item Output the inverted file.
+\end{enumerate}
+While the dictionary part of the inverted index is of modest size, the postings part is huge and stored on disk.
+
+\subsection{Ranking Documents}
+The formula that is used in order to rank documents is the following.
+\[ f(q, d) = f_a (h (g (t_1, d, q), ..., g (t_k, d, q)), f_d(d), f_q(q)) \]
+Where $f_d(q)$ and $f_q(q)$ are pre-computed. Moreover, a score accumulator is maintained for each $d$ in order to compute $h$. Finally, for each query term $t_i$, the following inverted list is fetched.
+\[ \{ (d_1, f_1), ..., (d_n, f_n) \} \]
+In order to improve the efficiency of the ranker, one could use caching, and keep only the most promising accumulators. There is no need for parallel processing.
 
 \end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
