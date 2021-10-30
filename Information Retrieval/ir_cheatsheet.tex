@@ -576,6 +576,48 @@ Other smoothing methods can be used, two of the main ones are:
 	Which is also known as Dirichlet Prior Smoothing
 \end{itemize}
 
+\section{Feedback Models}
+There are three major forms of feedback:
+
+\begin{itemize}
+	\item \textbf{Relevance Feedback}
+	\vspace{.2cm} \\
+	The user expressively indicates the documents that are relevant to the query.
+	
+	\item \textbf{Pseudo Feedback}
+	\vspace{.2cm} \\
+	The system assumes the top retrieved documents as relevant.
+	
+	\item \textbf{Implicit Feedback}
+	\vspace{.2cm} \\
+	The system monitors what the user does and based on that it makes some assumptions on the document relevance.
+\end{itemize}
+
+\subsection{Relevance Feedback}
+The user can make judgements about whether each returned document is useful or not. With relevance feedback we can perform two operations on the query:
+
+\begin{itemize}
+	\item \textbf{Query Expansion}
+	\vspace{.2cm} \\
+	It is when new weighted terms are added.
+	
+	\item \textbf{Query Modification}
+	\vspace{.2cm} \\
+	It is when the weights of existing terms are adjusted.
+\end{itemize}
+
+\subsection{Rocchio Feedback}
+The Rocchio Feedback is a relevance feedback algorithm applied to the VSM (Vector Space Model). The following is a representation of the Rocchio Feedback.
+
+\begin{center}
+	\includegraphics[width=9cm]{rocchio.png}
+\end{center}
+The Rocchio algorithm was invented in 1971 and revolves around the concept of an \textbf{optimal query}. The optimal query maximises the difference between the average vector representing the relevant documents and the average vector representing the non-relevant documents. \\ \\
+The modified query results in a longer expanded query. This is because the terms that occur frequently in the relevant documents will be added to the modified query and those that occur frequently in non-relevant documents will be removed. \\ \\
+The Rocchio feedback formula is the following:
+\[ q'_j = \alpha \cdot q_j + \beta \cdot \frac{1}{|R|} \cdot \sum_{D_i \in R} d_{ij} - \gamma \cdot \frac{1}{|NR|} \cdot \sum_{D_i \in NR} d_{ij} \]
+Where $\alpha$ is a constant of value 8, $\beta$ is a constant of value 16, $\gamma$ is a constant of value 4, \textit{R} is the group of relevant documents -- $|R|$ is the size of that group, and \textit{NR} is the group of non-relevant groups -- $|NR|$ is the size of that group.
+
 \end{document}
 
 
