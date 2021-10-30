@@ -618,6 +618,60 @@ The Rocchio feedback formula is the following:
 \[ q'_j = \alpha \cdot q_j + \beta \cdot \frac{1}{|R|} \cdot \sum_{D_i \in R} d_{ij} - \gamma \cdot \frac{1}{|NR|} \cdot \sum_{D_i \in NR} d_{ij} \]
 Where $\alpha$ is a constant of value 8, $\beta$ is a constant of value 16, $\gamma$ is a constant of value 4, \textit{R} is the group of relevant documents -- $|R|$ is the size of that group, and \textit{NR} is the group of non-relevant groups -- $|NR|$ is the size of that group.
 
+\section{System Evaluation}
+Evaluation is concerned with assessing if the system carries out its tasks properly. This is the key to building an effective and efficient search engine. \\ \\
+In an evaluation assessment, three measurements are checked:
+
+\begin{itemize}
+	\item \textbf{Efficiency}
+	\vspace{.2cm} \\
+	It measures if the information retrieval system carries out its tasks with an optimal use of its resources.
+	
+	\item \textbf{Effectiveness}
+	\vspace{.2cm} \\
+	It measures if the information retrieval system finds what the user wants to find.
+	
+	\item \textbf{Usability}
+	\vspace{.2cm} \\
+	It measures how useful is the system for real user tasks.
+\end{itemize}
+Furthermore, these measurements are usually carried out in a controlled laboratory environment.
+
+\subsection{The Cranfield Evaluation Methodology}
+This is the primary approach to an evaluation of an information retrieval system's effectiveness. The main idea of this test is to build reusable test collections and to define measures of effectiveness. In order to do this, we need:
+
+\begin{itemize}
+	\item A sample collection of documents;
+	\item A sample collection of queries/topics;
+	\item Relevance judgements;
+	\item Measures to quantify how well a system's result matches the ideal ranked list.
+\end{itemize}
+
+\subsection{TREC}
+TREC (Text REtrieval Conference) is an evaluation forum that started in 1992 in order to encourage research in information retrieval evaluation and to compare information retrieval systems.
+
+\subsection{Effectiveness}
+The two main measurements to evaluate effectiveness in an information retrieval system are \textbf{precision} and \textbf{recall}. \\ \\
+\textbf{Precision} is a measurement in which we simply compute to what extent all the retrieval results are relevant. On the other hand, \textbf{recall} measures the completeness of coverage of relevant documents in the retrieval system.
+
+\subsubsection{Classification Errors}
+There are two main classification error in information retrieval systems, these are:
+
+\begin{itemize}
+	\item \textbf{False Positive - Type I Error}
+	\vspace{.2cm} \\
+	It is the ratio of non-relevant documents that have been retrieved.
+	
+	\item \textbf{False Negative - Type II Error}
+	\vspace{.2cm} \\
+	It is the ratio of the relevant documents that have not been retrieved.
+\end{itemize}
+
+\subsubsection{F1 Score}
+The F1 score is the harmonic mean of recall and precision. Its formula is the following:
+\[ F = \frac{1}{\frac{1}{2} \left( \frac{1}{R} + \frac{1}{P} \right)} = \frac{2RP}{R+P} \]
+Where $R$ is the recall and $P$ is the precision of the information retrieval system.
+
 \end{document}
 
 
