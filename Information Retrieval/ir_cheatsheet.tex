@@ -115,7 +115,7 @@ Connection with users can be done in two ways:
 	The system takes initiative in order to offer relevant pieces of information to the users.
 \end{itemize}
 
-\subsubsection{Access Mode: Pull vs Push}
+\subsection{Access Mode: Pull vs Push}
 In \textbf{pull} mode, the user initiates the access process in order to find the relevant text data. When a user has such need, then this can be done in two different ways:
 
 \begin{itemize}
@@ -223,7 +223,7 @@ $R'(q)$ can be computed in one of two ways:
 	Where $f(d,q) \in \mathbb{R}$ is a relevance measure function, and $\Theta$ is a cutoff determined by the user. Here the system only decides if one document is more likely relevant than another -- i.e. \textbf{relative measure}. This is also known as \textbf{ranked retrieval}.
 \end{itemize}
 
-\section{Implementation of an Information Retrieval System}
+\section{Implementation of an IR System}
 An information retrieval system is mainly made up of four components:
 
 \begin{enumerate}
@@ -336,6 +336,117 @@ The formula that is used in order to rank documents is the following.
 Where $f_d(q)$ and $f_q(q)$ are pre-computed. Moreover, a score accumulator is maintained for each $d$ in order to compute $h$. Finally, for each query term $t_i$, the following inverted list is fetched.
 \[ \{ (d_1, f_1), ..., (d_n, f_n) \} \]
 In order to improve the efficiency of the ranker, one could use caching, and keep only the most promising accumulators. There is no need for parallel processing.
+
+\section{Retrieval Models}
+The retrieval process is based on a retrieval model which matches a query with a document. There are at least two classes of retrieval models:
+
+\begin{itemize}
+	\item \textbf{Set-Based Models}
+	\vspace{.2cm} \\
+	These are models like the Boolean model, and are defined by the following function:
+	\[ f(q, d) = \{ 0,1 \} \]
+	
+	\item \textbf{Similarity-Based Models}
+	\vspace{.2cm} \\
+	These are models such as the vector space model, the probabilistic model... They are defined by the following function:
+	\[ f(q,d) = \text{similarity}(q, d) = [0, \infty) \]
+\end{itemize}
+
+\subsection{Examples of Retrieval Models}
+\subsubsection{Boolean Model}
+A boolean model can only have two possible outcomes for query processing: true or false. It is an exact-match retrieval process, and the simplest for of ranking. \\ \\
+A query is usually specified using boolean operators (such as AND, NOT, OR...), and is used in DBMSs. \\ \\
+Some advantages of boolean retrieval are:
+
+\begin{itemize}
+	\item The result is predictable;
+	\item Many different features can be incorporated;
+	\item Efficient query processing.
+\end{itemize}
+While the disadvantages are:
+
+\begin{itemize}
+	\item The effectiveness of the query solely depends on the user;
+	\item Simple queries do not usually work well;
+	\item Complex queries are difficult both to think and to write.
+\end{itemize}
+
+\subsubsection{Ranked Retrieval}
+In ranked retrieval, documents are presented according to how much they match the query. In a good ranking function relevant documents should be ranked on top of non-relevant ones.
+
+\subsection{Designing Retrieval Models}
+All retrieval models are based on the assumption of using a \textbf{bag-of-words} representation of text. A bag-of-words is a model in which a text is represented as the multiset of its words, disregarding grammar and even word order. \\ \\
+In order to design a retrieval function, we require a computational definition of relevance. Moreover, we need to use features such as:
+
+\begin{itemize}
+	\item \textbf{Term Frequency (TF)}
+	\vspace{.2cm} \\
+	This represents how many times does one term appear inside of each document.
+	
+	\item \textbf{Document Length}
+	\vspace{.2cm} \\
+	If a term occurs in a long document many times, it is not as significant as a term that occurs the same number of times inside a short document.
+	
+	\item \textbf{Document Frequency (DF)}
+	\vspace{.2cm} \\
+	This represents how often a term appears at least once in any document of the entire collection.
+\end{itemize}
+
+\subsection{Vector Space Model}
+This is a simple, yet effective, way of designing ranking functions for information retrieval systems. This is a special case of similarity-based models, where we assume that relevance is roughly correlated to the similarity between a query and a document. \\ \\
+In this representation, each dimension of a highly dimensional space represents a term. We can plot the documents in the collection as vectors of term magnitude.
+
+\begin{center}
+	\includegraphics[width=9cm]{vsm.png}
+\end{center}
+This is a framework, thus it needs to be defined. In order to use this framework we need the following:
+
+\begin{itemize}
+	\item \textbf{Dimension Instantiation}
+	\vspace{.2cm} \\
+	The number of dimension can be defined by the number of words inside of a bag-of-words.
+	
+	\item \textbf{Vector Placement}
+	\vspace{.2cm} \\
+	In order to place the vector inside of the framework, we can use bit vectors. These bit vectors can only be either 0 or 1. We will have a 1 if the word $w_i$ -- one of the words of the axes -- is present in the document or query, 0 otherwise.
+	
+	\item \textbf{Similarity Instantiation}
+	\vspace{.2cm} \\
+	The similarity between a query and a document can be defined as the dot product between these two vectors. In this case the formula would be:
+	\[ \text{sim}(q, d) = \langle q, d \rangle = \sum^N_{i = 1} x_i \cdot y_i \]
+\end{itemize}
+By using only these definitions and instantiations, the framework will be limited. For example, wouldn't it be correct to give more credit to terms that appear more times in a document or query? The current model does not allow it. This is why we can introduce some improvements to the current model, such as:
+
+\begin{itemize}	
+	\item \textbf{Term Frequency Vector}
+	\vspace{.2cm} \\
+	An improvement can be applied by representing a frequency vector. This vector will represent the number of times that the word $w_i$ -- one of the words of the axes -- is contained in the query or in the document.
+	
+	\item \textbf{Term Frequency Weighting (TFW)}
+	\vspace{.2cm} \\
+	This improvement consists in using the same formula as the one used in the similarity instantiation, but with $q$ and $d$ represented by term frequency vectors.
+	
+	\item \textbf{Inverse Document Frequency}
+	\vspace{.2cm} \\
+	This improvement consists in giving a weight to words. The formula for computing $y_i$ is given by:
+	\[ y_i = \text{count}(w_i, q) * \log \left( \frac{M+1}{k} \right) \]
+	Where $\text{count}(w_i, q)$ is the number of times the word $w_i$ appears in document $d$, $M$ is the total number of documents in a collection, and $k$ is the total number of documents containing the word $w$. \\ \\
+	The weight of each word inside of the collection of documents is computed by the second part of the previous formula, i.e.
+	\[ \log \left( \frac{M+1}{k} \right) \]
+\end{itemize}
+
+\subsection{TF Transformation}
+Since the inverse document frequency still has some problems, we can use TF transformation in order to normalize the number of times a word appears in a collection. This method is used in order to avoid the dominance of a single term above all the others. \\ \\
+This transformation, which is also known as BM25, is mathematically defined as follows:
+
+\[ f(q, d) = \sum_{w \in q \cap d} \text{count}(w, q) \cdot \frac{(k+1) \cdot \text{count}(w, d)}{\text{count}(w, d) + k} \cdot \log \left( \frac{M+1}{df(w)} \right) \]
+Where $k \geq 0$ is a constant, $w \in q \cap d$ indicates all matched query words in the document, and $df(w)$ indicates the document frequency of the word $w$.
+
+\subsection{Document Length Normalization}
+Since a long document has a higher chance of matching any query, it must be penalised -- but not too much -- by using a document length normalizer. In order to not over-penalise a long document, we say that a document with more words must be penalised more, while a document with more contents must be penalised less. \\ \\
+In order to normalize the document lengths, we use the average document length as a pivot. The formula of the document length normalizer is the following:
+\[ 1 - b + b \cdot \left( \frac{|d|}{\text{avgdl}} \right) \]
+Where $b \in [0, 1]$ is a constant and \textit{avgdl} is the average length of the documents in the collection.
 
 \end{document}
 
