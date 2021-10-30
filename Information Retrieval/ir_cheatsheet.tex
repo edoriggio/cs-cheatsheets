@@ -435,18 +435,146 @@ By using only these definitions and instantiations, the framework will be limite
 	\[ \log \left( \frac{M+1}{k} \right) \]
 \end{itemize}
 
-\subsection{TF Transformation}
+\subsubsection{TF Transformation}
 Since the inverse document frequency still has some problems, we can use TF transformation in order to normalize the number of times a word appears in a collection. This method is used in order to avoid the dominance of a single term above all the others. \\ \\
-This transformation, which is also known as BM25, is mathematically defined as follows:
+This transformation, is mathematically defined as follows:
 
 \[ f(q, d) = \sum_{w \in q \cap d} \text{count}(w, q) \cdot \frac{(k+1) \cdot \text{count}(w, d)}{\text{count}(w, d) + k} \cdot \log \left( \frac{M+1}{df(w)} \right) \]
 Where $k \geq 0$ is a constant, $w \in q \cap d$ indicates all matched query words in the document, and $df(w)$ indicates the document frequency of the word $w$.
 
-\subsection{Document Length Normalization}
+\subsubsection{Document Length Normalization}
 Since a long document has a higher chance of matching any query, it must be penalised -- but not too much -- by using a document length normalizer. In order to not over-penalise a long document, we say that a document with more words must be penalised more, while a document with more contents must be penalised less. \\ \\
 In order to normalize the document lengths, we use the average document length as a pivot. The formula of the document length normalizer is the following:
 \[ 1 - b + b \cdot \left( \frac{|d|}{\text{avgdl}} \right) \]
 Where $b \in [0, 1]$ is a constant and \textit{avgdl} is the average length of the documents in the collection.
+
+\subsection{Probabilistic Models}
+In probabilistic models, we define the ranking function based on the probability that a given document $d$ is relevant to a query $q$.
+\[ p(R = 1~|~d,q) \]
+Where $R \in \{ 0,1 \}$ is a binary random variable that denotes relevance. In order to define relevance in a model such as this, we use the following formula.
+\[ p(R=1~|~q,d) = \frac{\text{count}(R=1, d,q)}{\text{count}(d,q)} \]
+
+\subsection{Query Likelihood Retrieval Model}
+In query likelihood models, our assumption is that the probability of relevance can be approximated by the probability of a query given a document and a relevance.
+\[ p(q~|~d, R=1) \]
+This captures the following probability: if a user likes document $d$, how likely would the user enter query $q$ in order to retrieve document $d$? In this model we assume that the user imagines some ideal document, and generates a query based on that ideal document.
+
+\subsection{Statistical Language Model}
+A statistical language model is used in order to compute the probability of text. For example:
+
+\begin{align*}
+	p(\text{\textit{"Today is Wednesday"}}) & \approx 0.001 \\
+	p(\text{\textit{"Today Wednesday is"}}) & \approx 0.0000000000001 \\
+	p(\text{\textit{"The eigenvalue is positive"}}) & \approx 0.00001
+\end{align*} \\
+This probability distribution over word sequences is highly context- and user-dependent. This is also called a generative model. \\ \\
+Language model is useful to quantify the uncertainties in natural language. It can be particularly useful in:
+
+\begin{itemize}
+	\item \textbf{Speech Recognition}
+	\item \textbf{Text Categorization}
+	\item \textbf{Information Retrieval}
+\end{itemize}
+
+\subsubsection{Unigram Language Model}
+Unigram language model is the simplest form of a language model. It generates text by generating each word independently. Thus:
+\[ p(w_1, w_2, ..., w_n) = p(w_1) + p(w_2) + ... + p(w_n) \]
+In order to compute a more accurate estimation of unigrams, we could use topic representation. To do so we get:
+
+\begin{itemize}
+	\item \textbf{Background Language Model}
+	\vspace{.2cm} \\
+	This LM is composed of terms contained in a general background English text. Mathematically this is equal to:
+	\[ p(w~|~B) \]
+	
+	\item \textbf{Topic Language Model}
+	\vspace{.2cm} \\
+	This LM is composed of terms contained in a collection based on a topic -- for example all words that appear in computer science papers. Mathematically this is equal to:
+	\[ p(w~|~C) \]
+\end{itemize}
+Given these two LMs, we can compute a normalized LM which can then be used with the original text. The normalized LM is given by:
+\[ \frac{p(w~|~T)}{p(w~|~B)} \]
+
+\subsubsection{Query Generation}
+We can consider $p(q~|~d)$ to be made up of independent terms. This way the probability becomes a product of the probabilities of of each query word in each document's language model. In order to formally state this, we consider a query $q$ that contains the words:
+\[ q = w_1, w_2, ..., w_n \]
+Such that $|q| = n$. The scoring or ranking function will thus be:
+\[ p(q~|~d) = p(w_1~|~d) \cdot p(w_2~|~d) \cdot ... \cdot p(w_n~|~d) \]
+In practice, we score the document for this query by using the logarithm of the query likelihood.
+
+\begin{align*}
+	\text{score}(q,d) & = \log p(q~|~d) \\
+	& = \sum^{n}_{i=1} \log p(w_i~|~d) \\
+	& = \sum_{w \in V} \text{count}(w, q) \cdot \log p(w~|~d)
+\end{align*}
+Where $V$ is the vocabulary.
+
+\subsubsection{Smoothing the Document LM}
+In order to estimate the $p(w~|~d)$ in the formula above, we can use the MLE (Maximum Likelihood Estimator). This will make sure that the curve given by $p(w~|~d)$ is smoother.
+\[ p_{ML}(w~|~d) = \frac{\text{count}(w, d)}{|d|} \]
+Now $p(w~|~d)$ will be always positive, even if $\text{\textit{count}}(w, d) = 0$. Now, we also need to consider what probability should be assigned to unseen words. This is the equation used in order to smooth the curve:
+\[ p(w~|~d) = \begin{cases} p_{\text{\textit{seen}}}(w~|~d) & \text{if \textit{w} is seen in \textit{d}} \\ \alpha_d \cdot p(w~|~C) & \text{otherwise} \end{cases} \]
+Where $p_{\text{\textit{seen}}}(w~|~d)$ is the discounted MLE, and $C$ is the collection language model. Finally we can rewrite the ranking function accounting for smoothing. The components of the new function are the following:
+
+\begin{itemize}
+	\item \textbf{Query Words Matched in \textit{d}}
+	\vspace{.2cm} \\
+	The formula is:
+	\[ \sum_{w \in V,~\text{count}(w, d) > 0} \text{count}(w, q) \cdot \log(p_{\text{\textit{seen}}}(w~|~d)) \]
+	
+	\item \textbf{Query Words not Matched in \textit{d}}
+	\vspace{.2cm} \\
+	The formula is:
+	\[ \sum_{w \in V,~\text{count}(w, d) = 0} \text{count}(w,q) \cdot \log (\alpha_d \cdot p(w~|~C)) \]
+	
+	\item \textbf{All Query Words}
+	\vspace{.2cm} \\
+	The formula is:
+	\[ \sum_{w \in V} \text{count}(w, q) \cdot \log (\alpha_d \cdot p(w~|~C)) \]
+\end{itemize}
+An the final equation will be:
+\begin{align*}
+	\text{score}(q,d)  = & \sum_{w \in V} \text{count}(w, q) \cdot \log p(w~|~d) \\
+	= & \sum_{w \in V,~\text{count}(w, d) > 0} \text{count}(w, q) \cdot \log(p_{\text{\textit{seen}}}(w~|~d)) \\
+	& + \sum_{w \in V,~\text{count}(w, d) = 0} \text{count}(w,q) \cdot \log (\alpha_d \cdot p(w~|~C)) \\
+	= & \sum_{w \in V} \text{count}(w, q) \cdot \log (\alpha_d \cdot p(w~|~C)) \\
+	& - \sum_{w \in V,~\text{count}(w, d) > 0} \text{count}(w, q) \cdot \log (\alpha_d \cdot p(w~|~C)) \\
+	= & \sum_{\substack{w \in d \\ w \in q}} \text{count}(w,q) \cdot \log \left( \frac{p_\text{\textit{seen}}(w~|~d)}{\alpha_d \cdot p(w~|~C)} \right) + n \log (\alpha_d) + \sum_{w \in V} \log(p(w~|~C))
+\end{align*}
+By rewriting the formula, the following features are now incorporated in the ranking function:
+
+\begin{itemize}
+	\item \textbf{Matched Query Terms}
+	\vspace{.2cm} \\
+	This can be seen in:
+	\[  \sum_{\substack{w \in d \\ w \in q}} ... \]
+	
+	\item \textbf{TF Weighting}
+	\vspace{.2cm} \\
+	This can be seen in:
+	\[ p_\text{\textit{seen}}(w~|~d) \]
+	
+	\item \textbf{IDF Weighting}
+	\vspace{.2cm} \\
+	This can be seen in:
+	\[ \alpha_d \cdot p(w~|~C) \]
+	
+	\item \textbf{Document Length Normalization}
+	\vspace{.2cm} \\
+	This can be seen in:
+	\[ n \log (\alpha_d) \]
+\end{itemize}
+Other smoothing methods can be used, two of the main ones are:
+
+\begin{itemize}
+	\item \textbf{Linear Interpolation Smoothing}
+	\vspace{.2cm} \\ 
+	Which is also known as Jelinek-Mercer Smoothing.
+	
+	\item \textbf{Bayesian Smoothing}
+	\vspace{.2cm} \\
+	Which is also known as Dirichlet Prior Smoothing
+\end{itemize}
 
 \end{document}
 
