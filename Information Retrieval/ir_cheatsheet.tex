@@ -82,15 +82,15 @@
 Text Information Systems involve three main capabilities:
 
 \begin{itemize}
-	\item Text Retrieval
+	\item \textbf{Text Retrieval}
 	\vspace{.2cm} \\
 	Information Retrieval is a field concerned with the structure, analysis, organization, storage searching, and retrieval of information.
 	
-	\item Text Analysis
+	\item \textbf{Text Analysis}
 	\vspace{.2cm} \\
 	Analyze large amounts of text data in order to discover interesting patterns buried in text.
 	
-	\item Text Organization
+	\item \textbf{Text Organization}
 	\vspace{.2cm} \\
 	Annotate a collection of text documents with meaningful topical structures so that scattered information can be connected and navigated.
 \end{itemize}
@@ -669,8 +669,32 @@ There are two main classification error in information retrieval systems, these 
 
 \subsubsection{F1 Score}
 The F1 score is the harmonic mean of recall and precision. Its formula is the following:
-\[ F = \frac{1}{\frac{1}{2} \left( \frac{1}{R} + \frac{1}{P} \right)} = \frac{2RP}{R+P} \]
+\[ F = \frac{1}{\frac{1}{2} \left( \frac{1}{R} + \frac{1}{P} \right)} = \frac{2RP}{R+P} \] \\
 Where $R$ is the recall and $P$ is the precision of the information retrieval system.
+
+\subsection{Computing the Performance of a System}
+\subsubsection{Mean Average Precision}
+In order to properly compute the performance of a system we need to analyse several queries. To compute the average precision for each query, and to summarize the rankings from multiple queries, we use the \textbf{Mean Average Precision (MAP)}. \\ \\
+The MAP measurement assumes that the user is interested in finding many relevant documents for each query. This requires many relevance judgements in the text collection. \\ \\
+In order to obtain the MAP, first we compute the average precision of each query, and then we compute the mean of these means.
+
+\subsubsection{Interpolation of Recall-Precision Graphs}
+In order to better understand a recall-precision graph, we use the following formula:
+
+\[ P(R) = \max \{ P' : R' \geq R \wedge (R', P') \in S \} \] \\
+Where \textit{S} is the set of observed $(R, P)$ points. This formula defines the precision at any recall level as the maximum precision observed in any point in \textit{S} at a higher recall level. This will produce a step function that is both easier to understand and compare than the original, and allows us to define precision when the $R = 0$. \\
+
+\begin{figure}[!htb]
+	\begin{minipage}{0.48\textwidth}
+	 	\centering
+	 	\includegraphics[width=.9\linewidth]{rpg.png}
+   	\end{minipage}\hfill
+   	\begin{minipage}{0.48\textwidth}
+     		\centering
+     		\includegraphics[width=.9\linewidth]{interpolation.png}
+   	\end{minipage}
+\end{figure}
+\noindent Here the figure on the \textit{left} represents the original recall-precision graph, while the one on the \textit{right} represents the image on the left after we apply interpolation.
 
 \end{document}
 
