@@ -66,7 +66,7 @@
         
         \vspace{.8cm}
           \Large
-          Operating Systems - SA. 2021 \\
+          Information Retrieval - SA. 2021 \\
         Computer Science\\
         Universit\`{a} della Svizzera Italiana, Lugano\\
         
@@ -753,6 +753,77 @@ This is an experimental evaluation, thus it needs to:
 \subsection{Operational Evaluation}
 It is similar to user evaluation, but in this case it deals with real users in real search situations and with real tasks on a real collection. \\ \\
 This is an expensive and difficult-to-run test, but it is a very good test of the system in a real situation.
+
+\section{Web Search Engine}
+A web search engine is divided into three main parts: crawling, indexing and ranking.
+
+\subsection{Web Crawling}
+Find and download pages automatically. The web provides for the collection, which is way too big and constantly growing. \\ \\
+A \textbf{web crawler} is a software that crawls web pages and puts them into cache. The following is the process of crawling.
+
+\begin{enumerate}
+	\item Connect to a DNS server
+	\item The DNS server translates the hostname into an IP address
+	\item There is an attempt from the scraper to connect to the host using a specific port
+	\item A \verb|GET| request is sent to the web server
+\end{enumerate}
+
+\subsubsection{Focused Crawling}
+Here the crawler attempt to download only the pages that are about a specific topic. This method relies on the fact that pages about a topic tend to have links to other pages on the same topic. \\ \\
+The crawler uses a \textbf{text classifier} in order to determine whether a page is on topic.
+
+\subsubsection{Deep Web}
+The 96\% of available websites are in the deep web. These websites can be divided into three main groups:
+
+\begin{itemize}
+	\item \textbf{Private websites}
+	\vspace{.2cm} \\
+	These are websites that might require the user to login, or simply websites that do not have incoming links.
+	
+	\item \textbf{Form Results}
+	\vspace{.2cm} \\
+	These are websites that can be reached only after entering some data inside of a form.
+	
+	\item \textbf{Scripted Pages}
+	\vspace{.2cm} \\
+	These are pages that use client-side programming languages to generate links.
+\end{itemize}
+
+\subsubsection{Politeness Policies}
+In order not to flood web servers with thousands of requests all at the same time, politeness policies are used by web crawlers. These are, for example:
+
+\begin{itemize}
+	\item Limiting the number of requests per second
+	\item Respecting the \verb|robots.txt| file of the website
+\end{itemize}
+
+\subsection{Ranking Algorithms}
+Ranking algorithms are used in order to find which websites are the most authoritative and generally better. One way of performing such ranking is by using the famous PageRank algorithm. \\ \\
+PageRank is used to compute the "popularity" of the given webpages. It does so by considering the websites' inlinks. \\ \\
+The \textbf{Random Surfer Model} is the basic concept behind PageRank. I uses the following algorithm:
+
+\begin{enumerate}
+	\item Choose a random number $r$ between 0 and 1
+	\item If $r < \alpha$, then go to a random page
+	\item If $r \geq \alpha$, then click a link at random on the current page
+	\item Start again from the beginning
+\end{enumerate}
+More generally, PageRank is defined by the following formula:
+
+\[ PR(u) = \frac{\lambda}{N} + (1 - \lambda) \cdot \sum_{v \in B_v} \frac{PR(v)}{L_v} \]
+Where $B_v$ is the set of pages that point to $u$, $L_v$ is the number of outgoing links from page $v$, $N$ is the number of pages, and $\lambda$ is a constant which is typically set to $0.15$. \\ \\
+Interesting pages detected by the algorithm fall into two classes:
+
+\begin{itemize}
+	\item \textbf{Authorities}
+	\vspace{.2cm} \\
+	These are pages that contain useful information. In practice, these pages have many incoming links.
+	
+	\item \textbf{Hubs}
+	\vspace{.2cm} \\
+	These are pages that list a number of authorities. In practice, these pages have many outgoing links to different authorities.
+\end{itemize}
+Authorities are ranked based on the sum of the votes that each Hub has, while the Hubs are ranked based on the sum of votes of the Authorities they are pointing to.
 
 \end{document}
 
