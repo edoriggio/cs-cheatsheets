@@ -825,6 +825,199 @@ Interesting pages detected by the algorithm fall into two classes:
 \end{itemize}
 Authorities are ranked based on the sum of the votes that each Hub has, while the Hubs are ranked based on the sum of votes of the Authorities they are pointing to.
 
+\section{Recommender Systems}
+\textbf{Information filtering} deals with dynamic collections, and generates long and elaborated profiles and filters. It also serves long term information needs. On the other hand, \textbf{information retrieval} deals with static collections. In this case it server short-lived queries. \\ \\
+Another comparison is between \textbf{information filtering} and \textbf{routing}. While \textbf{information filtering} chooses documents to show based on a binary decision. \textbf{routing} relies on ranking in order to determine the best results. In the first case, we have the problem of documents being too much or too few. \\ \\
+There are three different types of information filtering:
+
+\begin{itemize}
+	\item Content-based information filtering
+	\item Collaborative/Social information filtering
+	\item Use-base information filtering
+\end{itemize}
+
+\subsection{Content-Based Information Filtering}
+This types of filtering makes decisions for individual users based on what the system learned the user likes or dislikes. Interest and preferences are inferred based on previous user feedback. \\ \\
+Some of the downsides of these techniques are:
+
+\begin{itemize}
+	\item The filtering decision is binary
+	\item The initialization phase is based only on the profile text or very few initial examples
+	\item There is a limited relevance judgement ("yes" documents)
+\end{itemize}
+
+\subsection{Collaborative Filtering}
+In this case the filtering decisions for an individual user are based on the judgements of other users. Interest and preference are inferred from that of other similar users. \\ \\
+This kind of filtering is based in user profile comparison, thus cannot work with only one user. \\ \\
+Furthermore, collaborative filtering will make several assumptions, such as:
+
+\begin{itemize}
+	\item Users with the same interests will have the same preferences
+	\item Users with the same preferences will likely have the same interests
+	\item A sufficiently large number of users preferences is available
+\end{itemize}
+Some possible improvements are:
+
+\begin{itemize}
+	\item Dealing with missing values by setting defaults
+	\item Using Inverse User Frequency
+\end{itemize}
+Some problems, instead, are:
+
+\begin{itemize}
+	\item The size of the data needs to be very big
+	\item There is a problem known as Cold Start. This happens when new documents cannot be recommended because there are no previous references
+\end{itemize}
+
+\subsection{Use-Based Information Filtering}
+This method identifies which documents are semantically relevant to a user profile by inferring relevance from user behaviour. \\ \\
+Some problems with this method are:
+
+\begin{itemize}
+	\item User profiles can be messy
+	\item It can be very intrusive and not respect the user's right to privacy
+\end{itemize}
+
+\section{Text Clustering}
+Text clustering is used in order to group similar objects together by discovering their natural structure. \\ \\
+In order to assess similarity between objects, the user must define the perspective -- i.e. a bias.
+
+\subsection{Clustering in Text Retrieval}
+Clusters can be created based on \textit{concepts}, \textit{topics} or \textit{themes}. It can be divided into two main categories:
+
+\begin{itemize}
+	\item \textbf{Similarity-Based Clustering}
+	\vspace{.2cm} \\
+	Which can be either \textit{agglomerative} or \textit{divisive}.
+	
+	\item \textbf{Model-Based Clustering}
+	\vspace{.2cm} \\
+	Data is assumed to have been generated from a finite mixture of component models.
+\end{itemize}
+This is an unsupervised method of grouping objects together.
+
+\subsubsection{Similarity-Based Clustering}
+In order to perform similarity-based clustering, we need to:
+
+\begin{itemize}
+	\item Provide a clustering bias
+	\item Find the optimal partitioning in order to maximize intra-group similarity, and at the same time minimize inter-group similarity
+\end{itemize}
+In order to obtain the optimal clusterings, we need to follow this algorithm:
+
+\begin{enumerate}
+	\item Progressively construct a hierarchy of clusters using one of the following two methods:
+	
+	\begin{itemize}
+		\item \textbf{Agglomerative Method}
+		\vspace{.2cm} \\
+		Gradually group similar objects into larger clusters.
+			
+		\item \textbf{Divisive Method}
+		\vspace{.2cm} \\
+		Gradually partition the data into smaller clusters.
+	\end{itemize}
+	
+	\item Start with an initial tentative clustering and iteratively improve it
+\end{enumerate}
+
+\subsubsection{Agglomerative Hierarchical Clustering}
+The algorithm for this type of clustering method is the following:
+
+\begin{enumerate}
+	\item Assume a similarity function
+	\item Gradually group objects in a bottom-up fashion in order to form a group hierarchy
+	\item Stop whenever some stopping criterion is met
+\end{enumerate}
+
+\subsection{Clustering Strategies}
+Several clustering strategies exist, these are:
+
+\begin{itemize}
+	\item \textbf{Single-Linkage}
+	\vspace{.2cm} \\
+	It creates loose clusters and is based on individual decisions, thus being sensitive to outliers. The clustering cost of this strategy is defined by the following formula:
+	\[ Co = \min\{~d(x_i, x_j)~|~x_i \in C_i, x_j \in C_j~\} \]
+	Where $Co$ is the cost, $d(x_i, x_j)$ is the distance between the two elements, and $C$ is a cluster.
+	
+	\item \textbf{Complete-Linkage}
+	\vspace{.2cm} \\
+	It creates tight clusters and is based on individual decisions, thus being sensitive to outliers. The clustering cost of this strategy is defined by the following formula:
+	\[ Co = \max\{~d(x_i, x_j)~|~x_i \in C_i, x_j \in C_j~\} \]
+	Where $Co$ is the cost, $d(x_i, x_j)$ is the distance between the two elements, and $C$ is a cluster.
+	
+	\item \textbf{Average-Linkage}
+	\vspace{.2cm} \\
+	It creates clusters in between the two clusters above and is based on group decisions, thus not being sensitive to outliers. The clustering cost of this strategy is defined by the following formula:
+	\[ Co = \frac{\sum_{x_i \in C_i, x_j \in C_j} d(x_i, x_j)}{|C_i| ~ |C_j|} \]
+	Where $Co$ is the cost, $d(x_i, x_j)$ is the distance between the two elements, and $C$ is a cluster.
+\end{itemize}
+
+\subsection{Cluster Representative}
+In order to represent a cluster of many points, we use something called a \textbf{clustroid}, which is a point that is closer to all other points. \\ \\
+A \textbf{centroid}, instead, is the average of all data points in a cluster. This means that it is an artificial point -- that can correspond to a real point in the cluster. \\ \\
+The following is a graphical representation of a cluster:
+
+\begin{center}
+	\includegraphics[width=3cm]{./clustering.png}
+\end{center}
+Where the \textit{cluster} is the green oval, the red x is the \textit{centroid}, the black dot is a regular \textit{data point}, and the black dot with the red dot inside it is a \textit{clustroid}. \\ \\
+"Closer to" -- relative to data points -- can be defined in several different ways:
+
+\begin{itemize}
+	\item The smallest maximum distance to other points
+	\item The smallest average distance to other points
+	\item The smallest sum of squares of distance to other points
+\end{itemize}
+The "nearness" of clusters, on the other hand, can be determined using several different approaches:
+
+\begin{itemize}
+	\item Treat the clustroids as if they were centroids and measure the distance between the two clusters
+	\item Use the \textbf{intercluster distance} by involving the minimum of the distances between any two points -- one from each cluster
+	\item Use the \textbf{cohesion of clusters} notion by involving the maximum distance of the cluster to another cluster's clustroid. After doing so, merge the clusters whose union is the most cohesive
+\end{itemize}
+
+\subsection{K-Means Clustering}
+In order to initialize this method, we do the following:
+
+\begin{itemize}
+	\item Assume that we are working in an Euclidean space
+	\item Pick a value for the number of clusters, $k$
+	\item Initialise the clusters by picking one point per cluster
+\end{itemize}
+After having initialized the clusters we can proceed to populate them:
+
+\begin{enumerate}
+	\item For each point, place it in the cluster whose current centroid is the nearest
+	\item After all points have been assigned, update the locations of the centroids
+	\item Reassign all points to their closest centroid
+	\item Repeat steps 2 and 3 until convergence, meaning that the points do not move any more between clusters
+\end{enumerate}
+
+\subsection{Clustering Evaluation}
+The evaluation of clustering aims at maximizing the following aspects:
+
+\begin{itemize}
+	\item \textbf{Coherence}
+	\vspace{.2cm} \\
+	How similar objects in the same cluster are.
+	
+	\item \textbf{Separation}
+	\vspace{.2cm} \\
+	How far away objects in different clusters are.
+	
+	\item \textbf{Utility}
+	\vspace{.2cm} \\
+	How useful the discovered clusters are for an application.
+\end{itemize}
+In order to perform a good evaluation of clusterings, we need to proceed as follows:
+
+\begin{enumerate}
+	\item Given a predefined test set, have humans create an ideal clustering result
+	\item Use a system to produce clusters from the same test set
+	\item Quantify the similarity between the two clusterings
+\end{enumerate}
+
 \end{document}
 
 
