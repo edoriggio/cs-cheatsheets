@@ -1018,6 +1018,127 @@ In order to perform a good evaluation of clusterings, we need to proceed as foll
 	\item Quantify the similarity between the two clusterings
 \end{enumerate}
 
+\section{Text Categorization}
+In text categorization object are put into classes -- or categories. \\ \\
+Given a set of predefined categories and a training set of labelled text objects, the task is to classify a text object int one or more of the categories. \\ \\
+Categories can be of two different types:
+
+\begin{itemize}
+	\item \textbf{Internal}
+	\vspace{.2cm} \\
+	They characterize a text object.
+	
+	\item \textbf{External}
+	\vspace{.2cm} \\
+	They characterize an entity associated with the text object.
+\end{itemize}
+
+\subsection{Manual Categorization Method}
+In this case the category of an object is determined based on rules carefully designed to reflect domain knowledge about the problem. \\ \\
+This method is labour intensive, and does not scale up well. It's also not robust, this is because it can't handle uncertainties in rules.
+
+\subsection{Automatic Categorization Methods}
+Manual categorization method limitations can be fixed with the use of machine learning. \\ \\
+Machine learning is used in order to learn \textit{soft} rules for categorization based on training data. All of the methods rely in discriminative features of text objects in order to distinguish categories. Moreover, they also adjust the weights on features in order to minimize errors.
+
+\subsection{Generative Classifiers}
+In this case the algorithm learn what the data looks like in each category. In order to model the classifiers, we can use the Bayes Rule.
+
+\subsection{Discriminative Classifiers}
+In this case the algorithm learns what features separate each category. \\ \\
+In order to do so, we can use the Support Vector Machine or the k-Nearest Neighbors.
+
+\subsection{Feature Selection}
+A feature is an attribute of an object that we wish to classify. \\ \\
+Feature selection methods reduce the number of features by only choosing the most useful.
+
+\subsection{Information Gain}
+This is a commonly used feature selection measure based on information theory. The model is trained with the top $k$ best features -- with $k$ usually being a small number.
+
+\subsection{Naïve Bayes Classifier}
+This is a typical example of a \textbf{generative classifier}. It is a probabilistic model based on Bayes' Rule. The formula of this model is:
+
+\[ P(C~|~D) = \frac{P(D~|~C) \cdot P(C)}{\sum_{c \in C}P(D~|~C=c) \cdot P(C=c)} \] \\
+Where $C$ is a random variable corresponding to the class, and $D$ is a random variable corresponding to the input -- for an example document. \\ \\
+Documents are classified according to the following formula:
+
+\begin{align*}
+Class(d) & = \arg \max_{c \in C} P(c~|~d) \\
+& = \arg \max_{c \in C} \frac{p(d~|~c) \cdot P(c)}{\sum_{c \in C} P(d~|~c) \cdot P(c)}
+\end{align*}
+Where $P(d~|~c)$ is the probability that document $d$ is observed given the class $c$, and $P(c)$ is the probability of observing class $c$.
+
+\subsubsection{Estimating P(c)}
+This term is estimated as the proportion of training documents in class $c$. The formula for this is:
+
+\[ P(c) = \frac{N_c}{N} \] \\
+Where $N_c$ is the number of training documents in class $c$, and $N$ is the total number of training documents.
+
+\subsubsection{Estimating P(d $|$ c)}
+This term is estimated depending on the event space used to represent the documents. The event space is the set of all possible outcomes for a given random variable.
+
+\subsubsection{Multiple Bernoulli Event Space}
+This is a natural way of modelling distributions over binary vectors -- which indicate whether a term is present or not inside of a document. The formula for this event space is the following:
+
+\[ f(k;p) = p^k(1-p)^{1-k} \] \\
+On the other hand, if we want to check the frequency of a term in a document, we would have to use \textbf{multinomial distribution}.
+
+\subsubsection{Multinomial Distribution}
+By using this distribution, the way $P(d~|~c)$ is computed changes, In this case we would have:
+
+\[ P(d~|~c) \propto \prod_{w \in v} P(w~|~c)^{tf_{w,d}} \] \\
+Where $P(w~|~c)$ can be either a \textbf{Laplacian Smoothed (Jelinek-Mercer) Estimate}, which formula is the following:
+
+\[ P(w~|~c) = \frac{tf_{w,c} + 1}{|c| + |V|} \] \\
+Or a \textbf{Collection Smoothed (Diricklet) Estimate}, which formula is the following:
+
+\[ P(w~|~c) = \frac{tf_{w,c} + \mu \frac{cfw}{|c|}}{|c| + \mu} \]
+
+\subsection{Support Vector Machine}
+This is an example of a discriminative model based on geometrical principles. \\ \\
+The goal here is to, given a set of inputs labelled $+$ and $-$, find the best hyperplane that separates these two groups. \\ \\
+A hyperplane is a generalization of a line to higher dimensions. It is defined by the vector $w$. The best hyperplane -- in this case -- is the one with the maximum margin between the two classes. This margin can be computed by using the following formula:
+
+\[ Margin(w) = \frac{|w \cdot x^{-}| + |w \cdot w^{+}|}{||w||} \] \\ 
+It is generally assumed that $ |w \cdot x^{-}| + |w \cdot w^{+}| = 1 $. Thus, in order to find the largest margin, we must maximize the following:
+
+\[ Margin(w) = \frac{2}{||w||} \]
+
+\subsubsection{The Kernel Trick}
+Since data cannot always be linearly-separable, we can transform it in order to make it linearly-separable. Computing vector math in very high dimensional spaces is costly. \\ \\
+For this reasons we use something known are the kernel trick. It basically allows for very high-dimensional dot products to be computed efficiently.
+
+\subsubsection{Non-Binary Classification with SVMs}
+There are two ways to do it:
+
+\begin{itemize}
+	\item \textbf{One Versus All}
+	\vspace{.2cm} \\
+	Train the model as a "class $c$ versus not class $c$" SVM for every class. If there are $k$ classes, $k$ classifiers must be trained. The items are classified based on the following formula:
+	\[ Class(x) = \arg \max_c w_c \cdot x \]
+	
+	\item \textbf{One Versus One}
+	\vspace{.2cm} \\
+	A binary classifier is trained for every pair of classes, Thus
+	\[ k \frac{k-1}{2} \]\\
+	Classifiers must be trained. This method is computationally expensive for large values of $k$.
+\end{itemize}
+
+\subsection{K-Nearest Neighbors}
+The goal of this algorithm is to find $k$ examples in the training set that are the most similar to the text object to be classified, by performing a search for every testing instance. \\ \\
+After this has been done, we assign the category that is most common in these neighbor text objects.
+
+\subsection{Classifier Evaluation}
+In order to evaluate classifiers, we can use one of the following metrics:
+
+\begin{itemize}
+	\item Accuracy
+	\item Precision
+	\item Recall
+	\item F-Measure
+	\item ROC Curve Analysis
+\end{itemize}
+
 \end{document}
 
 
