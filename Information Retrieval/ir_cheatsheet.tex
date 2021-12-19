@@ -937,20 +937,20 @@ Several clustering strategies exist, these are:
 	\item \textbf{Single-Linkage}
 	\vspace{.2cm} \\
 	It creates loose clusters and is based on individual decisions, thus being sensitive to outliers. The clustering cost of this strategy is defined by the following formula:
-	\[ Co = \min\{~d(x_i, x_j)~|~x_i \in C_i, x_j \in C_j~\} \]
-	Where $Co$ is the cost, $d(x_i, x_j)$ is the distance between the two elements, and $C$ is a cluster.
+	\[ Cost = \min\{~d(x_i, x_j)~|~x_i \in C_i, x_j \in C_j~\} \]
+	Where $d(x_i, x_j)$ is the distance between the two elements, and $C$ is a cluster.
 	
 	\item \textbf{Complete-Linkage}
 	\vspace{.2cm} \\
 	It creates tight clusters and is based on individual decisions, thus being sensitive to outliers. The clustering cost of this strategy is defined by the following formula:
-	\[ Co = \max\{~d(x_i, x_j)~|~x_i \in C_i, x_j \in C_j~\} \]
-	Where $Co$ is the cost, $d(x_i, x_j)$ is the distance between the two elements, and $C$ is a cluster.
+	\[ Cost = \max\{~d(x_i, x_j)~|~x_i \in C_i, x_j \in C_j~\} \]
+	Where $d(x_i, x_j)$ is the distance between the two elements, and $C$ is a cluster.
 	
 	\item \textbf{Average-Linkage}
 	\vspace{.2cm} \\
 	It creates clusters in between the two clusters above and is based on group decisions, thus not being sensitive to outliers. The clustering cost of this strategy is defined by the following formula:
-	\[ Co = \frac{\sum_{x_i \in C_i, x_j \in C_j} d(x_i, x_j)}{|C_i| ~ |C_j|} \]
-	Where $Co$ is the cost, $d(x_i, x_j)$ is the distance between the two elements, and $C$ is a cluster.
+	\[ Cost = \frac{\sum_{x_i \in C_i, x_j \in C_j} d(x_i, x_j)}{|C_i| ~ |C_j|} \]
+	Where $d(x_i, x_j)$ is the distance between the two elements, and $C$ is a cluster.
 \end{itemize}
 
 \subsection{Cluster Representative}
@@ -1138,6 +1138,117 @@ In order to evaluate classifiers, we can use one of the following metrics:
 	\item F-Measure
 	\item ROC Curve Analysis
 \end{itemize}
+
+\section{Opinion Mining}
+Opinions are extremely important in order for us to make decisions. The problems with mining opinions may be several, such as:
+
+\begin{itemize}
+	\item There are subtle ways of expressing opinions
+	\item Opinions could be written in a non-standard or incorrect English
+	\item There could be instances of opinion reversals
+\end{itemize}
+\textbf{Fake News} is false or misleading information presented in a way to damage the reputation of a person or entity. These fake news can generate misled opinions.
+
+\subsection{Opinion Analysis}
+An opinion is a subjective statement describing what a person believes or thinks about something. \\ \\
+An opinion is a quintuple defined as:
+
+\[ O = (e_i, a_{ij}, oo_{ijkl}, h_k, t_l) \] \\
+Where $e_i$ is the name of an entity, $a_{ij}$ is an aspect of $e_i$, $oo_{ijkl}$ is the orientation of the point about aspect $a_{ij}$ of $e_i$, $h_k$ is the opinion holder, and $t_l$ is the date and time when the opinion is expressed by $h_k$.
+
+\subsection{Levels of Opinion Analysis}
+There are three levels of opinion analysis:
+
+\begin{itemize}
+	\item \textbf{Document Level}
+	\vspace{.2cm} \\
+	Classify the whole document as expressing a positive or negative sentiment.
+	
+	\item \textbf{Sentence Level}
+	\vspace{.2cm} \\
+	Determines whether each sentence expresses a positive, negative or neutral opinion.
+	
+	\item \textbf{Aspect Level}
+	\vspace{.2cm} \\
+	It performs finer-grained analysis and determines the sentiments towards different aspects.
+\end{itemize}
+
+\subsection{Sentiment Lexicons}
+Sentiment lexicons are lists of words and expressions used in order to express people's subjective feelings and sentiments/opinions. \\ \\
+In order to build such lexicons, we can use one of the following:
+
+\begin{itemize}
+	\item Manual lexicons
+	\item Dictionary-based lexicons
+	\item Corpus-based lexicons
+\end{itemize}
+The advantages of these methods are the following:
+
+\begin{itemize}
+	\item They are fairly accurate independently of the medium
+	\item There is no need for a training corpus
+	\item They are easily extendible to other domains only with the insertion of additional affective words
+	\item It is easy to rationalize the prediction output
+\end{itemize}
+On the other hand, the disadvantages of these methods are the following:
+
+\begin{itemize}
+	\item They are costly to implement
+	\item The typically underperform compared to well-trained, in-domain ML models
+	\item They are sensitive to affective dictionary coverage
+\end{itemize}
+
+\subsection{Sentiment Analysis Approaches}
+There are three main sentiment analysis approaches:
+
+\begin{itemize}
+	\item \textbf{Unsupervised}
+	\vspace{.2cm} \\
+	Such as \textit{NlP patterns} and \textit{lexicons}.
+	
+	\item \textbf{Supervised}
+	\vspace{.2cm} \\
+	Such as \textit{SVMs} and \textit{Naïve Bayes}.
+	
+	\item \textbf{Semi-Supervised}
+	\vspace{.2cm} \\
+	Such as a \textit{lexicon} + a \textit{classifier}.
+\end{itemize}
+
+\subsubsection{Unsupervised Approaches}
+Here no training of the data is required. These approaches are also known as \textbf{lexicon-based approaches}. \\ \\
+These approaches rely on external lexical resources that associate a popularity score to each term. The sentiment of the term depends on the sentiment of document depends on the sentiment of the terms which compose it.
+
+\subsubsection{Supervised Approaches}
+Here the "learn by example" paradigm is put into practice. A machine learning algorithm is provided with lots of examples. \\ \\
+The algorithm is used to extract characteristic patterns for each category and build a predictive model.
+
+\subsubsection{Semi-Supervised Approach}
+The following are the steps to follow in order to use a semi-supervised approach:
+
+\begin{enumerate}
+	\item Get manually annotated documents from the domain of interest
+	\item Train any standard classifier using a \textit{bag-of=words} as feature
+	\item Apply the trained classifier to a test corpus or an application
+\end{enumerate}
+The main advantage of this method is that it tends to attain a good predictive accuracy. \\ \\
+The disadvantages of this method are:
+
+\begin{itemize}
+	\item The need for a very specific training corpus
+	\item Domain sensitivity
+\end{itemize}
+
+\subsection{Opinion Retrieval}
+Opinion retrieval is the retrieval of documents that are about a topic, and that express an opinion about that topic. \\ \\
+The steps of opinion retrieval are the following:
+
+\begin{enumerate}
+	\item Rank documents based on topical relevance -- by using TF*IDF ranking schemes, language modelling approaches...
+	\item The results obtained are re-ranked or filtered by applying one or more heuristics for detecting opinions. Most approaches use a liner combination of relevance score and opinion score in order to rank documents. The formula for it is the following:
+	\[ Score(Q,D) = (1 - \alpha) \cdot rel(Q,D^{+}) + \alpha \cdot op(Q,D) \]
+	Where $rel$ is the relevance feedback score and $op$ is the opinion score.
+\end{enumerate}
 
 \end{document}
 
