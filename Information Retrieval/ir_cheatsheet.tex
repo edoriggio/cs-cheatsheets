@@ -1218,7 +1218,6 @@ There are three main sentiment analysis approaches:
 \subsubsection{Unsupervised Approaches}
 Here no training of the data is required. These approaches are also known as \textbf{lexicon-based approaches}. \\ \\
 These approaches rely on external lexical resources that associate a popularity score to each term. The sentiment of the term depends on the sentiment of document depends on the sentiment of the terms which compose it.
-
 \subsubsection{Supervised Approaches}
 Here the "learn by example" paradigm is put into practice. A machine learning algorithm is provided with lots of examples. \\ \\
 The algorithm is used to extract characteristic patterns for each category and build a predictive model.
@@ -1249,6 +1248,190 @@ The steps of opinion retrieval are the following:
 	\[ Score(Q,D) = (1 - \alpha) \cdot rel(Q,D^{+}) + \alpha \cdot op(Q,D) \]
 	Where $rel$ is the relevance feedback score and $op$ is the opinion score.
 \end{enumerate}
+
+\section{Audio Indexing and Retrieval}
+Audio is a signal whose frequencies range is in the human audible range. \\ \\
+Audio is normally displayed as a waveform, and has several physical characteristics that can be used to describe it. \\ \\
+From the physical characteristics of the waveform we can derive a number of acoustic features, such as:
+
+\begin{itemize}
+	\item \textbf{Pitch}
+	\vspace{.2cm} \\
+	Greatest common divisor of peak in a Fourier spectra.
+	
+	\item \textbf{Brightness}
+	\vspace{.2cm} \\
+	Centroid of short-time Fourier magnitude spectra.
+	
+	\item \textbf{Loudness}
+	\vspace{.2cm} \\
+	Root-mean square of the audio signal -- measured in decibels.
+	
+	\item \textbf{Bandwidth}
+	\vspace{.2cm} \\
+	Magnitude-weighted average of the difference between the spectral components and the centroid.
+	
+	\item \textbf{Harmonicity}
+	\vspace{,2cm} \\
+	Deviation of the sound's spectrum from a harmonic spectrum.
+\end{itemize}
+
+\subsection{Acoustic Features}
+these features are represented as functions changing over time. In order to sample these acoustic features, we can follow the following algorithm:
+
+\begin{enumerate}
+	\item Compute the acoustic features at a certain time interval
+	\item Derive the average value $\mu$, the variance $\sigma$, and the autocorrection $\rho$ for each feature
+	\item Weight the features value by amplitude
+\end{enumerate}
+
+\subsection{Content-Based Audio Retrieval}
+If audio has been indexed as a series of feature vectors, such as:
+
+\[ s = ((\mu l, \sigma l, \rho l), ..., (\mu h, \sigma h, \rho h)) \] \\
+Then the retrieval process can be carried out by comparing the feature vectors using a mathematical model.
+
+\section{Speech Indexing and Retrieval}
+In this case the indexing is concerned with capturing the semantics of what is being said, rather than the sound. In order to index such documents there are several approaches:
+
+\begin{itemize}
+	\item Controlled vocabulary indexing
+	\item Ranked retrieval based on associated text
+	\item Social filtering based on user's rating
+	\item Automatic feature=based speech indexing
+\end{itemize}
+Some speech features could be:
+
+\begin{itemize}
+	\item Identity
+	\item Language
+	\item Content
+\end{itemize}
+
+\subsection{Speech Recognition Systems}
+Speech recognition systems are basically black boxes that transform voice into text. \\ \\
+Some problems with speech recognition are:
+
+\begin{itemize}
+	\item Word boundaries
+	\item Adjacent phonemes influencing one another
+	\item The same phoneme cannot be repeated twice without changing its physical representation due to different acoustic conditions
+	\item Ambiguity in the phonetic to orthographic transcription
+	\item Words that are out of the vocabulary
+\end{itemize}
+
+\subsection{Spoken Document Retrieval}
+In order to create a spoken document retrieval model, we need a large vocabulary word recognition where transcripts of spoken documents are created. Some other possible approaches are:
+
+\begin{itemize}
+	\item Using subword units
+	\item Recognizing only a small set of keywords
+\end{itemize}
+
+\subsubsection{LVSR Approach}
+Its main goal is to transform a SDR into a textual IR. Thus spoken documents should be converted into text, and then retrieved using classic textual retrieval techniques.
+
+\subsubsection{Subwords Units Approach}
+In this case syllable sequences are used as indexing features. the user query is then decomposed into indexing features and the best matches are retrieved. \\ \\
+Phoneme sequences can be also used as indexing features.
+
+\subsubsection{Word Spotting Approach}
+A small set of keywords can be used as indexing features. In the indexing process keyword spotting is carried out, and documents are retrieved based in the presence of a combination of keywords. \\ \\
+This approach can be very useful for topic identification and spotting, though it is disappearing as a result of speech recognition getting faster and better.
+
+\section{Image Indexing and Retrieval}
+In order to retrieve images, there are three main approaches:
+
+\begin{itemize}
+	\item Keyword based approach
+	\item Based on visual properties of the image
+	\item Concept based approach
+\end{itemize}
+
+\subsection{Keyword Based Approach}
+Here images are annotated using keywords. This can be expensive since images should be manually annotated. \\ \\
+Manual annotation is also prone to subjectivity, and low level visual properties are almost impossible for a human to capture and index. \\ \\
+Since -- in this case -- image description is textual, we could use standard IR techniques in order to retrieve the images.
+
+\subsection{Visually Based Approach}
+This approach is usually referred to as \textbf{Content-Based Image Retrieval} (CBIR). The similarity between the query and the documents is computed by comparing visual features, such as:
+
+\begin{itemize}
+	\item Color
+	\item Texture
+	\item Shape
+\end{itemize}
+Images -- like in the case of audio -- can be represented by using a set of feature vectors. These are described as:
+
+\[ If_i = (If_{i1}, ..., If_{in}) \] \\
+While queries are represented as:
+
+\[ Qf_i = (Qf_{i1}, ..., Qf_{in}) \] \\
+As we can see, here we have a form of \textit{query-by-example}.
+
+\subsubsection{Feature Vector}
+Each feature has its own representation, and provide a \textit{synthetic} view of a certain feature. \\ \\
+One image characteristic may be represented by many features.
+
+\subsubsection{Color Based Retrieval}
+A very simple approach is to:
+
+\begin{enumerate}
+	\item Represent an image as a rectangular pixel raster
+	\item Represent each pixel as a quantified color
+	\item Cont the number of pixels in each color bin
+	\item Compute a vector similarity
+\end{enumerate}
+A \textbf{color histogram} can be generated from images. The problem with comparing images by color is that sometimes two images that represent the same concept could have very different color histograms.
+
+\subsubsection{Blobworld Segmentation}
+A complex query formulation is often based on the selection of some visual features. The blobs are used to help the system match two images that are similar with each other.
+
+\subsection{Concept-Based Approach}
+The system is able to capture the most important points of an image. Based on these points, the system can then check is other images have these same points or not. \\ \\
+A downside to this approach is that the knowledge of the application domain is required.
+
+\section{Video Indexing and Retrieval}
+A video, before being indexed and retrieved, needs to be segmented. The following are the possible segmentations of a video:
+
+\begin{itemize}
+ \item \textbf{Scene}
+ \vspace{.2cm} \\
+ This is a collection of semantically related \textit{shots}.
+ 
+ \item \textbf{Shot}
+ \vspace{.2cm} \\
+ This is a sequence of \textit{frames} recorded in one camera operation.
+ 
+ \item \textbf{Frames}
+ \vspace{.2cm} \\
+ The series of images that compose the video.
+\end{itemize}
+
+\subsection{Shot Boundary Detection}
+Shot boundary detection is very computationally expensive and not that precise. \\ \\
+A simple way to detect shot boundaries is represented by the following algorithm:
+
+\begin{enumerate}
+	\item Get two frames
+	\item Create a color histogram for each of the frames
+	\item Concatenate the color histogram in order to form a color signature for each frame
+	\item Using the cosine similarity measure, check if the frames are similar or not
+\end{enumerate}
+
+\subsection{Non-Sequential Browsing}
+A visual inspection of the video enables fora much better retrieval process. This is also known as \textbf{video browsing}. \\ \\
+Since browsing frames sequentially is time consuming, then a solution would be to structure a video in terms of shots and scenes. These structures are known as \textbf{scene trees}.
+
+\subsection{Content-Based Indexing}
+In order to perform a proper retrieval, we need to combine different detector, such as:
+
+\begin{itemize}
+	\item Text features
+	\item Visual features
+	\item Audio/Voice features
+\end{itemize}
+The best solution is to combine all features together, matching the domain and characteristics of the images.
 
 \end{document}
 
