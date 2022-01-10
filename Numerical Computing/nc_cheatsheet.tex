@@ -113,6 +113,42 @@ Until $x$ settles down to several decimal places.
 \subsection{Inverse Iteration}
 The \textbf{inverse iteration} is an algorithm which has the same goal of the power method. In this case, we need to find the dominant eigenvector of $(A - \alpha)^{-1}$ rather than of $A$. By doing so, the convergence is faster, but the computations are more expensive -- this method solves a system of equations, while the power method simply multiplies matrices together.
 
+\section{Spectral Graph Partitioning}
+In order to find a partition in a graph, we need to use the second smallest eigenvector -- i.e. eigenvector $v_2$. This eigenvector is also known as the \textbf{Fiedler eigenvector}, and plays a very important role in graph partitioning. This is because all of the indices corresponding to vector entries can be divided as follows:
+
+\begin{align*}
+	v_{2i} \in \begin{cases} \text{Set 1} & \text{if}~ v_{2i} > 0 \\ \text{Set 2} & \text{if}~ v_{2i} < 0 \end{cases}
+\end{align*}
+The arising partition minimizes the number of edges between the two sets. The second smallest eigenvalue $\lambda_2$ is greater than 0 iff we are considering a connected graph. The magnitude of $\lambda_2$ gives us an indication on how well-connected the overall graph is.
+
+\subsection{Laplacian Matrix}
+The \textbf{Laplacian Matrix} is the matrix representation of a graph. It is computed by doing the following:
+
+\[ L = D - A \] \\
+Where $A$ is the adjacency matrix of the graph $G$, and $D$ is the degree matrix of $A$. The \textbf{degree matrix} is a diagonal matrix which contains information about the degree of each vertex. \\ \\
+From the Laplacian Matrix, we can compute the eigenvector $w_2$ and the respective eigenvalue $\lambda_2$.
+
+\subsection{Degree Centrality}
+The \textbf{degree centrality} is defined as the number of links incident upon a node. In other words, it represents the number of vertices a node has.
+
+\subsection{Reverse Cuthill McKee Ordering and Cholesky Factor}
+The \textbf{Reverse Cuthill McKee Ordering} is an algorithm used to permute a sparse matrix that has a symmetric sparsity pattern, into a band matrix form with a small bandwidth. In other words, the non-zero elements of the matrix get nearer to the diagonal of the matrix. \\ \\
+The \textbf{Cholesky Factorization} is the decomposition of a positive-definite matrix into the product of a lower-triangular matrix and its conjugate transpose.
+
+\section{Graph Partitioning}
+\subsection{Spectral Partitioning}
+The most common example of a global approach to graph partitioning is \textbf{spectral partitioning}. This is carried out through a method known as spectral bisection. The spectral method utilizes the spectral graph theorem of linear algebra. This enables the decomposition of a real symmetric matrix into eigenvalues, within an orthonormal basis of eigenvectors. \\ \\
+A spectral bisection is computed using the second eigenvector corresponding with the second eigenvalue of the graph Laplacian Matrix. By thresholding the values of $w_2$ around 0, it will result in two roughly balanced partitions with minimum edgecut. On the other hand, by thresholding the values around the median of $w_2$, it will result in two strictly balanced partitions.
+
+\subsection{Inertial Bisection}
+Another common approach is \textbf{inertial bisection}. In this case the nodes of the graph are associated with a coordinate list. it thus relies on the geometric layout of the graph. \\ \\
+The main goal of this method is to find a hyperplane running through the centre of gravity of the points. Such a line is chosen in a way that the sum of squares of the distances of the nodes to the line is minimized.
+
+\subsection{Recursive Partitioning}
+\textbf{Recursive bisection} is a technique which is highly dependent on the decisions made during the earlier stages of the partitioning process. Furthermore, it lacks of global information. \\ \\
+On the other hand, \textbf{K-way partitioning} starts with the partitioning of a small set of vertices. After this, the obtained partition is projected back towards the original set of nodes in order to refine it. \\ \\
+The main difference between these two recursive approaches is that k-way partitioning stores global information about the graph -- i.e. it takes into consideration the whole graph when creating the partitions, while recursive partitioning does not.
+
 \end{document}
 
 
