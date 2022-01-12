@@ -14,7 +14,7 @@
 
 \documentclass{article}
 
-\usepackage{hyperref, amsmath, graphicx, amssymb}
+\usepackage{hyperref, amsmath, graphicx, amssymb, csquotes}
 \usepackage{fancyvrb,newverbs,xcolor}
 
 \graphicspath{ {./assets/} }
@@ -125,7 +125,7 @@ The arising partition minimizes the number of edges between the two sets. The se
 The \textbf{Laplacian Matrix} is the matrix representation of a graph. It is computed by doing the following:
 
 \[ L = D - A \] \\
-Where $A$ is the adjacency matrix of the graph $G$, and $D$ is the degree matrix of $A$. The \textbf{degree matrix} is a diagonal matrix which contains information about the degree of each vertex. \\ \\
+Where $A$ is the adjacency matrix of the graph $G$, and $D$ is the degree matrix of $A$. The \textbf{degree matrix} is a diagonal matrix which contains information about the degree of each vertex -- i.e. to how many other nodes is a node connected to. \\ \\
 From the Laplacian Matrix, we can compute the eigenvector $w_2$ and the respective eigenvalue $\lambda_2$.
 
 \subsection{Degree Centrality}
@@ -148,6 +148,181 @@ The main goal of this method is to find a hyperplane running through the centre 
 \textbf{Recursive bisection} is a technique which is highly dependent on the decisions made during the earlier stages of the partitioning process. Furthermore, it lacks of global information. \\ \\
 On the other hand, \textbf{K-way partitioning} starts with the partitioning of a small set of vertices. After this, the obtained partition is projected back towards the original set of nodes in order to refine it. \\ \\
 The main difference between these two recursive approaches is that k-way partitioning stores global information about the graph -- i.e. it takes into consideration the whole graph when creating the partitions, while recursive partitioning does not.
+
+\section{Graph Clustering}
+The main reason as to why we use clustering is the need to extract information from a set of data. This is done by grouping elements that are similar based on some metric. The main goal of clustering is to put together elements which display similar behaviours, while separating them from the others.
+
+\subsection{Similarity Graphs}
+Given a set of data points and some notion of similarity between two pairs of nodes, the goal of clustering is to divide the data points into several groups such that points in the same group are similar and points in different groups are dissimilar to each other. \\ \\
+In order to build such similarity graphs, we can use one of the following methods:
+
+\begin{itemize}
+	\item \textbf{$\epsilon$-neighbourhood graph}
+	\vspace{.2cm} \\
+	Here we connect all of the points whose pairwise distances are smaller than a threshold value $\epsilon$.
+	
+	\item \textbf{$k$-nearest neighbour graph}
+	\vspace{.2cm} \\
+	Here we connect vertex $v_i$ to vertex $v_j$, if $v_j$ is among the k-nearest neighbours of $v_i$.
+	
+	\item \textbf{Fully connected graph}
+	\vspace{.2cm} \\
+	Here we connect all points with positive similarity with each other, and we weight all edges by $s_{ij}$ -- i.e. the similarity function.
+\end{itemize}
+
+\subsection{Spectral Clustering}
+The \textbf{spectral clustering} algorithm creates clusters that have the same number of nodes inside them, without considering the spacial characteristics of each node.
+
+\subsection{K-Means Clustering}
+The \textbf{k-means clustering} algorithm divides the clusters based on centroids. \textbf{Centroids} are imaginary or real locations representing the center of the cluster. The clusters are thus formed based on the distance of a node to a cluster centroid. In this case the number on nodes per cluster could be substantially different.
+
+\section{Image Deblurring}
+Here we used the Conjugate Gradient in order to deblur an image given the exact blurred image and the original transformation matrix. \\ \\
+Matrix $B$ represents the blurred image, vector $b$ is the vectorized form of matrix $B$, matrix $X$ represents the original grayscale image -- where every entry corresponds to a pixel, the vector $x$ is the vectorized form of matrix $X$, and matrix $A$ indicates the transformation matrix coming from the repeated application of the \textbf{image kernel} -- which is the bulr effect in this case. The sizes of the presented matrices and vectors are:
+
+\begin{itemize}
+	\item $A \rightarrow n^2 \times n^2$
+	\item $B \rightarrow n^2 \times n^2$
+	\item $X \rightarrow n \times n$
+	\item $\overrightarrow{b} \rightarrow n^2$
+	\item $\overrightarrow{x} \rightarrow n^2$
+\end{itemize}
+With all of these matrices and vectors defined, we can write the following system of equations:
+
+\[ Ax = b \] \\
+By solving this system, we can recover the original image, getting rid of the blur effect. The blurred effect in the image is given by a weighted average of the surrounding pixels to a pixel. These weights are defined by the kernel matrix $K$. From this matrix, we can obtain the matrix $A$ such that the non-zero elements of each row of $A$ correspond to the values of $K$. \\ \\
+$A$ is a $d^2$ banded matrix -- where $d \ll n$. This means that $A$ is a sparse matrix.
+
+\subsection{Conjugate Gradient Method}
+The \textbf{Conjugate Gradient} method is largely used in order to solve systems of linear equations of the type:
+
+\[ Ax = b \] \\
+Where $A$ is both symmetric and positive-definite. The solution of the system is found after a finite number of iterations -- which cannot be larger than $n$. However, this method is unstable with respect to even the smallest perturbations. \\ \\
+The speed of convergence of the Conjugate Gradient is determined by the condition number $\kappa(A)$ of matrix $A$. The larger $\kappa(A)$, the slower the improvement. \\ \\
+If matrix $A$ were not to be positive-definite, we can apply this trick in order to obtain a positive-definite matrix back:
+
+\[ A^TAx = A^Tb \rightarrow \tilde{A}x = \tilde{b} \] \\
+The premultiplication of $A$ with $A^T$ will result in the positive-definite matrix $\tilde{A}$.
+
+\subsection{Condition Number}
+If a small modification in $b$ results in a big change in $x$, then the system is said to be \textbf{ill-conditioned}, and the condition number $\kappa(A)$ will be big. This condition number can be computed as:
+
+\[ \kappa(A) = \frac{\sigma_{\max}}{\sigma_{\min}} \] \\
+Where $\sigma$ indicates the singular values of $A$. For a real symmetric matrix, the singular values are equal to the absolute value of the eigenvalues.
+
+\[ \sigma = |\lambda| \]
+
+\subsection{Preconditioner}
+A symmetric positive preconditioner $P$ is selected such that $P^{-1}$ approximates to $\tilde{A}^{-1}$.
+\begin{align*}
+	P^{-1}\tilde{A}x & = P^{-1}\tilde{b} \\
+	(L^{-1}\tilde{A}L^{-1})(Lx) & = L^{-1}\tilde{b} \\
+	\bar{\tilde{A}}\bar{x} & = \bar{\tilde{b}}
+\end{align*}
+Where $P = LL^T$. This is done in order to both decrease the condition number and to decrease the range of the eigenvalues.
+
+\[ \kappa(\bar{\tilde{A}}) < \kappa(\tilde{A}) \] \\
+The computation of the preconditioner should be inexpensive to find. This is why we use the \textbf{Incomplete Cholesky factorization} in order to compute the preconditioner. By using this method, we only compute the Cholesky factors for the non-zero elements of $\tilde{A}$. This will give us the preconditioner:
+
+\[ P = F^TF \] \\
+Where $F$ is composed by the sparse IC factors. This routine can fail, since the existence of $F$ is not guaranteed. In order to amend this issue, we can apply a diagonal shift to $P$. By doing so, we enforce positive-definiteness, thus making $F$ computable.
+
+\section{Linear Programming}
+\textbf{Linear programming} is an optimization method which aims to maximize or minimize a linear objective function subject to linear equality or inequality constraints. Such an example is:
+
+\begin{align*}
+	\max~~ & \sum_{i = 1}^n c_ix_i \\
+	\text{s.t.}~~ & \sum_{j = 1}^n a_{1,j}x_j \leq h_1 \\
+	~~&~~ \vdots \\
+	~~& \sum_{j = 1}^n a_{m,j}x_j \leq h_m
+\end{align*}
+In this case we have the presence of linear constrains. This means that the values of the vector $x_i$ cannot assume any arbitrary value. The following needs to be respected:
+
+\begin{itemize}
+	\item Satisfy a set of relationships
+	\item Satisfy the non-negativity condition
+	\begin{itemize}
+		\item Only positive values are accepted
+		\item Values need to belong to the feasible region
+	\end{itemize}
+\end{itemize}
+The previous linear problem can be re-written by using the following simplified notation:
+
+\begin{equation*}
+  \begin{split}
+    \max~~ & z = C^Tx \\
+	\text{s.t.}~~ & Ax \leq h \\
+	~~& x \geq 0
+  \end{split}
+\quad\quad\quad\quad
+  \begin{split}
+    \min~~ & z = C^Tx \\
+	\text{s.t.}~~ & Ax \geq h \\
+	~~& x \geq 0
+  \end{split}
+\end{equation*}
+Where $z = f(x)$ represents the value of the objective function, $c$ is a vector of coefficients, $x$ is a vector of unknowns, $A$ is the coefficient matrix, and $h$ is the right hand side of the constraints. The sizes of these matrices are vectors are:
+
+\begin{itemize}
+	\item $A \rightarrow m \times n$
+	\item $\overrightarrow{c} \rightarrow n$
+	\item $\overrightarrow{x} \rightarrow n$
+	\item $\overrightarrow{h} \rightarrow m$
+\end{itemize}
+This is known as the \textbf{standard form} of a linear program. After writing the problem in a standard form, we need to graphically plot the feasible region which satisfies all of the constraints.
+
+\subsection{Fundamental Theorem of Linear Programming}
+In order to find the optimal value, we can make use of the \textbf{Fundamental Theorem of Linear Programming}.
+
+\blockquote{
+If a linear program admits a solution -- i.e. if its neither unfeasible nor unbouded, this solution will lie in a vertex of the polytope defined by the feasible region. In the case in which two vertices are both maximizers or minimizers of the objective function, then also all the points lying on the line segment between them will represent optimal solutions of the linear programming problem.}
+
+\subsection{Simplex Method}
+The \textbf{simplex method} is an algorithm used for solving linear programming problems. It has an exponential worst-case complexity. In order to solve a linear programming problem with the simplex method, we need to do the following:
+
+\begin{itemize}
+	\item Write the problem in standard form
+	\item Transform inequalities into equalities by adding:
+	\begin{itemize}
+		\item \textbf{Slack Variables} -- for maximization
+		\item \textbf{Surplus Variables} -- for minimization
+	\end{itemize}
+	\item Add the variables above also to the standard form -- with their coefficient equal to 0
+\end{itemize}
+The steps above will result in, for example:
+
+\begin{align*}
+	\max~~ & z = 3x+2y+0s_1+0s_2 \\
+	\text{s.t.}~~ & x+2y+s_1 = 4 \\
+	~~& x-y+s_2 = 1 \\
+	~~& x,y \geq 0;~ s_1, s_2 \geq 0
+\end{align*}
+The existence of a feasible solution implies also the existence of an optimal basic solution. The existence of an optimal solution implies the existence of an optimal basic solution.
+
+\subsection{Auxiliary Minimization Problem}
+By solving an initial \textbf{auxiliary minimization problem}, we find a feasible starting solution. It can be defined as follows -- by introducing artificial variables $u_1, ..., u_m$:
+
+\begin{align*}
+	\max~~ & \sum_{j = 1}^n u_i \\
+	\text{s.t.}~~ & \sum_{j = 1}^n a_{1,j}x_j+s_1+u_1 = h_1 \\
+	~~&~~ \vdots \\
+	~~& \sum_{j = 1}^n a_{m,j}x_j+s_m+u_m = h_m \\
+	~~& x_i, ..., x_n \geq 0;~ s_1, ..., s_m \geq 0;~ u_1, ..., u_m \geq 0
+\end{align*}
+The auxiliary problem aims at minimizing the sum of the artificial variables. The optimal solution of the auxiliary problem would be achieved when all of the artificial variables have a value of 0. \\ \\
+
+\subsection{Stopping Criterion}
+At every operation of the simplex method, we need to check if a \textbf{stopping criterion} is met. This criterion is:
+
+\[ r_D = c_D - c_BB^{-1}D \] \\
+Where $c_D$ represents the non-basic coefficients of the objective function, $c_B$ represents the basic coefficient of the objective function, $B^{-1}$ represents the inverse of the basic matrix, and $D$ represents the non-basic matrix. The optimality condition is given by $r_D \geq 0$ for minimization problems, and $r_D \leq 0$ for maximization problems. \\ \\
+
+\subsection{Iterative Rule}
+If the stopping criterion is not met, we select the highest reduced cost coefficient (in the case of maximization), or the lowest reduced cost coefficient (in the case of minimization). In case of multiple variables having the same values, we could end up swapping the same two variables over and over. In order to remove this problem, we use the \textbf{iterative rule}. \\ \\
+The case described above can be fixed by computing the following ratio for every variable:
+
+\[ \frac{B^{-1}h}{B^{-1}D} \] \\
+Where $B^{-1}$ represents the inverse of the basic matrix, $h$ represents the right hand side of the constraints, and $D$ represents the non-basic matrix. Among all of the obtained ratios, we need to select the one that has the smallest positive value.
 
 \end{document}
 
@@ -180,3 +355,4 @@ The main difference between these two recursive approaches is that k-way partiti
 
 
 
+ 
