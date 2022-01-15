@@ -431,21 +431,20 @@ In this case we have the presence of linear constrains. This means that the valu
 	\end{itemize}
 \end{itemize}
 The previous linear problem can be re-written by using the following simplified notation:
-
 \begin{equation*}
   \begin{split}
-    \max~~ & z = C^Tx \\
+    \max~~ & z = c^Tx \\
 	\text{s.t.}~~ & Ax \leq h \\
 	~~& x \geq 0
   \end{split}
 \quad\quad\quad\quad
   \begin{split}
-    \min~~ & z = C^Tx \\
+    \min~~ & z = c^Tx \\
 	\text{s.t.}~~ & Ax \geq h \\
 	~~& x \geq 0
   \end{split}
-\end{equation*}
-Where $z = f(x)$ represents the value of the objective function, $c$ is a vector of coefficients, $x$ is a vector of unknowns, $A$ is the coefficient matrix, and $h$ is the right hand side of the constraints. The sizes of these matrices are vectors are:
+\end{equation*} \\
+Where $z = f(x)$ represents the value of the objective function, $c$ is a vector of coefficients, $x$ is a vector of unknowns, $A$ is the coefficient matrix, and $h$ is the vector coefficients of the constraints. The sizes of these matrices are vectors are:
 
 \begin{itemize}
 	\item $A \rightarrow m \times n$
@@ -459,54 +458,101 @@ This is known as the \textbf{standard form} of a linear program. After writing t
 In order to find the optimal value, we can make use of the \textbf{Fundamental Theorem of Linear Programming}.
 
 \blockquote{
-If a linear program admits a solution -- i.e. if its neither unfeasible nor unbouded, this solution will lie in a vertex of the polytope defined by the feasible region. In the case in which two vertices are both maximizers or minimizers of the objective function, then also all the points lying on the line segment between them will represent optimal solutions of the linear programming problem.}
+If a linear programming problem has a solution, it must occur at a vertex of the set of feasible solutions. If the problem has more than one solution, then at least one of them must occur at a vertex of the set of feasible solutions. In either case, the value of the objective function is unique.
+}
 
 \subsection{Simplex Method}
-The \textbf{simplex method} is an algorithm used for solving linear programming problems. It has an exponential worst-case complexity. In order to solve a linear programming problem with the simplex method, we need to do the following:
+The \textbf{simplex method} is an algorithm used for solving linear programming problems that have two or more variables. It has an exponential worst-case complexity. \\ \\
+In order to solve a linear programming problem with the simplex method, we need to do the following:
 
-\begin{itemize}
+\begin{enumerate}
 	\item Write the problem in standard form
 	\item Transform inequalities into equalities by adding:
-	\begin{itemize}
+	\begin{enumerate}
 		\item \textbf{Slack Variables} -- for maximization
 		\item \textbf{Surplus Variables} -- for minimization
-	\end{itemize}
-	\item Add the variables above also to the standard form -- with their coefficient equal to 0
-\end{itemize}
-The steps above will result in, for example:
+	\end{enumerate}
+	\item Apply the iterative rule by exchanging the basic and nonbasic variable
+	\item Repeat step 3 until the optimality criterion is not met
+\end{enumerate}
+By introducing \textbf{slack} and \textbf{surplus} variables to the standard form of the linear programming problem we could obtain:
 
-\begin{align*}
-	\max~~ & z = 3x+2y+0s_1+0s_2 \\
+\begin{equation*}
+  \begin{split}
+  	\max~~ & z = 3x+2y \\
 	\text{s.t.}~~ & x+2y+s_1 = 4 \\
 	~~& x-y+s_2 = 1 \\
 	~~& x,y \geq 0;~ s_1, s_2 \geq 0
-\end{align*}
-The existence of a feasible solution implies also the existence of an optimal basic solution. The existence of an optimal solution implies the existence of an optimal basic solution.
+  \end{split}
+\quad\quad\quad\quad
+  \begin{split}
+    \min~~ & z = 3x+2y \\
+	\text{s.t.}~~ & x+2y-s_1 = 4 \\
+	~~& x-y-s_2 = 1 \\
+	~~& x,y \geq 0;~ s_1, s_2 \geq 0
+  \end{split}
+\end{equation*}
 
-\subsection{Auxiliary Minimization Problem}
-By solving an initial \textbf{auxiliary minimization problem}, we find a feasible starting solution. It can be defined as follows -- by introducing artificial variables $u_1, ..., u_m$:
+\subsubsection{Basic and Nonbasic Variables}
+The following statements are true:
+
+\begin{itemize}
+	\item We can freely swap the rows of $A$, as long as we also swap the elements of vector $h$
+	\item We can freely swap the columns of $A$, as long as we also swap the elements of vector $x$
+\end{itemize}
+Matrix $A$ can be split into two sub matrices:
+
+\[ A = \begin{bmatrix} B & D \end{bmatrix} \] \\
+Where $B$ is the matrix formed by $m$ linearly independent columns of $A$, and $D$ is the matrix containing the remaining columns. In the same way, we can split $x$ and $c$:
+
+\[ x = \begin{bmatrix} x_B \\ x_D \end{bmatrix} ~~~~ c = \begin{bmatrix} c_B \\ c_D \end{bmatrix} \] \\
+Now, we can rewrite the system $Ax = h$ to:
 
 \begin{align*}
-	\max~~ & \sum_{j = 1}^n u_i \\
+	Bx_B + Dx_D &= h \\
+	Bx-B &= h - Dx_D \\
+	x_B &= B^{-1}h - B^{-1}Dx_D
+\end{align*} \\
+Where $x_B$ are the \textbf{basic variables}, and $x_D$ are the \textbf{nonbasic variables}. This equation represents a general solution of the linear programming problem.
+
+\subsubsection{Basic Solution}
+If we set $x_D = 0$ in the above equation, we obtain:
+
+\[ x_B = B^{-1}h \] \\
+If the non-negativity condition for $x_B$ is satisfied, then this \textbf{basic solution} is feasible. In the case that one or more components of $x_B$ have value 0, then the solution is said to be \textbf{degenerate}. \\ \\
+The basic solution corresponds to the vertices of the polytope -- which represents the feasible region of the linear programming problem.
+
+\subsubsection{Optimal Basic Solution}
+The existence of a feasible solution implies also the existence of an optimal basic solution. Moreover, the existence of an optimal solution implies the existence of an optimal basic solution. \\ \\
+A downside is the fact that the number of possible basic solutions grows exponentially with the number of unknowns and constraints. The maximum possible number of iterations of the simplex method is:
+
+\[ N = \frac{(m + n)!}{m!n!} \]
+
+\subsection{Optimality Condition}
+The \textbf{optimality condition} that needs to be checked at every iteration of the simplex method is based on the reduced cost coefficients.
+
+\[ r_D = c^T_D - c^T_B B^{-1}D \] \\
+Where $c_B$ represents the basic coefficients of the objective function, $c_D$ represents the nonbasic coefficients of the objective function, $B$ is the basic matrix, and $D$ is the nonbasic matrix. The optimality conditions are given by $r_D \leq 0$ for a \textbf{maximization} problem, and $r_D \geq 0$ for a \textbf{minimization} problem.
+
+\subsection{Iterative Rule}
+If the stopping criterion is not met, we select the highest reduced cost coefficient (in the case of maximization), or the lowest reduced cost coefficient (in the case of minimization). This needs to be brought inside of the basis. \\ \\
+For all of the columns of the entering variable, we need to compute the following ratio:
+
+\[ \frac{B^{-1}h}{B^{-1}D} \] \\
+Where $B^{-1}$ represents the inverse of the basic matrix, $h$ is the vector coefficients of the constraints, and $D$ represents the non-basic matrix. Among all of the obtained ratios, we need to select the one that has the smallest positive value. This will be the departing variable.
+
+\subsection{Auxiliary Minimization Problem}
+By solving an initial \textbf{auxiliary minimization problem}, we find a feasible initial basic solution. It can be defined as follows -- by introducing artificial variables $u_1, ..., u_m$:
+
+\begin{align*}
+	\max~~ & z_{\text{aux}} = \sum_{i = 1}^n u_i \\
 	\text{s.t.}~~ & \sum_{j = 1}^n a_{1,j}x_j+s_1+u_1 = h_1 \\
 	~~&~~ \vdots \\
 	~~& \sum_{j = 1}^n a_{m,j}x_j+s_m+u_m = h_m \\
 	~~& x_i, ..., x_n \geq 0;~ s_1, ..., s_m \geq 0;~ u_1, ..., u_m \geq 0
-\end{align*}
+\end{align*} \\
 The auxiliary problem aims at minimizing the sum of the artificial variables. The optimal solution of the auxiliary problem would be achieved when all of the artificial variables have a value of 0. \\ \\
-
-\subsection{Stopping Criterion}
-At every operation of the simplex method, we need to check if a \textbf{stopping criterion} is met. This criterion is:
-
-\[ r_D = c_D - c_BB^{-1}D \] \\
-Where $c_D$ represents the non-basic coefficients of the objective function, $c_B$ represents the basic coefficient of the objective function, $B^{-1}$ represents the inverse of the basic matrix, and $D$ represents the non-basic matrix. The optimality condition is given by $r_D \geq 0$ for minimization problems, and $r_D \leq 0$ for maximization problems. \\ \\
-
-\subsection{Iterative Rule}
-If the stopping criterion is not met, we select the highest reduced cost coefficient (in the case of maximization), or the lowest reduced cost coefficient (in the case of minimization). In case of multiple variables having the same values, we could end up swapping the same two variables over and over. In order to remove this problem, we use the \textbf{iterative rule}. \\ \\
-The case described above can be fixed by computing the following ratio for every variable:
-
-\[ \frac{B^{-1}h}{B^{-1}D} \] \\
-Where $B^{-1}$ represents the inverse of the basic matrix, $h$ represents the right hand side of the constraints, and $D$ represents the non-basic matrix. Among all of the obtained ratios, we need to select the one that has the smallest positive value.
+If $z_{\text{aux}}$ does not reach the value 0, then both the auxiliary problem and the original linear programming problem do not admit a feasible solution.
 
 \end{document}
 
