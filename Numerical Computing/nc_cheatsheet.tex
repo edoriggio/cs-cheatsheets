@@ -111,7 +111,7 @@ An \textbf{eigenvector} is a non-zero vector that changes at most by a scalar fa
 An \textbf{eigenvalue} is the factor by which the eigenvector is scaled. Thus, this relation holds true:
 
 \[ A\overrightarrow{v} = \lambda\overrightarrow{v} \] \\
-Where $A$ is the transformation matrix, $\overrightarrow{v}$ is the eigenvector, and $\lambda$ is the eigenvector.
+Where $A$ is the transformation matrix, $\overrightarrow{v}$ is the eigenvector, and $\lambda$ is the eigenvalue.
 
 \subsubsection{Eigenbasis}
 An \textbf{eigenbasis} is the basis vector space which consists entirely of eigenvectors. Mathematically, this is represented by a diagonal matrix in which all of its columns are eigenvectors. This basis is not always computable.
@@ -124,7 +124,13 @@ Where $v$ is the vector for which we need to compute the eigenvalue, and $A$ is 
 This quotient is useful in the computation of the dominant eigenvalue. This is done by the power iteration and by the inverse iteration.
 
 \subsection{Power Iteration}
-The \textbf{power iteration} is used in order to compute the dominant eigenvector $\lambda_1$ of a matrix $A$. In order to find it, we need to follow this algorithm:
+The \textbf{power iteration} is used in order to compute the dominant eigenvector of a matrix $A$. Before we can compute it we need to make some assumptions:
+
+\begin{itemize}
+	\item The matrix $A$ has one eigenvalue that is strictly greater than all of the other eigenvalues
+	\item The starting vector needs to have a non-zero component in the direction of the dominant eigenvector
+\end{itemize}
+In order to find the dominant eigenvalue, we need to follow this algorithm:
 
 \begin{enumerate}
 	\item Start with an initial guess $v_0$, which is a vector
@@ -145,14 +151,15 @@ This algorithm converges much faster than the previous one. On the other hand, i
 In order to find a partition in a graph, we need to use the second smallest eigenvector -- i.e. eigenvector $v_2$. This eigenvector is also known as the \textbf{Fiedler eigenvector}, and plays a very important role in graph partitioning. This is because all of the indices corresponding to vector entries can be divided as follows:
 
 \[ v_{2i} \in \begin{cases} \text{Set 1} & \text{if}~ v_{2i} > 0 \\ \text{Set 2} & \text{if}~ v_{2i} < 0 \end{cases} \] \\
-The arising partition minimizes the number of edges between the two sets. The second smallest eigenvalue $\lambda_2$ is greater than 0 iff we are considering a connected graph. The magnitude of $\lambda_2$ gives us an indication on how well-connected the overall graph is.
+The arising partition minimizes the number of edges between the two sets. \\ \\ 
+Furthermore, $\lambda_2$ of the graph Laplacian matrix is the algebraic connectivity of the graph $G$. The magnitude of $\lambda_2$ measures the connectivity of the graph. In particular, $\lambda_2 \neq 0$ iff $G$ is a connected graph.
 
 \subsection{Matrix Decompositions and Permutations}
 \subsubsection{Cholesky Decomposition}
 By using the \textbf{Cholesky Decomposition}, any symmetric positive definite matrix can be decomposed into the product:
 
 \[ A = L L^T \] \\
-Where $L$ is a lower triangular matrix wit positive diagonal elements -- also known as the Cholesky factor.
+Where $L$ is a lower triangular matrix with positive diagonal elements -- also known as the Cholesky factor.
 
 \subsubsection{Reverse Cuthill McKee Ordering}
 The \textbf{Reverse Cuthill McKee Ordering} is the permutation of a sparse matrix $A$ -- which has a symmetric sparsity pattern -- into a banded matrix with a small bandwidth. The resulting matrix will have its non-zero elements closer to the diagonal of the matrix. \\ \\
@@ -273,7 +280,7 @@ This algorithm relies on the geometric layout of the graph. The main idea is to 
 	
 	\item \textbf{Grouping}
 	\vspace{.2cm} \\
-	Here we partition nodes associated with geometric coordinates around a direction normal to the partitioning hyperplane.
+	We project each point to the line, compute the median and use this median in order to partition the nodes. We will thus have a line such that half nodes are on one side of the line, and the other half on the other side.
 \end{enumerate}
 
 \subsection{Recursive Bisection}
@@ -285,44 +292,71 @@ The main difference between this method and the previous one, is that here globa
 
 \section{Graph Clustering}
 The main reason as to why we use clustering is the need to extract information from a set of data. \\ \\
-Given a set of data points and some notion of similarity between two pairs of nodes, the goal of clustering is to divide the data points into several groups such that points in the same group are similar and points in different groups are dissimilar to each other. 
+Given a set of data points and some notion of similarity between two pairs of nodes, the goal of clustering is to divide the data points into several groups such that points in the same group are similar and points in different groups are dissimilar to each other.
 
-\subsection{Similarity Graphs}
+\subsection{Trees}
+A tree is an undirected graph in which any two vertices are connected by exactly one path.
+
+\subsubsection{Minimum Spanning Tree}
+A spanning tree is a subgraph that is a tree which includes all of the vertices of $G$, with the minimum possible number of edges and the minimum possible total edge weight.
+
+\subsection{Graphs}
+\subsubsection{Similarity Graphs}
 In order to build such similarity graphs, we can use one of the following methods:
 
 \begin{itemize}
 	\item \textbf{$\epsilon$-neighbourhood graph}
 	\vspace{.2cm} \\
-	Here we connect all of the points whose pairwise distances are smaller than a threshold value $\epsilon$.
+	Here we connect all of the points whose pairwise distances are smaller than a threshold value $\epsilon$. $\epsilon$ is chosen such that the resulting graph is safely connected.
 	
 	\item \textbf{$k$-nearest neighbour graph}
 	\vspace{.2cm} \\
-	Here we connect vertex $v_i$ to vertex $v_j$, if $v_j$ is among the k-nearest neighbours of $v_i$.
+	Here we connect vertex $v_i$ to vertex $v_j$, if $v_j$ is among the k-nearest neighbours of $v_i$. For large graphs, we choose $k \sim \log(n)$.
 	
 	\item \textbf{Fully connected graph}
 	\vspace{.2cm} \\
-	Here we connect all points with positive similarity with each other, and we weight all edges by $s_{ij}$ -- i.e. the similarity function.
+	Here we connect all points with one edge based on a similarity function $s_{ij}$. This will result in a full graph. In this case $\sigma$ controls the size of the neighbourhood.
 \end{itemize}
+
+\subsubsection{Graph Construction}
+In order to construct the matrix $W$, we do the following:
+
+\[ W = S \odot G \] \\
+Where the $\odot$ operator performs element-wise multiplication, $S$ represents the full similarity matrix constructed using the Gaussian similarity function, and $G$ represents an $\epsilon$-similarity graph matrix.
 
 \subsection{Clustering Algorithms}
 \subsubsection{Spectral Clustering}
 In order to perform \textbf{spectral clustering} on a graph, we need to follow this algorithm:
 
 \begin{enumerate}
-	\item Generate a similarity graph based on one of the three methods described earlier (usually we use the $\epsilon$-neighbourhood graph)
-	\item Create the adjacency matrix from the similarity graph
-	\item Create the graph Laplacian Matrix and implement spectral clustering
-	\begin{enumerate}
-		\item Compute the second smallest eigenvalue and it corresponding eigenvector
-		\item Divide the nodes based on the sign of the entries of the second eigenvector
-	\end{enumerate}
+	\item Compute the minimum spanning tree of the graph in order to determine the $\epsilon$ value for the $\epsilon$ similarity graph
+	\item Generate the $\epsilon$-neighbourhood graph
+	\item Create the adjacency matrix for the $\epsilon$-neighbourhood graph -- matrix $W = S \odot G$
+	\item Create the graph Laplacian Matrix
+	\item Compute the $k$-smallest eigenvectors based on $L$
+	\item Use $k$-means in order to cluster the nodes. Use the eigenvector matrix in order to obtain such clusters
 \end{enumerate}
 The number of nodes inside of each cluster is very balanced.
 
 \subsubsection{K-Means Clustering}
 The \textbf{k-means clustering} algorithm makes use of centroids. \textbf{Centroids} are imaginary or real nodes in a graph which represent the center of a cluster. \\ \\
-Clusters are formed by finding the distance of each node from each centroid. A node will be added to a cluster if the distance to its centroid is minimum with respect to the distance to the other centroids. \\ \\
-With every step of the algorithm, the clusters are refined. The algorithm will end whenever there is no possible further refinement . This algorithm is not guaranteed to find the optimal solution.
+The following is the algorithm for the k-means clustering:
+
+\begin{enumerate}
+	\item Start with some initial random centroids
+	\item Assign each node to the nearest cluster based on its centroid
+	\item Recompute the centroids as the mean of the points in the cluster
+	\item Repeat steps 2 and 3 until no further improvement can be made
+\end{enumerate}
+This algorithm is not guaranteed to find the optimal solution. \\ \\
+There are also some drawbacks with k-means clustering, namely:
+
+\begin{itemize}
+	\item Does not work well with convex clustering scenarios
+	\item Since we use the Euclidean distance in order to compute the distance between a point and a centroid, the data space is treated as isotropic -- i.e. the distances remain unchanged by translations and rotations
+	\item Small changes in the data will result in proportionally small changes to the position of the centroids of the clusters. For this reason this method does not deal well with outliers.
+	\item It does not take into account the different densities of each cluster
+\end{itemize}
 
 \section{Image Deblurring}
 Here we used the Conjugate Gradient in order to deblur an image given the exact blurred image and the original transformation matrix. \\ \\
@@ -330,7 +364,7 @@ Matrix $B$ represents the blurred image, vector $b$ is the vectorized form of ma
 
 \begin{itemize}
 	\item $A \rightarrow n^2 \times n^2$
-	\item $B \rightarrow n^2 \times n^2$
+	\item $B \rightarrow n \times n$
 	\item $X \rightarrow n \times n$
 	\item $\overrightarrow{b} \rightarrow n^2$
 	\item $\overrightarrow{x} \rightarrow n^2$
@@ -342,16 +376,16 @@ By solving this system, we can recover the original image, getting rid of the bl
 $A$ is a $d^2$ banded matrix -- where $d \ll n$. This means that $A$ is a sparse matrix.
 
 \subsection{Conjugate Gradient Method}
-The complexity of Gaussian Elimination for very large linear systems of equations is too high. For this reason we need to find other ways to solve these linear systems of equations. There are two types of methods that we can use:
+In order to compute the solution of a linear system of equations, there are two possible methods:
 
 \begin{itemize}
-	\item \textbf{Direct Methods}
+	\item \textbf{Direct Method}
 	\vspace{.2cm} \\
-	Used to compute the exact solution in $n$ steps. This method has a very high memory consumption due to additional fill-ins.
+	Used to compute the exact solution in $n$ steps. This method has a very high memory consumption due to additional fill-ins. Moreover, it uses Gaussian Elimination which -- for large linear systems of equations -- is too complex and computationally expensive.
 	
-	\item \textbf{Iterative Methods}
+	\item \textbf{Iterative Method}
 	\vspace{.2cm} \\
-	This methods use an arbitrary initial starting point in order to compute an approximate arbitrary solution. For this method there is no need for additional memory and it will converge after a few iterations. On the other side, these methods are very often less robust and not as general as direct methods.
+	This method uses an arbitrary initial starting point in order to compute an approximate arbitrary solution. This method does not need any additional memory and it will converge after a few iterations. On the other side, this method is very often less robust and not as general as a direct method.
 \end{itemize}
 
 \subsubsection{Definitions}
@@ -510,7 +544,7 @@ Now, we can rewrite the system $Ax = h$ to:
 
 \begin{align*}
 	Bx_B + Dx_D &= h \\
-	Bx-B &= h - Dx_D \\
+	Bx_B &= h - Dx_D \\
 	x_B &= B^{-1}h - B^{-1}Dx_D
 \end{align*} \\
 Where $x_B$ are the \textbf{basic variables}, and $x_D$ are the \textbf{nonbasic variables}. This equation represents a general solution of the linear programming problem.
@@ -539,7 +573,7 @@ If the stopping criterion is not met, we select the highest reduced cost coeffic
 For all of the columns of the entering variable, we need to compute the following ratio:
 
 \[ \frac{B^{-1}h}{B^{-1}D} \] \\
-Where $B^{-1}$ represents the inverse of the basic matrix, $h$ is the vector coefficients of the constraints, and $D$ represents the non-basic matrix. Among all of the obtained ratios, we need to select the one that has the smallest positive value. This will be the departing variable.
+Where $B^{-1}$ represents the inverse of the basic matrix, $h$ is the vector coefficients of the constraints, and $D$ represents the non-basic matrix. Among all of the obtained ratios, we need to select the one that has the smallest positive value. This will be the \textbf{departing variable}.
 
 \subsection{Auxiliary Minimization Problem}
 By solving an initial \textbf{auxiliary minimization problem}, we find a feasible initial basic solution. It can be defined as follows -- by introducing artificial variables $u_1, ..., u_m$:
