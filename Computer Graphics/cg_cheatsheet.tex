@@ -282,6 +282,33 @@ The more the object is distant from the light source, the less it will be illumi
 \[ att(r) = \frac{1}{a_1 + a_2r + a_3r^2} \] \\
 Where $r$ is the ray of light, and $a_1$, $a_2$, and $a_3$ are constant values.
 
+\section{Light and Colour}
+Light is composed of electrically charged particles undergoing acceleration, and emitting electromagnetic radiation. \\ \\
+The eye has two different receptors in order to process such light:
+
+\begin{itemize}
+	\item \textbf{Rods}
+	\vspace{.2cm} \\
+	They perceive the intensity of light.
+	
+	\item \textbf{Cones}
+	\vspace{.2cm} \\
+	They perceive the colors. Three types of cones exist, one for the short wavelengths, one for the medium wavelengths, and one for the long wavelengths.
+\end{itemize}
+
+\subsection{Gamma Correction}
+The relation between the display input and the intensity shown on the screen in non-linear. In order to account for this fact, we need to apply inverse gamma correction:
+
+\[ I_{in} = I ^{\frac{1}{\gamma}} \] \\
+Where $I_{in}$ is the input for our display, $I$ is the intensity computed by our raytracer, and $\gamma$ is a constant between $1.8$ and $2.4$. \\ \\
+By doing so, we are basically assigning more bits to darker regions to which we are more sensitive.
+
+\subsection{Tone Mapping}
+It is impossible to reproduce the real luminance range onto a screen. For this reason we need to implement tone mapping.
+
+\[ I_{in} = \max((\alpha \cdot I^\beta)^{\frac{1}{\gamma}}, 1.0) \] \\
+Where $I_{in}$ is the input for our display, $I$ is the intensity computed by our raytracer, $\alpha$ and $\beta$ are the tone mapping coefficients, and $\gamma$ is the gamma coefficient.
+
 \end{document}
 
 
