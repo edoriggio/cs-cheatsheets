@@ -430,7 +430,7 @@ Where $\sigma$ indicates the singular values of $A$. For a real symmetric matrix
 \[ \sigma = |\lambda| \]
 
 \subsection{Preconditioner}
-A symmetric positive preconditioner $P$ is selected such that $P^{-1}$ approximates to $\tilde{A}^{-1}$.
+A symmetric positive preconditioner $P$ is selected such that $P^{-1}$ approximates to $\tilde{A}^{-1}$. We can decompose $P$ into $LL^T$, where $L$ is the Cholesky factor.
 \begin{align*}
 	P^{-1}\tilde{A}x & = P^{-1}\tilde{b} \\
 	(L^{-1}\tilde{A}L^{-1})(Lx) & = L^{-1}\tilde{b} \\
@@ -438,7 +438,7 @@ A symmetric positive preconditioner $P$ is selected such that $P^{-1}$ approxima
 \end{align*}
 Where
 
-\[ \kappa(P^{-1}\tilde{A}) \ll \kappa(\tilde{A}) \]\\
+\[ \kappa(\bar{\tilde{A}}) \ll \kappa(\tilde{A}) \]\\
 This is done in order to both decrease the condition number and to decrease the range of the eigenvalues.
 The computation of the preconditioner should be relatively inexpensive to find. This is why we use the \textbf{Incomplete Cholesky factorization} in order to compute the preconditioner. By using this method, we only compute the Cholesky factors for the non-zero elements of $\tilde{A}$. This will give us the preconditioner:
 
@@ -565,7 +565,7 @@ A downside is the fact that the number of possible basic solutions grows exponen
 \subsection{Optimality Condition}
 The \textbf{optimality condition} that needs to be checked at every iteration of the simplex method is based on the reduced cost coefficients.
 
-\[ r_D = c^T_D - c^T_B B^{-1}D \] \\
+\[ r_D = c_D - c_B B^{-1}D \] \\
 Where $c_B$ represents the basic coefficients of the objective function, $c_D$ represents the nonbasic coefficients of the objective function, $B$ is the basic matrix, and $D$ is the nonbasic matrix. The optimality conditions are given by $r_D \leq 0$ for a \textbf{maximization} problem, and $r_D \geq 0$ for a \textbf{minimization} problem.
 
 \subsection{Iterative Rule}
@@ -589,34 +589,3 @@ The auxiliary problem aims at minimizing the sum of the artificial variables. Th
 If $z_{\text{aux}}$ does not reach the value 0, then both the auxiliary problem and the original linear programming problem do not admit a feasible solution.
 
 \end{document}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
