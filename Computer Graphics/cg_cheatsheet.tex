@@ -309,6 +309,67 @@ It is impossible to reproduce the real luminance range onto a screen. For this r
 \[ I_{in} = \max((\alpha \cdot I^\beta)^{\frac{1}{\gamma}}, 1.0) \] \\
 Where $I_{in}$ is the input for our display, $I$ is the intensity computed by our raytracer, $\alpha$ and $\beta$ are the tone mapping coefficients, and $\gamma$ is the gamma coefficient.
 
+\section{Triangle Meshes}
+Complex surfaces can be approximated with triangle meshes. A triangle mesh is composed by the following elements:
+
+\begin{itemize}
+	\item \textbf{Vertices}
+	\vspace{.2cm} \\
+	Each vertex has three coordinates -- $x$, $y$, and $z$.
+	
+	\item \textbf{Edges}
+	\item \textbf{Triangles/Faces}
+	\vspace{.2cm} \\
+	These are triplets of vertices which are displayed in counter-clockwise order.
+\end{itemize}
+
+\subsection{Ray-Triangle Intersection}
+In order to compute the intersection between the ray and a triangle, we first need to compute the intersection between the ray and the triangle's plane. After, we do the following:
+
+\begin{enumerate}
+	\item Find a $t$ such that $p = \gamma(t)$ is coplanar with $p_1$, $p_2$ and $p_3$
+	\item Check if $t > 0$ and that $p$ is inside of the triangle
+	\item If the above conditions are all true, compute the lighting at point $p$. The normal vector at point $p$ is computed as:
+	\[ n = \langle (p_2 - p_1), (p_3 - p_1) \rangle \]
+\end{enumerate}
+In order to test whether the point is inside of the triangle, we use the \textbf{Barycentric Coordinates}.
+
+\begin{center}
+	\includegraphics[width=4cm]{barycentric_coords.png}
+\end{center}
+The algorithm is the following:
+
+\begin{enumerate}
+	\item Consider a planar triangle made up of points $(p_1, p_2, p_3)$ and a point $p$
+	\item Compute the area $W$ of the triangle
+	\begin{align*}
+		p_i &= (x_i, y_i, z_i) \\
+		n &= \langle (p_2 - p_1), (p_3 - p_1) \rangle \\
+		2W &= ||n||
+	\end{align*}		
+	\item Compute the areas $w_1$, $w_2$ and $w_3$ of the triangles
+	\begin{align*}
+		p &= (x, y, z) \\
+		n_i &= \langle (p_{i+1} - p), (p_{i-1} - p) \rangle \\
+		2w_i &= ||n_i|| \cdot \text{sign}(\langle n_i, n \rangle)
+	\end{align*}
+	\item Divide all of these areas by $W$. These values are $\lambda_1(p)$, $\lambda_2(p)$ and $\lambda_3(p)$ -- i.e. barycentric coordinates
+	\[ \lambda_1(p) = \frac{w_1}{W} ~~~~~~~ \lambda_2(p) = \frac{w_2}{W} ~~~~~~~ \lambda_3(p) = \frac{w_3}{W} \]
+\end{enumerate}
+There are two properties for barycentric coordinates:
+
+\begin{itemize}
+	\item \textbf{Partition of Unity}
+	\vspace{.2cm} \\
+	The sum of all barycentric coordinates is equal to 1.
+	
+	\item \textbf{Non-Negativity}
+	\vspace{.2cm} \\
+	All of the barycentric coordinates are greater of equal to 0.
+\end{itemize}
+
+
+
 \end{document}
 
 
