@@ -220,6 +220,68 @@ This algorithm combines $A^*$ with iterative deepening. At each iteration of the
 Exceeds a given threshold. The value of this threshold starts as the value of $f$ of the initial node, and increases for each iteration of the algorithm. The next value of the threshold is computed as the minimum value of $f$ of all values that exceeded the current threshold. \\ \\
 As for $A^*$, this algorithm is also both \textbf{complete} and \textbf{optimal}. Furthermore, the \textbf{time complexity} is $O(b^m)$, while the \textbf{space complexity} is $O(b \cdot d)$.
 
+\section{Constructive Greedy Search Algorithms}
+A constructive greedy algorithm is based on the following steps:
+
+\begin{enumerate}
+	\item Start from a random node
+	\item Expand the node in order to generate all possible next nodes
+	\item Choose the next best node based on a local strategy
+	\item Current solution is extended with the one found at point 3
+	\item Repeat steps 2 through 4, until a feasible solution is computed
+\end{enumerate}
+These algorithms start from a feasible solution in a subset of the search space, and iteratively add elements to the partial solution -- according to some strategy -- until no node is left.
+
+\subsection{Nearest Neighbour}
+This is one of the most common algorithms used to solve TSP problems. The algorithm is the following:
+
+\begin{enumerate}
+	\item Consider a starting tour made up of a random node
+	\item Add the city which is the closest to the previous city to the tour. The next city must not have been visited yet
+	\item Repeat step 2 until no node is available
+\end{enumerate}
+The following is a graphical representation of the algorithm.\\
+
+\begin{center}
+	\includegraphics[width=6cm]{nn.png}
+\end{center}
+\vspace{.3cm}
+Where on the right we have the connectivity matrix of the graph. Each non-zero element in the matrix represents the distance between two nodes $n_i$ and $n_j$. \\ \\
+The \textbf{time complexity} of this algorithm is $O(n^2)$.
+
+\subsection{Multi-Fragment}
+This algorithm builds a tour as follows:
+
+\begin{enumerate}
+	\item Sort the edge costs in ascending order
+	\item Select the first edge. This will be the first edge of the new tour
+	\item Add new edge in incremental order only if it does not create a three-degree city -- i.e. does not create a cycle
+	\item Repeat step 3 until no edge is available
+\end{enumerate}
+The \textbf{time complexity} of this algorithm is $O(n^2 \cdot \log n)$.
+
+\subsection{Nearest Insertion}
+This algorithm does the following:
+
+\begin{enumerate}
+	\item Build an initial tour formed by the nearest cities
+	\item Choose a node that is not in the computed tour, such that the Euclidean distance between it and two other nodes in the tour is minimum
+	\item Insert the new node between the two nodes of the tour
+	\item Repeat steps 2 and 3 until there are no nodes left
+\end{enumerate}
+The \textbf{time complexity} of this algorithm is $O(n^2)$.
+
+\subsection{Farthest Insertion}
+This algorithm does the following:
+
+\begin{enumerate}
+	\item Build an initial tour formed by the farthest cities
+	\item Choose a node that is not in the computed tour, such that the Euclidean distance between it and two other nodes in the tour is maximum
+	\item Insert the new node between the two nodes of the tour
+	\item Repeat steps 2 and 3 until there are no nodes left
+\end{enumerate}
+The \textbf{time complexity} of this algorithm is $O(n^2)$.
+
 \end{document}
 
 
