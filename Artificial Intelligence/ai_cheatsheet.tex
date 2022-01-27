@@ -14,7 +14,7 @@
 
 \documentclass{article}
 
-\usepackage{hyperref, amsmath, graphicx, amssymb, csquotes, listings}
+\usepackage{hyperref, amsmath, graphicx, amssymb, csquotes}
 \usepackage{fancyvrb,newverbs,xcolor}
 
 \graphicspath{ {./assets/} }
@@ -43,17 +43,6 @@
 \newverbcommand{\cverb}
   {\setbox\verbbox\hbox\bgroup}
   {\egroup\colorbox{cverbbg}{\box\verbbox}}
-  
-\lstdefinestyle{c++}{
-  frame=single, language={C++}, numbers=left, numberstyle=\tiny, tabsize=4, breaklines=true,
-  basicstyle=\ttfamily\scriptsize,
-  keywordstyle=\color{blue}\ttfamily,
-  otherkeywords={WIDTH},
-  keywords=[2]{__shared__},
-  keywordstyle=[2]\color{orange}\ttfamily,
-  stringstyle=\color{red}\ttfamily,
-  commentstyle=\color{green}\ttfamily
-}
 
 \begin{document}
 \begin{titlepage}
@@ -167,6 +156,69 @@ This algorithm is \textbf{complete}. It is also \textbf{optimal} in the case tha
 \subsection{Bi-Directional Search}
 This algorithm considers two queues, one only containing the root, and one only containing the goal. The nodes of each queue are expanded until both queues contain a common node. \\ \\
 This algorithm is both \textbf{complete} and \textbf{optimal}. Furthermore, the \textbf{time and space complexities} are $O(b ^{\frac{d}{2}})$, where $b$ is the branching factor, and $d$ is the depth at which the goal is located.
+
+\section{Heuristic Search Algorithms}
+\textbf{Heuristic knowledge} helps to execute good choices. It does not avoid search, but it reduces it. It is used when a problem has exponential complexity -- i.e. is NP-complete. \\ \\
+This knowledge is given by a state evaluation function, called the \textbf{heuristic evaluation}.
+
+\subsection{Definitions}
+\subsubsection{Admissible Heuristic}
+A heuristic is said to be admissible if it never overestimates the cost of reaching the goal -- i.e. the cost estimated to reach the goal is not higher than the lowest possible cost from the current node.
+
+\[ \forall n~|~h(n) \leq h^*(n) \] \\
+Where $n$ is a node, $h$ is a heuristic, $h(n)$ is the cost from node $n$ to the goal -- defined by $h$, and $h^*(n)$ is the optimal cost from $n$ to the goal.
+
+\subsubsection{Monotonic Heuristic}
+A heuristic is said to be monotone if, for each node $n$ and its successor $n'$, the estimated cost of reaching the goal from $n$ is no longer greater than the step cost of getting to $n'$ plus the estimated cost of reaching the goal from $n'$.
+
+\[ f(n) \leq f(n') \] \\
+Where $f(n)$ is the cost from the root to node $n$ plus the cost estimation from node $n$ to the goal. Same thing goes for $f(n')$. A monotonic heuristic is always admissible. Not all admissible heuristics are monotonic. In addition, all monotonic heuristics guarantee local optimality.
+
+\subsection{Best First Search}
+Each node of the graph is evaluated by estimating its distance to the goal. The node which has the shortest distance to the goal is selected to be expanded.\\
+
+\begin{center}
+	\includegraphics[width=12cm]{befs.png}
+\end{center}
+\vspace{.3cm}
+Where on the far right we have all the values given by the heuristic function $h$. \\ \\
+This algorithm is \textbf{not complete} and \textbf{not optimal}. Furthermore, the \textbf{time complexity} and \textbf{space complexity} are both $O(b^m)$. Where $b$ is the branching factor and $m$ is the depth of the search tree.
+
+\subsection{A*}
+The evaluation function for this algorithm is:
+
+\[ f^*(n) = g^*(n) + h^*(n) \] \\
+Where $f^*(n)$ is the estimated cost of the path from the root to the goal, $g^*(n)$ is the cost of the path from the root to node $n$, and $h^*(n)$ is the estimated cost of the path from node $n$ to the goal -- given by the heuristic $h$.\\
+
+\begin{center}
+	\includegraphics[width=9cm]{a*.png}
+\end{center}
+\vspace{.3cm}
+This algorithm is \textbf{complete} -- unless there are infinitely many nodes with $f \leq f(G)$, where $G$ is the goal. It is also \textbf{optimal}. Furthermore, the \textbf{time complexity} and \textbf{space complexity} are both $O(b^m)$. Where $b$ is the branching factor and $m$ is the depth of the search tree.
+
+\subsubsection{Optimality of A*}
+Given that: \blockquote{If $A^*$ selects a path $p$, then $p$ is the shortest path -- i.e. least-cost path -- in order to reach the goal}, the optimality of $A^*$ can be demonstrated in the following way:
+
+\begin{enumerate}
+	\item Assume -- for contradiction -- that some other path $p'$ is actually the shortest path to a goal
+	\item Consider that, before $p$ is chosen from the fringe, some part of path $p'$ will also be on the fringe. This partial path will be called $p''$
+	\item Because $p$ was expanded before $p''$ was, then we will have:
+	\[ f(p) \leq f(p'') \]
+	\item Because $p$ is a goal, this means that $h(p) = 0$. Thus:
+	\[ g(p) \leq g(p'') + h(p'') \]
+	\item Because $h$ is admissible, this means that the following is true for any path $p'$ to a goal that extends $p''$:
+	\[ g(p'') + h(p'') \leq g(p') \]
+	\item We will thus obtain the following for any other path $p'$ to a goal:
+	\[ g(p) \leq g(p') \]
+	Which contradicts the assumption of $p'$ being the shortest path
+\end{enumerate}
+
+\subsection{IDA*}
+This algorithm combines $A^*$ with iterative deepening. At each iteration of the algorithm, we perform DFS, pruning the branches in which its total estimated cost
+
+\[ f(n) = g(n) + h(n) \] \\
+Exceeds a given threshold. The value of this threshold starts as the value of $f$ of the initial node, and increases for each iteration of the algorithm. The next value of the threshold is computed as the minimum value of $f$ of all values that exceeded the current threshold. \\ \\
+As for $A^*$, this algorithm is also both \textbf{complete} and \textbf{optimal}. Furthermore, the \textbf{time complexity} is $O(b^m)$, while the \textbf{space complexity} is $O(b \cdot d)$.
 
 \end{document}
 
