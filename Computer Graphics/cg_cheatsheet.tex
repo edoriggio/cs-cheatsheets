@@ -213,7 +213,6 @@ The intensity $I_d$ of a surface coming from the diffuse reflection is proportio
 	\includegraphics[width=5cm]{cos_rule.png}
 \end{center}
 The proper computation of the diffuse reflection is the following -- in which the Cosine Rule is applied:
-
 \begin{align*}
 	I_d &= \rho_d \cdot \cos\phi \cdot I \\
 	&= \rho_d \cdot \langle n, l \rangle \cdot I
@@ -368,7 +367,160 @@ There are two properties for barycentric coordinates:
 	All of the barycentric coordinates are greater of equal to 0.
 \end{itemize}
 
+\section{Transformations}
+There are two different ways of moving an object in the scene:
 
+\begin{itemize}
+	\item Moving the camera coordinates -- i.e. global coordinates
+	\item Moving the object coordinates -- i.e. local coordinates
+\end{itemize}
+Each object is initially positioned at the origin of the scene. Here the local coordinates are the same as the global coordinates. Afterwards, the object is moved around using local coordinate system transformations.
+
+\subsection{Homogeneous Coordinates}
+In order to combine different transformations together, we need to work in four dimensions. Any point will be now written as:
+
+\[ p = \begin{bmatrix} x \\ y \\ z \\ 1 \end{bmatrix} \] \\
+Ad each displacement -- i.e. vector -- will be now written as:
+
+\[ \overrightarrow{v} = \begin{bmatrix} x \\ y \\ z \\ 0 \end{bmatrix} \] \\
+Such that:
+
+\begin{itemize}
+	\item $p + d = 1 + 0 = 1 =$ position
+	\item $p - p = 1 - 1 = 0 =$ displacement
+	\item $d + d = 0 + 0 = 0 =$ displacement
+	\item $p + p = 1 + 1 = 0 =$ displacement
+\end{itemize}
+
+\subsection{Standard Transformations}
+Some of the standard transformations we discussed are:
+
+\begin{itemize}
+	\item \textbf{Translation} by $t = (t_x, t_y, t_z)$
+	\[ T = \begin{bmatrix} 1 & 0 & 0 & t_x \\ 0 & 1 & 0 & t_y \\ 0 & 0 & 1 & t_z \\ 0 & 0 & 0 & 1 \end{bmatrix} \]
+	
+	\item \textbf{Shearing} $yz$-plane, $xz$-plane and $xy$-plane
+	\[ S_{yz} = \begin{bmatrix} 1 & 0 & 0 & 0 \\ d_y & 1 & 0 & 0 \\ d_z & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix} ~~~~~ S_{xz} = \begin{bmatrix} 1 & d_x & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & d_z & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix} ~~~~~ S_{xy} = \begin{bmatrix} 1 & 0 & d_x & 0 \\ 0 & 1 & d_y & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix} \]
+	
+	\item \textbf{Scaling} by factors $s_x$, $s_y$, $s_z$
+	\[ S = \begin{bmatrix} s_x & 0 & 0 & 0 \\ 0 & s_y & 0 & 0 \\ 0 & 0 & s_z & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix} \]
+	
+	\item \textbf{Rotating} about axes $x$, $y$, $z$
+	\[ R_x = \begin{bmatrix} 1 & 0 & 0 & 0 \\ 0 & \cos \alpha & -\sin \alpha & 0 \\ 0 & \sin \alpha & \cos \alpha & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix} ~~~~~ R_y = \begin{bmatrix} \cos \alpha & 0 & \sin \alpha & 0 \\ 0 & 1 & 0 & 0 \\ -\sin \alpha & 0 & \cos \alpha & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix} \]
+	\[ R_z = \begin{bmatrix} \cos \alpha & -\sin \alpha & 0 & 0 \\ \sin \alpha & \cos \alpha & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix} \]
+\end{itemize}
+These transformations are also known as \textbf{affine transformations}. The kind of transformations preserve line, planes parallelisms and rations. Distances and angles are only preserved if
+
+\[ \det(A) = \pm 1 \] \\
+Transformations can also be combined. For example:
+
+\[ p \mapsto T \cdot R \cdot p \] \\
+Where $R$ is a rotation and is performed as the first transformation, and $T$ is a translation and is performed as the second transformation.
+
+\subsection{Normal Transformation}
+Normals need to be transformed too. For any transformation $m$ that preserves angles -- i.e. $\det(A) = \pm 1$, we compute the the new normals as follows:
+\[ \overrightarrow{n}_{new} = M\overrightarrow{n} \] \\
+Otherwise, for a more general case, we can use the following:
+\[ \overrightarrow{n}_{new} = (M^{-1})^T\overrightarrow{n} \]
+
+\section{Advanced Raytracing}
+\subsection{Shadows}
+Shadows are darks spots for which the light is occluded. A shadow is composed of two main parts:
+
+\begin{itemize}
+	\item \textbf{Umbra}
+	\vspace{.2cm} \\
+	This is the complete shadow.
+	
+	\item \textbf{Penumbra}
+	\vspace{.2cm} \\
+	This is the partial shadow.
+\end{itemize}
+\vspace{0cm}
+
+\begin{center}
+	\includegraphics[width=7cm]{shadow.png}
+\end{center}
+\vspace{.3cm}
+Furthermore, shadows convey 3D information of an object, such as:
+
+\begin{itemize}
+	\item Relative position
+	\item Depth information
+	\item Position of the light sources
+\end{itemize}
+Shadows can be computed by extending the Phong model as follows:
+
+\[ I = I_e + \rho_a \cdot I_a + \sum^n_{j = 1} (\rho_d \cdot \langle n, l_j \rangle + \rho_s \cdot \langle r_j, v \rangle^k) \cdot I_j \cdot \text{attr}(t) \cdot s_j(p) \] \\
+Where $s_j(p)$ is either 0 or 1. It is 1 when the secondary ray reaches the light source, 0 if the secondary ray hits another object before reaching the light source.
+
+\subsection{Reflection}
+Reflection happens when a ray hits a reflective object. \\
+
+\begin{center}
+	\includegraphics[width=7cm]{reflec.png}
+\end{center}
+\vspace{.3cm}
+In order to compute the reflected vector $r$, we use the following formula:
+
+\[ r = i - 2n \cdot \langle n, i \rangle \] \\
+In order to colour the mirror surface, we first need to find the intersection at $q$. The color at point $q$ is then computed and used for $p$ as well. \\ \\
+In order to determine how reflective a surface is, we need to use the constant
+
+\[ \alpha_{\text{reflect}} \in [ 0, 1 ] \]
+
+\subsection{Snell's Law}
+This law says that the ratio of the sines of the two angles is equal to the ratio of the indices of refraction. This is also equal to the ratio of the velocities in the mediums.
+
+\[ \frac{\sin \Theta_1}{\sin \Theta_2} = \frac{\delta_1}{\delta_2} = \frac{v_1}{v_2} \] \\
+We also have that:
+
+\[ \frac{\delta_1}{\delta_2} \cdot \sin \Theta_1 \begin{cases} < 1 & \text{refraction} \\ = 1 & \text{critical angle} \\ > 1 & \text{total internal reflection} \end{cases} \]
+
+\subsection{Refraction}
+Refraction happens whenever a ray passes the boundary between two transparent materials. \\
+
+\begin{center}
+	\includegraphics[width=4cm]{refrac.png}
+\end{center}
+\vspace{.3cm}
+The refracted ray $r$ can be found by using the following algorithm:
+\begin{align*}
+	a &= n \cdot \langle n, d \rangle \\
+	b &= i - a \\
+	\beta &= \frac{\delta_1}{\delta_2} \\
+	\alpha &= \sqrt{1 + ( 1 - \beta^2) \frac{||b||^2}{||A||^2}}
+\end{align*}
+Where $\delta_1$ and $\delta_2$ are the two indices of refraction of the two materials. And finally
+
+\[ r = \alpha a + \beta b \]
+
+\subsection{Fresnel Effect}
+The amount of light that is reflected of refracted on a surface depends on the viewing angle. \\
+
+\begin{center}
+	\includegraphics[width=4.5cm]{fresnel.png}
+\end{center}
+\vspace{.3cm}
+The reflected and refracted rays of the Fresnel effect is computed as:
+
+\[ F_{\text{Rl}} = \frac{1}{2} \left( \left( \frac{\delta_2 \cos\Theta_1 - \delta_1 \cos \Theta_2}{\delta_2 \cos\Theta_1 + \delta_1 \cos \Theta_2} \right)^2 + \left( \frac{\delta_1 \cos\Theta_1 - \delta_2 \cos \Theta_2}{\delta_1 \cos\Theta_1 + \delta_2 \cos \Theta_2} \right)^2 \right) \]
+\[ F_{\text{Rf}} = 1 - F_{\text{Rl}} \]
+
+\subsection{Space Partitioning}
+\textbf{Octrees} are adptive grid subdivisions. They are difficult to traverse. \\ \\
+In \textbf{Bounding Volume Hierarchy} (BVM), neighbouring objects are gathered using simple bounding primitives. the gathering difficulty is optimal. When we traverse we start from the biggest primitives. \\ \\
+\textbf{Binary Space Partitioning trees} (BSPt) recursively divide the scene with planes. It has a running time of $O(\log n)$, but it is complicated to traverse.
+
+\subsubsection{Kd-Trees}
+Here we recursively divide the scene into planes. Differently from BSPt, the planes are axis-aligned. \\ \\
+In order to traverse a kd-tree, we use the parametric ray equation
+
+\[ \gamma(t) = o + td \] \\
+And we recursively consider the active ray segment
+
+\[ [t_{\min}, t_{\max} ] \] \\
+This algorithm runs in $O(\log n)$.
 
 \end{document}
 
