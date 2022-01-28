@@ -282,6 +282,50 @@ This algorithm does the following:
 \end{enumerate}
 The \textbf{time complexity} of this algorithm is $O(n^2)$.
 
+\section{Local Search Algorithms}
+In the case of local search, we start from complete solutions. These solutions are then optimized by means of algorithms. The following is the general structure of this type of algorithms:
+
+\begin{enumerate}
+	\item Start from a complete solution
+	\item Compute the first best edge exchange that improves the tour
+	\item Execute the change
+	\item Search for another change until no further improvement is possible
+\end{enumerate}
+
+\subsection{Hill Climbing}
+This algorithm explores the entire neighbourhood, and searches for a better solution until no further improvement is possible. \\ \\
+For each current solution, the algorithm evaluates all of its neighbours. If
+
+\[ f(\text{next}) < f(\text{current}) \] \\
+Where $f$ is an objective function. Then, the current solution will be substituted by the next solution.
+
+\subsection{2-Opt}
+This algorithm is used in order to remove crossings in the solution path. This is done by selecting two nodes which contains crossings between them, and reversing the path between these two nodes. \\
+
+\begin{center}
+	\includegraphics[width=9cm]{2opt.png}
+\end{center}
+\vspace{.3cm}
+The \textbf{time complexity} of this algorithm is $O(n^2)$.
+
+\subsection{2.5-Opt}
+In this case, in addition to check is there are possible 2-opt swaps, we also check for two possible node shifts -- for node $n_i$ and $n_j$. A node swift is done by moving a node to another position in the tour. \\
+
+\begin{center}
+	\includegraphics[width=9cm]{2.5opt.png}
+\end{center}
+\vspace{.3cm}
+The \textbf{time complexity} of this algorithm is $O(n^2)$.
+
+\subsection{3-Opt}
+In this case, we remove three links form the tour, thus obtaining three segments to manipulate. With these three segments we check for possible multiple 2-opt swaps, as well as node shifts. \\
+
+\begin{center}
+	\includegraphics[width=9cm]{3opt.png}
+\end{center}
+\vspace{.3cm}
+The \textbf{time complexity} of this algorithm is $O(n^3)$.
+
 \end{document}
 
 
