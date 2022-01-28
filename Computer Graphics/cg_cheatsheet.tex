@@ -522,6 +522,215 @@ And we recursively consider the active ray segment
 \[ [t_{\min}, t_{\max} ] \] \\
 This algorithm runs in $O(\log n)$.
 
+\section{Line Rasterization}
+In rasterization, we use the inverse approach of raytracing. The line here is transformed from global coordinates into screen coordinates. The following is the algorithm:
+
+\begin{enumerate}
+	\item Consider rays from points $p_1$ and $p_2$ to the origin
+	\item Compute the intersections with the image plane at $z = 1$
+	\item We now have screen coordinates $(x_1, y_1)$ and $(x_2, y_2)$ for points $p_1$ and $p_2$
+	\item Draw the line from $(x_1, y_1)$ to $(x_2, y_2)$
+\end{enumerate}
+\vspace{.0cm}
+\begin{center}
+	\includegraphics[width=7cm]{rasterization.png}
+\end{center}
+\vspace{.3cm}
+In order to determine which pixels should be coloured in the image, we use the midpoint algorithm.
+
+\subsection{Midpoint Algorithm}
+There are two possible options for the selection of the $y$-coordinate at each $x$-step:
+
+\begin{itemize}
+	\item Value of $y$ stays the same
+	\item Value of $y$ increases by one
+\end{itemize}
+The following is the decision: \\
+\begin{center}
+	\includegraphics[width=11cm]{midpoint.png}
+\end{center}
+\vspace{.3cm}
+Where $Q$ is the intersection, and $M$ is the midpoint. If $Q$ is higher than $M$, then $y$ will be increased. Otherwise, $y$ stays the same. \\ \\
+In order to determine whether a point lies above or below a line, we use the following function:
+
+\[ F(x,y) = ydx - xdy + x_1dy - y_1dy \] \\
+Where
+
+\[ dx = x_2 - x_1 \]
+\[ dy = y_2 - y_1 \] \\
+Now we can check the sign of $F(x,y)$.
+\begin{align*}
+	F(x, y) \begin{cases} > 0 & \text{above the line} \\ = 0 & \text{on the line} \\ < 0 & \text{below the line} \end{cases}
+\end{align*}
+From what discussed above, we can have a midpoint decider:
+
+\[ f = F(M) = F(x_i + 1, y_i + 0.5) \] \\
+Where, if
+
+\[ f \geq 0 ~~~~~~~~ \text{choose the pixel below} \]
+\[ f < 0 ~~~~~~~~ \text{choose the pixel above} \] \\
+The initial value for $F(M)$ is:
+
+\[ F(M) = -dy + \left(\frac{dx}{2}\right) \]
+
+\section{Graphics Pipeline}
+The steps of the pipeline are:
+
+\begin{enumerate}
+	\item \textbf{Application}
+	\vspace{.2cm} \\
+	It determines the composition of the scene, and is usually computed on the CPU. For example, it sets up the camera, changes geometry, performs animations...
+	
+	\item \textbf{Geometry Processing}
+	\vspace{.2cm} \\
+	All of the geometry is put in a common space. the per-vertex shading information is computed. Some of the information is passed to the rasterization stage.
+	
+	\item \textbf{Rasterization}
+	\vspace{.2cm} \\
+	Fragments are generated with interpolated per-vertex data.
+	
+	\item \textbf{Pixel Processing}
+	\vspace{.2cm} \\
+	Each fragment is coloured. All fragments are merged into an image.
+\end{enumerate}
+\subsection{Detailed Pipeline}
+There are more detailed steps in the rendering pipeline:
+
+\begin{enumerate}
+	\item \textbf{Vertex Specification}
+	\vspace{.2cm} \\
+	Setting up the geometry. It is a \textbf{fixed stage}.
+	
+	\item \textbf{Vertex Shader}
+	\vspace{.2cm} \\
+	Computes the transformation and shading info. It is a \textbf{programmable stage}.
+	
+	\item \textbf{Tesselation}
+	\vspace{.2cm} \\
+	Subdivides geometry. It is a \textbf{programmable stage}.
+	
+	\item \textbf{Geometry Shader}
+	\vspace{.2cm} \\
+	Generates the new geometry. It is a \textbf{programmable stage}
+	
+	\item \textbf{Vertex Post-Processing}
+	\vspace{.2cm} \\
+	Performs clipping and outputs the geometry. It is a \textbf{fixed stage}.
+	
+	\item \textbf{Primitive Assembly}
+	\vspace{.2cm} \\
+	Creates a geometry from vertices, and performs face culling. It is a \textbf{fixed stage}.
+	
+	\item \textbf{Rasterization}
+	\vspace{.2cm} \\
+	Creates the fragments, and performs data interpolation. It is a \textbf{fixed stage}.
+	
+	\item \textbf{Fragment Shader}
+	\vspace{.2cm} \\
+	Performs shading. It is a \textbf{programmable stage}.
+	
+	\item \textbf{Pre-Sample Operations}
+	\vspace{.2cm} \\
+	Perform depth testing. It is a \textbf{fixed stage}.
+\end{enumerate}
+
+\subsection{Data Flow}
+\textbf{Uniforms} are input data common across all shader executions. They can be numbers, vectors, textures... \\ \\
+\textbf{Attributes} are per-vertex input information, such as color, position... These values are interpolated and stored inside of buffers. \\ \\
+\textbf{Fragment values} are optional, and usually represent color information. \\
+
+\begin{center}
+	\includegraphics[width=11cm]{data_flow.png}
+\end{center}
+
+\subsection{Supplying Vertex Attributes}
+Geometric objects are stored as vertices. A \textbf{vertex} is a simple collection of attributes in space. These attributes are:
+
+\begin{itemize}
+	\item Position
+	\item Colour
+	\item Normal vector
+\end{itemize}
+This vertex data is stored into buffers called \textbf{vertex buffer objects} (VBOs). VBOs are concatenated elements of each vertex. \\ \\
+On the other hand, \textbf{Vertex Array Objects} (VAOs) describe the state of the attributes, which VBO to use, and how to pull the data from it.
+
+\subsection{Depth Test and Face Culling}
+The \textbf{depth test} is necessary in order to find which object occludes which other object. \\ \\
+\textbf{Face culling} allows to prevent the rendering of the faces that are not visible to the viewer.
+
+\section{Transformation Pipeline}
+\subsection{Model Transformation}
+It transforms model coordinates into world coordinates. It is defined by a \textbf{model matrix} representing affine transformations.
+
+\subsection{Viewing Transformation}
+It transforms world coordinates into viewing coordinates. It is computed as:
+\begin{align*}
+	eye &= VP \\
+	z' &= \frac{VPN}{||VPN||} \\
+	x' &= \frac{VUP \times z'}{||VUP|| \times z'||} \\
+	y' &= z' \times x'
+\end{align*}
+Where $VP$ is the camera position, $VPN$ is the view plane normal, and $VUP$ is the view up vector. Then:
+
+\[ T(-eye) = \begin{bmatrix} 1 & 0 & 0 & -eye_x \\ 0 & 1 & 0 & -eye_y \\ 0 & 0 & 1 & -eye_z \\ 0 & 0 & 0 & 1 \end{bmatrix} \]
+\[ p = p'_xx' + p'_yy' + p'_zz' = Rp' \]
+\[ R = \begin{bmatrix} \vline & \vline & \vline & 0 \\ x' & y' & z' & 0 \\ \vline & \vline & \vline & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix} \]
+\[ p' = R^{-1}p = R^Tp \] \\
+Finally, the \textbf{view matrix} will be:
+
+\[ R^TT(-eye) = \begin{bmatrix} - & x^T & - & -x'^T \cdot eye \\ - & y^T & - & -y'^T \cdot eye \\ - & z^T & - & -z'^T \cdot eye \\ 0 & 0 & 0 & 1 \end{bmatrix} \]
+
+\subsection{Projection Transformation}
+It transforms viewing coordinates to normalized coordinates. In order to do so, we need to use an orthographic projection. \\ \\
+In order to perform an orthographic projection, we need to transform a map cuboid into a unit cube. This is done with the \textbf{projection matrix}.
+
+\[ P_{ortho} = \begin{bmatrix} \frac{1}{r} & 0 & 0 & 0 \\ 0 & \frac{1}{t} & 0 & 0 \\ 0 & 0 & \frac{-2}{f-n} & -\frac{f+n}{f-n} \\ 0 & 0 & 0 & 1 \end{bmatrix} \]
+
+\subsection{Transformations for Rasterization}
+The final formula for the transformations of vertices is:
+
+\[ out = PM \cdot VM \cdot MM \cdot in \] \\
+Where $PM$ is the projection matrix, $VM$ is the view matrix, $MM$ is the model matrix, and $in$ is the input vertex.
+
+\section{Light Computation}
+The Phong reflectance model can be used in rasterization by the following formula:
+
+\[ I = k_ai_a + k_d (L \cdot N) i_d + k_s (R \cdot V)^s i_s \] \\
+Where $k_a$ is the ambient coefficient, $i_a$ is the ambient intensity, $k_d$ is the diffuse coefficient, $L$ is the vector pointing to the light source, $N$ is the normal vector of the intersection point, $i_d$ is the diffuse intensity, $k_s$ is the spectral coefficient, $R$ is the reflected vector, $V$ is the vector pointing to the viewer, $s$ is the shininess of the object, and $i_s$ is the spectral intensity.
+
+\subsection{Shading}
+There are two main techniques in order to compute the color of a point:
+
+\begin{itemize}
+	\item \textbf{Gouraud Shading}
+	\vspace{.2cm} \\
+	The color is computed per-vertex and is then interpolated. The Phong model computation is done in the vertex shader.
+	
+	\item \textbf{Phong Shading}
+	\vspace{.2cm} \\
+	All the information for light computation is first interpolated. It is computed in the fragment shader.
+\end{itemize}
+Each fragment is shaded separately in a fragment shader. All vectors should be available there. \\ \\
+The available vectors are:
+
+\begin{itemize}
+	\item \textbf{Normal vector - $N$}
+	\vspace{.2cm} \\
+	It contains geometry information and is transformed using model and view matrices.
+	
+	\item \textbf{Light vector - $L$}
+	\vspace{.2cm} \\
+	This vector can be either passed to the vertex shader and transformed with a view matrix, or it can be transformed with a view matrix in the application stage.
+	
+	\item \textbf{View direction - $V$}
+	\vspace{.2cm} \\
+	It is easy to compute, since the camera is located in $(0, 0, 0)$. It can be computed in the vertex shader from the vertex position transformed by both the model and the view matrices.
+	
+	\item \textbf{Reflection direction - $R$}
+	\vspace{.2cm} \\
+	It can be computed in the fragment shader from vectors $L$ and $N$.
+\end{itemize}
+
 \end{document}
 
 
