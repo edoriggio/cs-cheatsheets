@@ -14,7 +14,7 @@
 
 \documentclass{article}
 
-\usepackage{hyperref, amsmath, graphicx, amssymb, csquotes}
+\usepackage{hyperref, amsmath, graphicx, amssymb, csquotes, tabularx}
 \usepackage{fancyvrb,newverbs,xcolor}
 
 \graphicspath{ {./assets/} }
@@ -174,7 +174,7 @@ A heuristic is said to be monotone if, for each node $n$ and its successor $n'$,
 \[ f(n) \leq f(n') \] \\
 Where $f(n)$ is the cost from the root to node $n$ plus the cost estimation from node $n$ to the goal. Same thing goes for $f(n')$. A monotonic heuristic is always admissible. Not all admissible heuristics are monotonic. In addition, all monotonic heuristics guarantee local optimality.
 
-\subsection{Best First Search}
+\subsection{Best-First Search}
 Each node of the graph is evaluated by estimating its distance to the goal. The node which has the shortest distance to the goal is selected to be expanded.\\
 
 \begin{center}
@@ -218,7 +218,7 @@ This algorithm combines $A^*$ with iterative deepening. At each iteration of the
 
 \[ f(n) = g(n) + h(n) \] \\
 Exceeds a given threshold. The value of this threshold starts as the value of $f$ of the initial node, and increases for each iteration of the algorithm. The next value of the threshold is computed as the minimum value of $f$ of all values that exceeded the current threshold. \\ \\
-As for $A^*$, this algorithm is also both \textbf{complete} and \textbf{optimal}. Furthermore, the \textbf{time complexity} is $O(b^m)$, while the \textbf{space complexity} is $O(b \cdot d)$.
+As for $A^*$, this algorithm is also both \textbf{complete} and \textbf{optimal}. Furthermore, the \textbf{time complexity} is $O(b^m)$, while the \textbf{space complexity} is $O(b \cdot m)$. Where $b$ is the branching factor and $m$ is the depth of the search tree.
 
 \section{Constructive Greedy Search Algorithms}
 A constructive greedy algorithm is based on the following steps:
@@ -326,35 +326,189 @@ In this case, we remove three links form the tour, thus obtaining three segments
 \vspace{.3cm}
 The \textbf{time complexity} of this algorithm is $O(n^3)$.
 
+\section{Meta-Heuristic Search Algorithms}
+The main problems with local search strategies are that a local minimum cannot be escaped, and they are inefficient when the neighbourhood is too large. \\ \\
+A way to solve these problems is to do the following:
+
+\begin{itemize}
+	\item Stochastically explore only a subset of the neighbourhood
+	\item Accept those solutions that are worst than the previous
+\end{itemize}
+Meta-heuristic algorithms are usually inspired by natural systems. Such algorithms are, for example:
+
+\begin{itemize}
+	\item Simulated annealing
+	\item Genetic algorithms
+	\item Ant colony optimization
+\end{itemize}
+
+\subsection{Simulated Annealing}
+This algorithm is inspired by the natural annealing of metals. the algorithm follows these steps:
+
+\begin{enumerate}
+	\item Start from an initial current solution
+	\item At each iteration, a new solution next is randomly chosen from the neighbourhood of the current solution
+	\item If $f(\text{next} < f(\text{current}))$, then $f(\text{next})$ becomes the current node. Otherwise, we use a probabilistic function
+	\[ e^{-\frac{\Delta E}{T}} \]
+	Where $\Delta E = f(\text{next} - f(\text{current}))$, and $T$ is the temperature -- which decreases over time. This function is used in order to choose between the next and current nodes
+	\item Repeat steps 2 and 3, until the solution converges
+\end{enumerate}
+The next node is chosen by selecting a random value $r$ -- chosen uniformly from 0 to 1, and compare it to the probabilistic function seen earlier.
+
+\[ r < e^{-\frac{\Delta E}{T}} \] \\
+If that were the case, then the next node will become the current one.
+
+\subsubsection{Values}
+The variable $T$ -- i.e. the temperature -- is usually decremented by using the formula:
+
+\[ T_{i + 1} = T_i \cdot \alpha \] \\
+Where $\alpha$ is normally close to 0.95. \\ \\
+For Euclidean instances, the initial temperature is usually set to:
+
+\[ T = \frac{L}{\sqrt{n}} \] \\
+Where $L$ is the temperature length -- which are the steps from one temperature to the next, and $n$ is the number of nodes in the graph. \\ \\
+The variable $L$ is usually computed by
+
+\[ L = \beta \cdot \text{NN\_list\_length} \] \\
+Where $\beta$ varies between 1 and 100. \\ \\
+For TSP applications, the neighbourhood is usually given by a random 2-opt move.
+
+\subsection{Genetic Algorithms}
+These type of algorithms are based on Darwin's theory of evolution. Individuals better fit with the environment have more chances to survive. \\ \\
+Reproduction allows the best individuals to generate children similar to them. Generation after generation, the population will always fit better with the environment. \\ \\
+The environment is the objective function that needs to be optimized -- called fitness. The individuals are a population of solutions.
+
+\subsubsection{Components}
+In genetic algorithms, there are several components:
+
+\begin{itemize}
+	\item \textbf{Individual}
+	\vspace{.2cm} \\
+	It is described by its chromosome. It is evaluated by using a fitness function that represents their adaptation to the environment.
+	
+	\item \textbf{Chromosome}
+	\vspace{.2cm} \\
+	It is defined by a sequence of genes.
+	
+	\item \textbf{Population}
+	\vspace{.2cm} \\
+	It is a set of individuals.
+	
+	\item \textbf{Generation}
+	\vspace{.2cm} \\
+	Is defined by a sequence of different populations.	
+\end{itemize}
+
+\subsubsection{Reproduction}
+It takes inspiration from Darwin's natural selection process. Individuals with higher fitness have a higher possibility to reproduce. \\ \\
+From two parents, two children are generated. The reproduction uses a \textbf{crossover} operator. For example:
+
+\begin{verbatim}
+    F = 011 | 1000
+    M = 001 | 0110
+	
+    C1 = 011 | 0110
+    C2 = 001 | 1000
+\end{verbatim}
+To each child is also applied a random \textbf{mutation}, in order to modify some of the gene components. This mutation is random and has generally a small probability of happening. For example:
+
+\begin{verbatim}
+    C1 = 010 | 0110
+    C2 = 011 | 1000
+\end{verbatim}
+
+\subsubsection{Parameters}
+There are several parameters to keep in consideration in genetic algorithms, such as:
+
+\begin{itemize}
+	\item \textbf{Number of Individuals}
+	\vspace{.2cm} \\
+	Usually it is a compromise between the search space coverage, and the need to escape from a local minimum. A good starting number is 100.
+	
+	\item \textbf{Crossover Probability}
+	\vspace{.2cm} \\
+	It is defined for each couple of individuals. Parents could also have the possibility to reproduce without combining their chromosomes. The crossover probability parameter is crucial in order to guarantee the search space coverage, and that new individuals are generated. A good value is 0.5.
+	
+	\item \textbf{Mutation Probability}
+	\vspace{.2cm} \\
+	It is defined for each gene of the chromosome. It is usually 0.005.
+	
+	\item \textbf{Generation Gap}
+	\vspace{.2cm} \\It is the percentage of individuals replaced between one generation and the next. In the case that the gap were 100\%, then all children would replace all parents. In the case that the gap were for example 80\%, then we would keep the best 20\% of the parents, and the best 80\% of the children.
+	
+	\item \textbf{Selection Strategy}
+	\vspace{.2cm} \\
+	In the case that an \textbf{elitist} strategy were to be used, the best $n$ individuals would be automatically moved to the next generation. This prevents that the best individuals are not reproduced in the next population. The value of $n$ is usually either 0 or 1.
+\end{itemize}
+
+\subsubsection{Functions}
+The following functions are used in genetic algorithms:
+
+\begin{itemize}
+	\item \textbf{Random}
+	\vspace{.2cm} \\
+	This function generates a real number between 0 and 1. It is used in the selection of a father and a mother -- for reproduction. This random value is multiplied by the fitness of that individual.
+	
+	\item \textbf{Flip}
+	\vspace{.2cm} \\
+	this function returns \cverb|true| according to a probability. It is used in both crossover and mutation, to decide whether to respectively apply crossover to the parents' chromosomes, and mutation to the children's genes.
+	
+	\item \textbf{Rnd}
+	\vspace{.2cm} \\
+	This function generates a random integer between a range of numbers. It is used in crossover in order to determine which will be the delimiter of the two parts of the chromosome. After doing so, the four generated sections will be swapped according to the crossover operator. In this case, the lower bound of the range will be 1 -- i.e. the beginning of the gene sequence, while the upper bound will be $v - 1$ -- where $v$ is the number of genes in the chromosome.
+	
+	\item \textbf{Scale the Fitness}
+	\vspace{.2cm} \\
+	This function is needed in order to avoid that fitness values are too close to each other. These fitness values are rescaled based on the maximum and minimum fitnesses.
+	
+	\item \textbf{Ranking}
+	\vspace{.2cm} \\
+	This function is a possible alternative in order to define the selection probability. Individuals are sorted by fitness, and a probability is given to each based on their position in the ranking. This is done in order to avoid always selecting individuals with very high fitness values.
+\end{itemize}
+
+\subsubsection{Genetic Algorithms for TSP}
+In the case of a TSP, an individual will be a tour. This means that normal crossover operators would not work (it might happen that, after a crossover, a city is visited multiple times inside of a same tour). \\ \\
+A possible crossover operator would be one that maintains absolute position for the first part of the tour, and relative position for the second part of the tour. For example:
+
+\begin{verbatim}
+    F = 21 | 34567
+    M = 43 | 12576
+    
+    C1 = 21 | 43576
+    C2 = 43 | 21567
+\end{verbatim}
+Another possible crossover strategy is a \textbf{greedy crossover}. In this case, the operator selects the first city of a parent, and from the other cities it chooses the closest one to both parents. This new city would be used in order to extend the tour. \\ \\
+If the closest city is already in the tour, we choose the other city. Otherwise, we randomly select a non-visited city.
+
+\newpage
+
+\section{Appendix}
+\subsection{Table of Algorithms}
+
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{|X|c|c|c|c|}
+\hline
+\textbf{Algorithm} & \textbf{Complete} & \textbf{Optimal} & \textbf{Time} & \textbf{Space} \\ \hline \hline
+Breath-First Search & yes & yes\footnote{In the case that all steps have the same cost} & $O(b^d)$ & $O(b^d)$ \\
+Uniform-Cost Search & yes & yes\footnote{\label{note2}In the case of non-negative edge costs} & $O(b^d)$ & $O(b^d)$ \\
+Depth-First Search & no\footnote{In the case of an infinite state space} & no & $O(b^m)$ & $O(b \cdot m)$ \\
+Depth-Limited Search & yes\footnote{In the case of where we know a bound to the solution depth} & no & $O(b^d)$ & $O(b \cdot d)$ \\
+Iterative-Deepening Search & yes & yes\textsuperscript{\ref{note2}} & $O(b^d)$ & $O(b \cdot d)$ \\
+Bi-Directional Search & yes & yes & $O(b^\frac{d}{2})$ & $O(b^\frac{d}{2})$ \\
+Best-First Search & no & no & $O(b^m)$ & $O(b^m)$ \\
+A* & yes\footnote{Unless there are infinitely many nodes with $f \leq f(G)$} & yes & $O(b^m)$ & $O(b^m)$ \\
+IDA* & yes & yes & $O(b^m)$ & $O(b \cdot m)$ \\
+\hline
+Nearest Neighbour & -- & -- & $O(n^2)$ & -- \\
+Multi-Fragment & -- & -- & $O(n^2 \log n)$ & -- \\
+Nearest Insertion & -- & -- & $O(n^2)$ & -- \\
+Farthest Insertion & -- & -- & $O(n^2)$ & -- \\
+2-Opt & -- & -- & $O(n^2)$ & -- \\
+2.5-Opt & -- & -- & $O(n^2)$ & -- \\
+3-Opt & -- & -- & $O(n^3)$ & -- \\
+\hline
+\end{tabularx}
+\vspace{.2cm} \\
+Where $b$ is the branching factor, $m$ is the maximum depth of the search tree, $d$ is the depth at which the goal is found, and $n$ is the number of nodes in the graph.
+
 \end{document}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
