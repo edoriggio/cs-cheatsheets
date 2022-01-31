@@ -348,9 +348,9 @@ This algorithm is inspired by the natural annealing of metals. the algorithm fol
 \begin{enumerate}
 	\item Start from an initial current solution
 	\item At each iteration, a new solution next is randomly chosen from the neighbourhood of the current solution
-	\item If $f(\text{next} < f(\text{current}))$, then $f(\text{next})$ becomes the current node. Otherwise, we use a probabilistic function
+	\item If $f(\text{next}) < f(\text{current})$, then $f(\text{next})$ becomes the current node. Otherwise, we use a probabilistic function
 	\[ e^{-\frac{\Delta E}{T}} \]
-	Where $\Delta E = f(\text{next} - f(\text{current}))$, and $T$ is the temperature -- which decreases over time. This function is used in order to choose between the next and current nodes
+	Where $\Delta E = f(\text{next}) - f(\text{current})$, and $T$ is the temperature -- which decreases over time. This function is used in order to choose between the next and current nodes
 	\item Repeat steps 2 and 3, until the solution converges
 \end{enumerate}
 The next node is chosen by selecting a random value $r$ -- chosen uniformly from 0 to 1, and compare it to the probabilistic function seen earlier.
