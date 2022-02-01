@@ -1,0 +1,284 @@
+% Copyright 2021 Edoardo Riggio
+
+% Licensed under the Apache License, Version 2.0 (the "License");
+% you may not use this file except in compliance with the License.
+% You may obtain a copy of the License at
+
+% 	http://www.apache.org/licenses/LICENSE-2.0
+
+% Unless required by applicable law or agreed to in writing, software
+% distributed under the License is distributed on an "AS IS" BASIS,
+% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+% See the License for the specific language governing permissions and
+% limitations under the License.
+
+\documentclass{article}
+
+\usepackage{hyperref, amsmath, graphicx, amssymb, csquotes, listings}
+\usepackage{fancyvrb,newverbs,xcolor}
+
+\graphicspath{ {./assets/} }
+
+\definecolor{cverbbg}{gray}{0.93}
+
+\newenvironment{cverbatim}
+ {\SaveVerbatim{cverb}}
+ {\endSaveVerbatim
+  \flushleft\fboxrule=0pt\fboxsep=.5em
+  \colorbox{cverbbg}{\BUseVerbatim{cverb}}%
+  \endflushleft
+}
+
+\newenvironment{lcverbatim}
+ {\SaveVerbatim{cverb}}
+ {\endSaveVerbatim
+  \flushleft\fboxrule=0pt\fboxsep=.5em
+  \colorbox{cverbbg}{%
+    \makebox[\dimexpr\linewidth-2\fboxsep][l]{\BUseVerbatim{cverb}}%
+  }
+  \endflushleft
+}
+
+\newcommand{\ctexttt}[1]{\colorbox{cverbbg}{\texttt{#1}}}
+\newverbcommand{\cverb}
+  {\setbox\verbbox\hbox\bgroup}
+  {\egroup\colorbox{cverbbg}{\box\verbbox}}
+  
+\lstdefinestyle{c++}{
+  frame=single, language={C++}, numbers=left, numberstyle=\tiny, tabsize=4, breaklines=true,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{blue}\ttfamily,
+  otherkeywords={WIDTH},
+  keywords=[2]{__shared__},
+  keywordstyle=[2]\color{orange}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  commentstyle=\color{green}\ttfamily
+}
+
+\begin{document}
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+        
+        \Huge
+        \textbf{Computer Graphics Formulae}
+        
+        \vspace{0.5cm}
+        \LARGE
+        
+        \vspace{.5cm}
+        
+        Edoardo Riggio
+   		  \vspace{1.5cm}
+       
+        \vfill
+        
+        \today
+        
+        \vspace{.8cm}
+          \Large
+          Computer Graphics - SA. 2021 \\
+        Computer Science\\
+        Universit\`{a} della Svizzera Italiana, Lugano\\
+        
+    \end{center}
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+
+\section{Vectors}
+\subsection{Dot Product}
+\vspace{.3cm}
+\[ \langle a, b \rangle = \sum^3_{i=1} a_i b_i \]
+
+\subsection{Cross Product}
+\vspace{.3cm}
+\[ a \times b = \begin{bmatrix} a_2b_3 - a_3b_2 \\ a_3b_1 - a_1b_3 \\ a_1b_2 - a_2b_1 \end{bmatrix} \]
+
+\subsection{Magnitude}
+\vspace{.3cm}
+\[ |a| = \sqrt{\sum^3_{i=1} a_i^2} \]
+
+\section{Rays and Objects}
+\subsection{Ray}
+\vspace{.3cm}
+\[ \gamma(t) = o + dt \]
+
+\subsection{Ray-Sphere Intersection}
+\vspace{.3cm}
+\[ a = \langle c, d \rangle \]
+\[ D = \sqrt{||~c~||^2 - \langle c, d \rangle^2} \]
+\[ t_{1,2} = \langle c, d \rangle \pm \sqrt{r^2 - D^2} \] \\
+Where $c$ is the vector from the eye to the center of the sphere, $d$ is the viewing direction, and $r$ is the ray of the circle.
+
+\subsection{Ray-Cone Intersection}
+\vspace{.3cm}
+\[ a = d_x^2 + d_z^2 - d_y^2 \]
+\[ b = 2(d_xo_x - d_zo_z - d_yo_y) \]
+\[ c = o_x^2 + o_z^2 - o_y^2 \]
+\[ t_{1,2} = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a} \] \\
+Where $d$ is the view direction, and $o$ is the position of the eye.
+
+\subsection{Ray-Triangle Intersection}
+\vspace{.3cm}
+\[ p = \begin{bmatrix} x \\ y \\ z \end{bmatrix} \]
+\[ p_i = \begin{bmatrix} x_i \\ y_i \\ z_i \end{bmatrix} \]
+\[ n = (p_2 - p_1) \times (p_3 - p1) \]
+\[ n_i = (p_{i+1} - p) \times (p_{i-1} - p) \]
+\[ W = \frac{||n||}{2} \]
+\[ w_i = \frac{||n_i||}{2} \cdot \text{sign}(\langle n_i, n \rangle) \]
+\[ \lambda_1(p) = \frac{w_1}{W} ~~~~~~~ \lambda_2(p) = \frac{w_2}{W} ~~~~~~~ \lambda_3(p) = \frac{w_3}{W} \] \\
+Where $\lambda_1(p)$, $\lambda_2(p)$ and $\lambda_3(p)$ are the three barycentric coordinates.
+
+\section{Illumination}
+\subsection{Diffuse Reflection}
+\vspace{.3cm}
+\[ I_d = \rho_d \cdot \langle n, l \rangle \cdot I \] \\
+Where $\rho_d$ is the diffuse coefficient, $n$ is the normal vector of the point, $l$ is the vector pointing to the light source, and $I$ is the intensity of the light.
+
+\subsection{Ambient Illumination}
+\vspace{.3cm}
+\[ I_a = \rho_a \cdot I \] \\
+Where $\rho_a$ is the ambient coefficient, and $I$ is the ambient light intensity.
+
+\subsection{Specular Reflection}
+\vspace{.3cm}
+\[ r = 2n \cdot \langle n, l \rangle - l \]
+\[ I_s = \rho_s \cdot \langle r, v \rangle^k \cdot I \] \\
+Where $n$ is the normal vector of the point, $l$ is the vector pointing to the light source, $\rho_s$ is the reflection coefficient, $r$ is the reflection ray, $v$ is the viewing direction, $k$ is the shininess of the object, and $I$ is the intensity of the light source.
+
+\subsection{Blinn-Phong Specular Reflection}
+\vspace{.3cm}
+\[ h = \frac{1}{2}(l + v) \]
+\[ I_s = \rho_s \cdot \langle n, h \rangle^{4k} \cdot I \] \\
+Where $l$ is the vector pointing to the light source, $v$ is the viewing direction, $\rho_s$ is the reflection coefficient, $n$ is the normal of the point, $h$ is the bisection vector, $k$ is the shininess of the object, and $I$ is the intensity of the light source.
+
+\subsection{Distance Attenuation}
+\vspace{.3cm}
+\[ att(r) = \frac{1}{a_1 + a_2r + a_3r^2} \] \\
+Where $r$ is the ray of light, and $a_1$, $a_2$ and $a_3$ are constant values.
+
+\subsection{Phong Lighting Model}
+\vspace{.3cm}
+\[ I = I_e + \rho_a \cdot I_a + \sum^n_{j = 1} (\rho_d \cdot \langle n, l_j \rangle + \rho_s \cdot \langle n, h_j \rangle^{4k}) \cdot I_j \cdot att(||l_j||) \cdot s_j(p) \] \\
+Where $I_e$ is the self-emitting intensity, $\rho_a$ is the diffuse coefficient, $I_a$ is the ambient intensity, $\rho_d$ is the diffuse coefficient, $n$ is the normal vector, $l$ is the vector pointing to the light source, $\rho_s$ is the specular coefficient, $h$ is the bisection vector, $v$ is the direction vector, $k$ is the shininess, $I_j$ is the intensity of the $j$-th light source, and $s_j(p)$ indicates if the point $p$ indicates whether the point is in shadow or not -- 1 $p$ is not in shadow, 0 $p$ is in shadow.
+
+\subsection{Gamma Correction and Tone Mapping}
+\vspace{.3cm}
+\[ I_{in} = \max((\alpha \cdot I^\beta)^{\frac{1}{\gamma}}, 1.0) \] \\
+Where $I_{in}$ is the input for our display, $I$ is the intensity computed by the Phong model, $\gamma$ is the gamma coefficient, and $\alpha$ and $\beta$ are the tone mapping coefficients.
+
+\section{Transformations}
+\subsection{Translation}
+\vspace{.3cm}
+\[ T = \begin{bmatrix} 1 & 0 & 0 & t_x \\ 0 & 1 & 0 & t_y \\ 0 & 0 & 1 & t_z \\ 0 & 0 & 0 & 1 \end{bmatrix} \]
+
+\subsection{Shear}
+\vspace{.3cm}
+\[ S_{yz} = \begin{bmatrix} 1 & 0 & 0 & 0 \\ d_y & 1 & 0 & 0 \\ d_z & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix} ~~~~~ S_{xz} = \begin{bmatrix} 1 & d_x & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & d_z & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix} \]
+\[ S_{xy} = \begin{bmatrix} 1 & 0 & d_x & 0 \\ 0 & 1 & d_y & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix} \]
+
+\subsection{Scale}
+\vspace{.3cm}
+\[ S = \begin{bmatrix} s_x & 0 & 0 & 0 \\ 0 & s_y & 0 & 0 \\ 0 & 0 & s_z & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix} \]
+
+\subsection{Rotation}
+\vspace{.3cm}
+\[ R_x = \begin{bmatrix} 1 & 0 & 0 & 0 \\ 0 & \cos \alpha & -\sin \alpha & 0 \\ 0 & \sin \alpha & \cos \alpha & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix} ~~~~~ R_y = \begin{bmatrix} \cos \alpha & 0 & \sin \alpha & 0 \\ 0 & 1 & 0 & 0 \\ -\sin \alpha & 0 & \cos \alpha & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix} \]
+\[ R_z = \begin{bmatrix} \cos \alpha & -\sin \alpha & 0 & 0 \\ \sin \alpha & \cos \alpha & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix} \]
+
+\subsection{Normal}
+\vspace{.3cm}
+\[ n_{new} = Mn \]
+\[ n_{new} = (M^{-1})^Tn \] \\
+Where $M$ is the transformation matrix. The first equation is used in the case that the transformation preserves angles, otherwise we use the second equations.
+
+\section{Advanced}
+\subsection{Snell's Law}
+\vspace{.3cm}
+\[ \frac{\sin \Theta_1}{\sin \Theta_2} = \frac{\delta_1}{\delta_2} = \frac{v_1}{v_2} \] \\
+Where $\delta$ is the index of refraction of the medium, and $v$ is the velocity of light in the medium.
+
+\subsection{Reflection}
+\vspace{.3cm}
+\[ r = i - 2n \cdot \langle n, i \rangle \] \\
+Where $r$ is the reflection vector, $i$ is the viewing direction, and $n$ is the normal of the point.
+
+\subsection{Refraction}
+\vspace{.3cm}
+\[ a = n \cdot \langle n, i \rangle \]
+\[ b = i - a \]
+\[ \beta = \frac{\delta_1}{\delta_2} \]
+\[ \alpha = \sqrt{1 + ( 1 - \beta^2) \frac{||b||^2}{||a||^2}} \]
+\[ r = \alpha a + \beta b \] \\
+Where $n$ is the normal of the vector, $i$ is the viewing direction, and $\delta$ is the index of refraction of the medium.
+
+\subsection{Fresnel Effect}
+\vspace{.3cm}
+\[ F_{\text{Rl}} = \frac{1}{2} \left( \left( \frac{\delta_2 \cos\Theta_1 - \delta_1 \cos \Theta_2}{\delta_2 \cos\Theta_1 + \delta_1 \cos \Theta_2} \right)^2 + \left( \frac{\delta_1 \cos\Theta_1 - \delta_2 \cos \Theta_2}{\delta_1 \cos\Theta_1 + \delta_2 \cos \Theta_2} \right)^2 \right) \]
+\[ F_{\text{Rf}} = 1 - F_{\text{Rl}} \]
+
+\section{Transformation Pipeline}
+\subsection{Vectors}
+\vspace{.3cm}
+\[ eye = VP \]
+\[ z' = \frac{VPN}{||VPN||} \]
+\[ x' = \frac{VUP \times z'}{||VUP|| \times z'||} \]
+\[ y' = z' \times x' \] \\
+Where $VP$ is the camera position, $VPN$ is the view plane normal, and $VUP$ is the view up vector
+
+\subsection{Viewing Matrix}
+\vspace{.3cm}
+\[ VM = \begin{bmatrix} - & x^T & - & -x'^T \cdot eye \\ - & y^T & - & -y'^T \cdot eye \\ - & z^T & - & -z'^T \cdot eye \\ 0 & 0 & 0 & 1 \end{bmatrix} \]
+
+\subsection{Projection Matrix}
+\vspace{.3cm}
+\[ PM = \begin{bmatrix} \frac{1}{r} & 0 & 0 & 0 \\ 0 & \frac{1}{t} & 0 & 0 \\ 0 & 0 & \frac{-2}{f-n} & -\frac{f+n}{f-n} \\ 0 & 0 & 0 & 1 \end{bmatrix} \]
+
+\section{Texture Pipeline}
+\subsection{Normal Mapping}
+\vspace{.3cm}
+\[ n_{new} = \begin{bmatrix} n_x \\ n_y \\ n_z \end{bmatrix} = 2 \begin{bmatrix} R \\ G \\ B \end{bmatrix} - \begin{bmatrix} 1 \\ 1 \\ 1 \end{bmatrix} \]
+
+\subsection{Tangent Space}
+\vspace{.3cm}
+\[ p_i - p_j = \langle (u_i - u_j), T \rangle + \langle (v_i - v_j), B \rangle \]
+\[ T = T - \langle N, T \rangle \cdot N \]
+\[ B = N \times T \] \\
+Where $T$ is the tangent, $B$ is the bitangent, and $N$ is the normal to the point.
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

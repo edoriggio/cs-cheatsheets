@@ -165,7 +165,6 @@ In order to define a \textbf{sphere}, we need to set the centre and the radius. 
 
 \[ ||~\gamma(t) - c~|| = r \] \\
 In order to find the $t$, we use the following procedure.
-
 \begin{align*}
 	a & = \langle c, d \rangle \\
 	D & = \sqrt{||~c~||^2 - \langle c, d \rangle^2} \\
@@ -329,7 +328,7 @@ In order to compute the intersection between the ray and a triangle, we first ne
 	\item Find a $t$ such that $p = \gamma(t)$ is coplanar with $p_1$, $p_2$ and $p_3$
 	\item Check if $t > 0$ and that $p$ is inside of the triangle
 	\item If the above conditions are all true, compute the lighting at point $p$. The normal vector at point $p$ is computed as:
-	\[ n = \langle (p_2 - p_1), (p_3 - p_1) \rangle \]
+	\[ n = (p_2 - p_1) \times (p_3 - p_1) \]
 \end{enumerate}
 In order to test whether the point is inside of the triangle, we use the \textbf{Barycentric Coordinates}.
 
@@ -343,13 +342,13 @@ The algorithm is the following:
 	\item Compute the area $W$ of the triangle
 	\begin{align*}
 		p_i &= (x_i, y_i, z_i) \\
-		n &= \langle (p_2 - p_1), (p_3 - p_1) \rangle \\
+		n &= (p_2 - p_1) \times (p_3 - p_1) \\
 		2W &= ||n||
 	\end{align*}		
 	\item Compute the areas $w_1$, $w_2$ and $w_3$ of the triangles
 	\begin{align*}
 		p &= (x, y, z) \\
-		n_i &= \langle (p_{i+1} - p), (p_{i-1} - p) \rangle \\
+		n_i &= (p_{i+1} - p) \times (p_{i-1} - p) \\
 		2w_i &= ||n_i|| \cdot \text{sign}(\langle n_i, n \rangle)
 	\end{align*}
 	\item Divide all of these areas by $W$. These values are $\lambda_1(p)$, $\lambda_2(p)$ and $\lambda_3(p)$ -- i.e. barycentric coordinates
@@ -409,16 +408,13 @@ Some of the standard transformations we discussed are:
 	\[ R_x = \begin{bmatrix} 1 & 0 & 0 & 0 \\ 0 & \cos \alpha & -\sin \alpha & 0 \\ 0 & \sin \alpha & \cos \alpha & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix} ~~~~~ R_y = \begin{bmatrix} \cos \alpha & 0 & \sin \alpha & 0 \\ 0 & 1 & 0 & 0 \\ -\sin \alpha & 0 & \cos \alpha & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix} \]
 	\[ R_z = \begin{bmatrix} \cos \alpha & -\sin \alpha & 0 & 0 \\ \sin \alpha & \cos \alpha & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix} \]
 \end{itemize}
-These transformations are also known as \textbf{affine transformations}. The kind of transformations preserve line, planes parallelisms and rations. Distances and angles are only preserved if
-
-\[ \det(A) = \pm 1 \] \\
-Transformations can also be combined. For example:
+These transformations are also known as \textbf{affine transformations}. Transformations can also be combined. For example:
 
 \[ p \mapsto T \cdot R \cdot p \] \\
 Where $R$ is a rotation and is performed as the first transformation, and $T$ is a translation and is performed as the second transformation.
 
 \subsection{Normal Transformation}
-Normals need to be transformed too. For any transformation $m$ that preserves angles -- i.e. $\det(A) = \pm 1$, we compute the the new normals as follows:
+Normals need to be transformed too. For any transformation $m$ that preserves angles, we compute the the new normals as follows:
 \[ \overrightarrow{n}_{new} = M\overrightarrow{n} \] \\
 Otherwise, for a more general case, we can use the following:
 \[ \overrightarrow{n}_{new} = (M^{-1})^T\overrightarrow{n} \]
@@ -486,10 +482,10 @@ Refraction happens whenever a ray passes the boundary between two transparent ma
 \vspace{.3cm}
 The refracted ray $r$ can be found by using the following algorithm:
 \begin{align*}
-	a &= n \cdot \langle n, d \rangle \\
+	a &= n \cdot \langle n, i \rangle \\
 	b &= i - a \\
 	\beta &= \frac{\delta_1}{\delta_2} \\
-	\alpha &= \sqrt{1 + ( 1 - \beta^2) \frac{||b||^2}{||A||^2}}
+	\alpha &= \sqrt{1 + ( 1 - \beta^2) \frac{||b||^2}{||a||^2}}
 \end{align*}
 Where $\delta_1$ and $\delta_2$ are the two indices of refraction of the two materials. And finally
 
@@ -800,35 +796,49 @@ In order to find the environment colour, we need to perform \textbf{environment 
 \vspace{.3cm}
 First of all we compute the view direction. then we reflect according to the normal. We now fetch the value of the cube map using the reflected direction.
 
+\section{Shadows in Rasterization}
+The problem for shadows in rasterization, is that their computation is a global type of problem. Any two objects in the scene could potentially shadow each other. \\ \\
+In order to solve the above problem, we can use some sort of pre-processing strategy, as well as looking the scene from the point of view of the light source.
+
+\subsection{Shadow Maps}
+A point is in shadow of some object if some other object point is closer to the light source. \\
+
+\begin{center}
+	\includegraphics[width=7cm]{shadow_map.png}
+\end{center}
+\vspace{.3cm}
+Where the \textit{blue squares} are the intersections of the light rays with the objects, the \textit{white circles} are the points in which there is no shadow, and the \textit{gray circles} are the points in which there is shadow. \\ \\
+In the pre-processing phase, all object points that are closest to the light source $L$ are computed. Afterwards, during rendering, we test the current distance to $L$ with the stored smallest distance.
+
+\subsubsection{Pre-Processing}
+Scenes are rendered as seen from the light source $L$. The resulting $z$-buffers will contain the smallest distance $z_{min}$ of the object point to $L$. \\ \\
+The $z$-buffers are used as \textbf{shadow maps}. \\ \\
+The fragments' 3D coordinates are transformed into the local coordinate system of the light source. A fragment is said to be in shadow, iff:
+
+\[ z > z_{min} \]
+
+\subsubsection{Rendering}
+First we render the scene as seen from the light source. One shadow map is created for each light source. \\ \\
+Then we render the scene from the viewing point $V$. Here a per-fragment computation is carried out:
+
+\begin{itemize}
+	\item If $z < z_{min}$, then we use only the ambient term in order to compute the color of the point
+	\item Otherwise, we have normal full lighting
+\end{itemize}
+
+\subsection{Off-Screen Rendering}
+In order to carry out render-to-texture, we need to create a \textbf{Frame Buffer Object} (FBO). In this FBO we put the shadow texture, and then bind it. After doing so, we unbind the FBO and use its textures as regular textures.
+
+\subsection{Shadow Map Artefacts}
+\subsubsection{Shadow Acne}
+When comparing the shadow map values with vertex depth, we could run into precision issues. \\ \\
+In order to fix this, we add a tiny bias ($\sim 0.001$).\\
+
+\begin{center}
+	\includegraphics[width=4cm]{shadow_acne.png}
+\end{center}
+
+\subsubsection{Undersampling}
+Perform comparisons with the shadow map in multiple small neighbourhoods. Set the shadowing to the percentage of neighbours that are in shadow.
+
 \end{document}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
