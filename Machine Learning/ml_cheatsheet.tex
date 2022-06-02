@@ -1,0 +1,177 @@
+% Copyright 2021 Edoardo Riggio
+
+% Licensed under the Apache License, Version 2.0 (the "License");
+% you may not use this file except in compliance with the License.
+% You may obtain a copy of the License at
+
+% 	http://www.apache.org/licenses/LICENSE-2.0
+
+% Unless required by applicable law or agreed to in writing, software
+% distributed under the License is distributed on an "AS IS" BASIS,
+% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+% See the License for the specific language governing permissions and
+% limitations under the License.
+
+\documentclass{article}
+
+\usepackage{hyperref, amsmath, graphicx, amssymb}
+\usepackage{fancyvrb,newverbs,xcolor}
+
+\graphicspath{ {./assets/} }
+
+\definecolor{cverbbg}{gray}{0.93}
+
+\newenvironment{cverbatim}
+ {\SaveVerbatim{cverb}}
+ {\endSaveVerbatim
+  \flushleft\fboxrule=0pt\fboxsep=.5em
+  \colorbox{cverbbg}{\BUseVerbatim{cverb}}%
+  \endflushleft
+}
+
+\newenvironment{lcverbatim}
+ {\SaveVerbatim{cverb}}
+ {\endSaveVerbatim
+  \flushleft\fboxrule=0pt\fboxsep=.5em
+  \colorbox{cverbbg}{%
+    \makebox[\dimexpr\linewidth-2\fboxsep][l]{\BUseVerbatim{cverb}}%
+  }
+  \endflushleft
+}
+
+\newcommand{\ctexttt}[1]{\colorbox{cverbbg}{\texttt{#1}}}
+\newverbcommand{\cverb}
+  {\setbox\verbbox\hbox\bgroup}
+  {\egroup\colorbox{cverbbg}{\box\verbbox}}
+
+\begin{document}
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+        
+        \Huge
+        \textbf{Machine Learning Cheatsheet}
+        
+        \vspace{0.5cm}
+        \LARGE
+        
+        \vspace{.5cm}
+        
+        Edoardo Riggio
+   		  \vspace{1.5cm}
+       
+        \vfill
+        
+        \today
+        
+        \vspace{.8cm}
+          \Large
+          Machine Learning - SA. 2022 \\
+        Computer Science\\
+        Universit\`{a} della Svizzera Italiana, Lugano\\
+        
+    \end{center}
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+What does it mean "to learn"? We have to different definitions, one from a \textbf{statistical perspective}, and one from a \textbf{computer science perspective}.
+
+\begin{itemize}
+	\item \textbf{Statistical Perspective}
+	\vspace{.2cm} \\
+	Vast amounts of data are being generated in many fields. The statistician's job is to make sense of all of this data, extract meaningful patterns and trends, and understand "what the data says". This approach is also known as \textbf{learning from data}.
+	
+	\item \textbf{Computer Science Perspective}
+	\vspace{.2cm} \\
+	The field of machine learning is concerned with how to construct computer programs that automatically improve with experience.
+\end{itemize}
+
+\subsection{Mitchell's Formalisation}
+A computer program is said to learn from \textbf{experience $E$} -- concerning some class of \textbf{task $T$}, and \textbf{performance measurement $P$} -- if its performance at task $T$, as measured by $P$, improves with experience $E$.
+
+\subsection{Models}
+\subsubsection{White Box Model}
+In this case, both physical laws and structural parameters of the problem are known. A family equation can be derived.
+
+\subsubsection{Grey Box Model}
+The physical laws are known in this case, and at least one parameter is unknown. A family of equations can be derived, but the parameters need to be identified.
+
+\subsubsection{Black Box Model}
+In this case, the physical laws are unknown. A family of equations cannot be derived.
+
+\subsection{Measures and Measurements}
+The operation of measuring an unknown quantity $x_0$ can be modeled as taking an instance -- i.e., a \textbf{measurement} -- $x_i$ at time $i$, with an ad-hoc sensor $S$. \\ \\
+Although $S$ has been suitably designed and realized, the physical elements that compose it are far from ideal and introduce uncertainties in the measurement process. As a result, $x_i$ only represents an estimate of $x_0$.
+
+\subsection{Types of Models}
+\subsubsection{Additive Model}
+The measurement process can be modeled as:
+\[ x = x_0 + \eta ~~~~~\text{where}~\eta = f_n(0, \sigma^2_\eta) \]
+Where $\eta$ is an independent and identically distributed random variable, the model assumes that the i.i.d. noise does not depend on the working point $x_0$.
+
+\subsection{Multiplicative Model}
+The measurement process can be modeled as:
+\[ x = x_0 (1 + \eta) ~~~~~\text{where}~\eta = f_n(0, \sigma^2_\eta) \]
+Where $\eta$ is an independent and identically distributed random variable, the noise, in this case, depends on the working point $x_0$. In absolute terms, the impact of the noise on the signal is $x_0 \eta$, but the relative contribution is $\eta$ -- which does not depend on $x_0$.
+
+\subsection{Supervised Learning}
+In a supervised learning framework, we have the following elements: a \textbf{concept to learn}, a \textbf{teacher}, and a \textbf{student}.
+
+\subsubsection{Regression}
+The goal of regression is to determine the function that explains the given instances -- \textbf{measuremets}. The student proposes a family of models $f(\theta, x)$, and after a learning procedure, the "best" model $f(\hat \theta, x)$ is found.
+
+\subsubsection{Classification}
+The goal of classification is to determine the function -- \textbf{model} -- that partitions the input -- \textbf{measurements} -- into classes. The student proposes a family of models $f(\theta, x)$, and after a learning procedure, the "best" model $f(\hat \theta, x)$ is found.
+
+\subsubsection{Prediction}
+The goal of prediction is to tell us which data -- \textbf{measurements} -- will come next, possibly along with a confidence level. The student proposes a family of models $f(\theta, x)$, and after a learning procedure, the "best" model $f(\hat \theta, x)$ is found.
+
+\subsection{Features}
+We might want to extract features from the measurements to ease the learning task. The features must:
+\begin{itemize}
+	\item Provide a compact representation of inputs
+	\item Be particularly advantageous if we have prior information to take advantage of
+	\item Be reduced to a minimal set before processing them for task solving
+\end{itemize}
+
+\subsection{Unsupervised Learning}
+The goal of unsupervised learning is to build a representation of data. During its operational life, given an input, the machine provides information that can be used for decision-making.
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
