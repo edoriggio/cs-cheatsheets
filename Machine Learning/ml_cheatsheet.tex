@@ -15,7 +15,10 @@
 \documentclass{article}
 
 \usepackage{hyperref, amsmath, graphicx, amssymb}
-\usepackage{fancyvrb, newverbs, xcolor}
+\usepackage{fancyvrb, newverbs, xcolor, tikz}
+\usepackage[latin1]{inputenc}
+
+\usetikzlibrary{positioning}
 
 \graphicspath{{./assets/}}
 \definecolor{cverbbg}{gray}{0.93}
@@ -42,6 +45,20 @@
 \newverbcommand{\cverb}
   {\setbox\verbbox\hbox\bgroup}
   {\egroup\colorbox{cverbbg}{\box\verbbox}}
+  
+\tikzset{%
+  every neuron/.style={
+    circle,
+    draw,
+    minimum size=1cm
+  },
+  neuron missing/.style={
+    draw=none, 
+    scale=4,
+    text height=0.333cm,
+    execute at begin node=\color{black}$\vdots$
+  },
+}
 
 \begin{document}
 \begin{titlepage}
@@ -211,13 +228,151 @@ Where $\lambda$ is a hyperparameter weighting the two contributions. A smaller $
 
 \subsection{Lasso Regression}
 Lasso regression also aims at pushing as many parameters as possible towards zero. In this case, however, we penalize the parameter itself rather than its square. The \textbf{MSE} now is:
- \[ V_{Lasso}(\theta) = \frac{1}{n} \sum^n_{i=1}(y_i - x_i^T\theta)^2 + \lambda \sum^d_{i=2}|\theta_i| \]
- The optimization problem is not convex anymore, and the loss function is not differentiable. This makes the problem computationally complex and solvable only via optimization techniques such as quadratic programming.
+\[ V_{Lasso}(\theta) = \frac{1}{n} \sum^n_{i=1}(y_i - x_i^T\theta)^2 + \lambda \sum^d_{i=2}|\theta_i| \]
+The optimization problem is not convex anymore, and the loss function is not differentiable. This makes the problem computationally complex and solvable only via optimization techniques such as quadratic programming.
  
- \subsection{Final Prediction Error}
- The expected prediction error is computed as follows:
- \[ FPE = \frac{n+d}{n-d}\sum^n_{i=1}(y(x_i) - f(\hat\theta, x_i))^2 \]
- This measurement can be used for both model selection -- only on hierarchical family of models, and for assessing the performance of unseen data.
+\subsection{Final Prediction Error}
+The expected prediction error is computed as follows:
+\[ FPE = \frac{n+d}{n-d}\sum^n_{i=1}(y(x_i) - f(\hat\theta, x_i))^2 \]
+This measurement can be used for both model selection -- only on hierarchical family of models, and for assessing the performance of unseen data.
+ 
+\section{Non-Linear Regression}
+To determine the stationary points of a differentiable function we use the following minimization problem:
+\[ \hat\theta = \arg \min_{\theta \in \Theta} V_n(\theta) \]
+This minimization is carried out by a \textbf{gradient descent-based procedure}.
+ 
+\subsection{Gradient-Based Optimization}
+Given a generic convex and differentiable scalar function $y = f(x)$, we do the following to determine the unique stationary point. \\ \\
+We start from an initial point $x(0) = x_0$ and start moving along the gradient in the direction minimizing the loss function. To do so we use the following formula:
+\[ \theta_{i+1} = \theta_i - \varepsilon_L \frac{\partial V_n(\theta)}{\partial \theta}|_{\theta_i} \]
+The minimization procedure applied to a non-linear function -- and based on a training set -- is also known as \textbf{learning procedure}. \\ \\
+When minimizing, we might encounter what is known as the \textbf{identifiability problem}. This happens when the function to be optimized is not convex, and there are several local or global minima in the function.
+
+\subsection{Structural Risk}
+The structural risk of the estimated model is its generalization ability. To compute the function's generalization ability, we use the following formula:
+\[ \bar V(\hat\theta) = \int L(y, f(\hat\theta, x)) p_{x, y} dxy \]
+Where $L$ is the \textbf{loss function}. The risk associated with the model's generalization ability can be decomposed into three terms:
+\[ \bar V(\hat\theta) = (\bar V(\hat\theta) - \bar V(\theta^0)) + (\bar V(\theta^0) - V_I) + V_I \]
+
+\subsubsection{Inherent Risk}
+The inherent risk depends entirely on the structure of the learning problem. This term can be improved only by improving the problem itself, such as reducing the noise caused by the measurement instruments. \\ \\
+The inherent risk is computed as:
+\[ V_I \]
+
+\subsubsection{Approximation Risk}
+The approximation risk depends on how close the approximating family of models is to the function generating the data ($g(x)$). We can use a more appropriate family of models to reduce this risk. \\ \\
+The approximation risk is computed as:
+\[ \bar V(\theta^0) - V_I \]
+
+\subsubsection{Estimation Risk}
+The estimation risk depends on the effectiveness of the learning procedure. We can use a more effective learning procedure to reduce this risk. \\ \\
+The estimation risk is computed as:
+\[ \bar V(\hat\theta) - \bar V(\theta^0) \]
+
+\section{Feedforward Neural Networks}
+A neural network has the following structure \\ \\
+
+\begin{tikzpicture}[x=1.5cm, y=1.5cm, >=stealth]
+\foreach \m/\l [count=\y] in {1,2,missing,3}
+  \node [every neuron/.try, neuron \m/.try] (input-\m) at (0,1.5-\y) {};
+
+\foreach \m [count=\y] in {1,2,3,4,missing,5}
+  \node [every neuron/.try, neuron \m/.try ] (hidden-\m) at (2,2.5-\y) {};
+
+\node [every neuron/.try, neuron 1/.try ] (output-1) at (4,1-2) {};
+\foreach \l [count=\i] in {1,2,n}
+  \draw [<-] (input-\i) -- ++(-1,0)
+    node [above, midway] {$x_\l$};
+
+\draw [->] (output-1) -- ++(1,0)
+  node [above, midway] {$f(\theta, x)$};
+
+\foreach \i in {1,...,3}
+  \foreach \j in {1,...,5}
+    \draw [->] (input-\i) -- (hidden-\j);
+
+\foreach \i in {1,...,5}
+  \draw [->] (hidden-\i) -- (output-1);
+
+\foreach \l [count=\x from 0] in {Input, Hidden, Ouput}
+  \node [align=center, above] at (\x*2,2) {\l \\ layer};
+\end{tikzpicture} \\ \\
+Each connection between neurons has a weight of $w_n$. Moreover, the overall weight of a sigle neuron is computed as:
+\[ a_t = \sum^n_{i=1}x^i w^i \]
+Each neuron in the hidden layer has an activation function. This activation function can be of several different types:
+
+\begin{itemize}
+	\item \textbf{Sigmoidal}
+	\vspace{.2cm} \\
+	This activation function is mainly used by the neurons of the hidden layer. The sigmoidal formula is:
+	\[ Sig(x) = \frac{1}{1 + e*{-x}} \]
+	
+	\item \textbf{Hyperbolic Tangent}
+	\vspace{.2cm} \\
+	This activation function is an alternative to the sigmoidal activation function. This function is useful when we have back-propagation. The hyperbolic tangent formula is:
+	\[ HT(x) = \frac{e^x-e^{-x}}{e^x+e^{-x}} \]
+	
+	\item \textbf{Linear}
+	\vspace{.2cm} \\
+	The neurons of the output layer mainly use this activation function.
+\end{itemize}
+
+\subsection{Universal Approximation Theorem}
+A feedforward neural network with a single hidden layer containing a finite number of neurons and a linear output neuron approximates any continuous function defined on compact subsets.
+
+\subsection{Early Stopping}
+The idea of early stopping is to start from an over-dimensioned network and try to find where the models start diverging.
+
+\begin{center}
+	\includegraphics[width=10cm]{early_stopping.png}
+\end{center}
+To evaluate the model, we use another set of data called \textbf{validation set}. We cannot use the test set for the model selection during training. Otherwise, the model performance assessment would be biased.
+
+\subsection{Splitting the Data}
+To split the data we have -- which has length $n$, we apply a ratio (which is application-dependent). This ratio is computed in the function of:
+
+\begin{itemize}
+	\item The size of $n$
+	\item The complexity of the model
+\end{itemize}
+For example:
+\[ n = 1,000 \rightarrow Tr = 70\%,~ V = 15\%,~ Te = 15\% \]
+\[ n = 1,000,000 \rightarrow Tr = 99\%,~ V = 0.5\%,~ Te = 0.5\% \]
+
+\section{Classification Problem}
+Given an input vector $x$, and a set of classes $C_1, C_2, \dots, C_k$, we wish to assign $x$ to the most appropriate class. In classification, $y$ assumes a categorical value.
+
+\subsection{Binary Classifier}
+Given an input vector $x$ of two features and two classes, we divide the features in a binary manner -- i.e., either it is in one group or the other.
+
+\begin{center}
+	\includegraphics[width=6cm]{binary_classification.png}
+\end{center}
+Given a training set, we obtain the following estimated parameter:
+\[ \hat\theta = (X^TX)^{-1}X^TX \]
+And given a new $x$, we evaluate the following discriminant function:
+\[ f(\hat\theta, x) = x^T\hat\theta \]
+If the discriminant value is above $0.5$, then $x$ will be part of one group. Otherwise, $x$ will be part of the other group.
+
+\subsection{Bayes Classifier}
+The Bayes classifier deals with multi-class problems. Here we assign a probability to each class and select the one that maximizes such probability.
+\[ Pr(Y = k|X = x) \]
+Where $X$ and $Y$ are two random variables. The Bayes theorem described above provides us with a way to express the posterior conditional probability as:
+\[ Pr(Y = k|X = x) = \frac{Pr(X = x|Y = k) \cdot Pr(Y = k)}{Pr(X = x)} \]
+Where $Pr(Y = k|X = x)$ is the \textbf{posterior probability}, $Pr(X = x|Y = k)$ is the \textbf{likelihood}, $Pr(Y = k)$ is the \textbf{prior probability}, and $Pr(X = x)$ is the evidence.
+
+\begin{center}
+	\includegraphics[width=6cm]{bayes_classification.png}
+\end{center}
+This classifier is said to be na\"ive. It is because it makes the strong assumption of independence among the features. The Bayes classifier is optimal if the assumptions were met and the probabilities are known.
+
+\subsection{K-Nearest Neighbour Classifier}
+This type of classifier looks at the $k$-nearest neighbors of point $x$ to make the classification decision. For example, the Euclidean distance can be used to determine the class.
+
+\begin{center}
+	\includegraphics[width=6cm]{nearest_neighbors.png}
+\end{center}
+In this case, no training phase is required, but we have a high computational cost in evaluating the distances.
 
 \end{document}
 
