@@ -103,7 +103,7 @@ If the exact measurement is repeated for only one of the rays -- say $z_+$, then
 \begin{center}
 	\includegraphics[width=11.5cm]{assets/two_z_measurements.pdf}
 \end{center}
-Finally, if the magnet is rotated and a $x$-direction measurement of the $z_+$ ray is made, another $z$-direction measurement, a 50-50 distribution arises again. This puts the stability and the independence of the properties in question.
+Finally, if the magnet is rotated and a $x$-direction measurement of the $z_+$ ray is made, another $z$-direction measurement, a 50-50 distribution. This puts the stability and the independence of the properties in question.
 
 \begin{center}
 	\includegraphics[width=12cm]{assets/z_x_z_measurements.pdf}
@@ -120,6 +120,11 @@ No matter if we obtain one measurement or the other in the $Z$ measurement, the 
 \begin{center}
 	\includegraphics[width=2cm]{quantum_jump.png}
 \end{center}
+
+\subsection{Quantum Key Distribution}
+We have seen that we can measure with certainty the same value in two consecutive measurements with the same basis. In other words, the interactions of a system with its environment become traceable. This traceability enables us to detect an eavesdropper in a \textbf{quantum cryptographic key agreement protocol}. \\ \\
+The distribution of the key starts with \textit{Alice} using random measurements to encrypt the data. The encrypted photons are then sent to \textit{Bob}, which also uses random measurements to try and decrypt the data. After this process has terminated, \textit{Alice} sends the measurement basis she used to \textit{Bob} on a public channel. \textit{Bob} now takes the measurement basis and confronts it with his basis. The equal measurements are used as the \textbf{key}. \\ \\
+If an eavesdropper, say \textit{Eve}, tries to intercept the message, she will need to guess the measurements for each photon. If the measurement is wrong, the system is disturbed. This means that \textit{Eve} has a probability of $1/4$ to be wrong in each stage. Thus, there is an almost 100\% probability of whether there was an eavesdropper.
 
 \section{Glossary}
 \subsection{Magnetic Dipole Moment}

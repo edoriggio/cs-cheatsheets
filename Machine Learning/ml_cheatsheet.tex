@@ -374,10 +374,60 @@ This type of classifier looks at the $k$-nearest neighbors of point $x$ to make 
 \end{center}
 In this case, no training phase is required, but we have a high computational cost in evaluating the distances.
 
+\subsection{Linear Discriminant Analysis}
+Linear Discriminant Analysis (LDA) is a robust way to solve the classification problem and find a separating boundary. \\ \\
+Here we reformulate the Bayes theorem in terms of probability density functions. Thus:
+\[ Pr(Y = k|X = x) = \frac{\pi_kf_k(x)}{\sum^K_{l=1} \pi_lf_l(x)} \]
+Where $\pi_k = Pr(Y=k)$ is the \textbf{prior probability}, and $f_k(x)$ represents the \textbf{likelihood of the $k$-th class} and is defined as:
+\[ f_k(x) = Pr(X=x|Y=k) \]
+
+\subsubsection{One-Dimensional Setting}
+If we consider a one-dimensional setting and Gaussian distributed classes:
+\[ f_k(x) = \frac{1}{\sqrt{2\pi} \cdot \sigma_k}e^{-\frac{1}{2}\left( \frac{x-\mu_k}{\sigma_k} \right)^2} \]
+Which can be represented graphically as:
+
+\begin{center}
+	\includegraphics[width=4cm]{lda.png}
+\end{center}
+In the case of a scalar $x$ and identical variances, the Bayes formula becomes:
+\[ Pr(Y = k|X = x) = \frac{\pi_k\frac{1}{\sqrt{2\pi} \cdot \sigma}e^{-\frac{1}{2}\left( \frac{x-\mu_k}{\sigma} \right)^2}}{\sum^K_{l=1} \pi_l\frac{1}{\sqrt{2\pi} \cdot \sigma}e^{-\frac{1}{2}\left( \frac{x-\mu_l}{\sigma} \right)^2}} \]
+To obtain the line that separates the classes, we are looking for the maximum of the above probability. We simplify the formula by taking the log and removing the constant terms. The discriminant function now becomes:
+\[ \delta_k(x) = x \cdot \frac{\mu_k}{\sigma^2} - \frac{\mu^2_k}{2\sigma^2} + \log(\pi_k) \]
+The decision boundary between two classes satisfies the equation $\delta_k(x) = \delta_i(x)$.
+
+\subsubsection{Vector Space Setting}
+In the case of vectors, we will have the following formula:
+\[ f(x) = \frac{1}{(2\pi)^{p/2}|\sum|^{1/2}} e^{-\frac{1}{2}(x-\mu)^T \sum^{-1}(x-\mu)} \]
+Which can be represented graphically as:
+
+\begin{center}
+	\includegraphics[width=4cm]{lda_vectors.png}
+\end{center}
+Now the linea discriminant will become:
+\[ \delta_k(x) = x^T \Sigma^{-1} \mu_k - \frac{1}{2}\mu^T_k \Sigma^{-1}\mu_k + \log \pi_k \]
+With two classes, the LDA coincides with the linear regression classification method. Here, the decision boundary between two classes satisfies the equation $\delta_k(x) = \delta_i(x)$.
+
+\subsection{Perceptron}
+The perceptron algorithm was invented to solve pattern classification problems. This method works well on linearly separable classes, and its parameters can be learned. \\ \\
+The architecture of a perceptron is that of a neural network with a single neuron with a \textit{Heaviside} activation function. After a random assignment of weights, these are iteratively updated during the training procedure.
+\[ w^j_{t+1} = w^j_t - \varepsilon_L(y_i - f(w_t, x_i))x^j_i \]
+The algorithm will converge to the optimal parameter -- if the problem is linearly separable.
+
+\subsection{Classification with Feedforward Neural Networks}
+Given a performance function:
+\[ V_n(\theta) = \frac{1}{n} \sum^n_{i = 1} L(y_i, f(\theta, x_i) \]
+We determine the parameter estimate by solving the following minimization problem:
+\[ \hat\theta = \arg\min_{\theta \in \Theta} V_n(\theta) \]
+This is carried out by the following learning procedure:
+\[ \theta_{i+1} = \theta_i - \varepsilon_L \frac{\partial V_n(\theta)}{\partial\theta} \Big|_{\theta = \theta_i} \]
+And finally, obtain the classifier:
+\[ f(\hat\theta, x) \]
+
+\subsection{Logistic Regression}
+Linear classifiers derived as extensions of the regression methods neither provide a bounded output nor a probabilistic interpretation. \\ \\
+Logistic regression aims at training the network's parameters so that a probabilistic network supports the sigmoidal output.
+
 \end{document}
-
-
-
 
 
 
