@@ -16,7 +16,6 @@
 
 \usepackage{hyperref, amsmath, graphicx, amssymb}
 \usepackage{fancyvrb, newverbs, xcolor, tikz}
-\usepackage[latin1]{inputenc}
 
 \usetikzlibrary{positioning}
 
@@ -364,7 +363,7 @@ Where $Pr(Y = k|X = x)$ is the \textbf{posterior probability}, $Pr(X = x|Y = k)$
 \begin{center}
 	\includegraphics[width=6cm]{bayes_classification.png}
 \end{center}
-This classifier is said to be na\"ive. It is because it makes the strong assumption of independence among the features. The Bayes classifier is optimal if the premises are met and the known probabilities.
+This classifier is said to be na\"ive. It is because it makes the strong assumption of independence among the features. The Bayes classifier is optimal if the premises and known probabilities are met.
 
 \subsection{K-Nearest Neighbour Classifier}
 This type of classifier looks at the $k$-nearest neighbors of point $x$ to make the classification decision. For example, the Euclidean distance can be used to determine the class.
@@ -463,14 +462,215 @@ If $T$ is outside of the 95\% confidence interval -- i.e., [-1.96, 1.96] -- then
 Something similar can be done to check if one model is statistically better than the other. In this case we consider the null hypothesis to be:
 \[ H_0 : Var[\varepsilon_a] = Var[\varepsilon_b] \]
 \[ H_1 : Var[\varepsilon_a] \not = Var[\varepsilon_b] \]
-If $T$ -- or rather a slightly modified version of it -- is out of the 95\% confidence interval, we reject the null hypothesis. This means that the two models are different. Now that we know that they are different, we compute their variances to find out which model is the best. The model with the lowest variance is the best one.
+We reject the null hypothesis if $T$ -- or rather a slightly modified version -- is out of the 95\% confidence interval. This means that the two models are different. Now that we know that they are different, we compute their variances to determine which model is the best. The model with the lowest variance is the best one.
 
+\subsection{Assessing Anomaly detection Methods}
+An anomaly detector is a classifier that processes data streams looking for anomalies.
+
+\subsubsection{Confusion Matrix}
+A confusion matrix describes the nature of the classification performance.
+
+\begin{center}
+	\includegraphics[width=4cm]{assets/confusion_matrix.png}
+\end{center}
+Where \textit{normal-normal} are the \textbf{true positives}, \textit{normal-legendary} are the \textbf{false negatives}, \textit{legenday-normal} are the \textbf{false positives}, and \textit{lagendary-legendary} are the \textbf{true negatives}. \\ \\
+Given this truth table, we can compute some probabilities:
+
+\begin{itemize}
+	\item \textbf{True Positive Rate}
+	\[ TPR = \frac{\#\{ \text{true positives} \}}{\#\{ \text{legendary samples} \}} \]
+	
+	\item \textbf{False Positive Rate}
+	\[ FPR = \frac{\#\{ \text{false positives} \}}{\#\{ \text{normal samples} \}} \]
+	
+	\item \textbf{False Negative Rate -- Miss Rate}
+	\[ FNR = 1 - TPR \]
+	
+	\item \textbf{True Negative Rate -- Specificity}
+	\[ TNR = 1 - FPR \]
+	
+	\item \textbf{Precision}
+	\[ P = \frac{\#\{ \text{true negatives} \}}{\#\{ \text{detections} \}} \]
+	
+	\item \textbf{Recall}
+	\[ R = TPR \]
+\end{itemize}
+To correctly assess the method performance, it is necessary to consider at least two indicators:
+
+\begin{itemize}
+	\item \textbf{Accuracy}
+	\[ A = \frac{\#\{ \text{true negatives}\} + \#\{\text{false negatives} \}}{\#\{ \text{samples} \}} \]
+	
+	\item \textbf{F1 Score}
+	\[ \frac{2 \cdot \#\{ \text{true negatives}\}}{\#\{ \text{detections} \} + \#\{ anomalies \}} \]
+\end{itemize}
+The values for the accuracy and the F1 score are 1 when we have an ideal detecting method.
+
+\section{Deep Learning}
+Thanks to significant advances in computational power and the cost-effective availability of big data for training, deep learning flourished. \\ \\
+Deep learning can have several applications:
+
+\begin{itemize}
+	\item Detect/classify different elements within a scene
+	\item Generate new images that look extremely realistic
+	\item Make decisions with the same skills and creativity as humans
+\end{itemize}
+\subsection{Representation Learning}
+In more traditional approaches, the features are hand-crafted by humans and then fed to the neural network. Instead, in the case of deep learning, the features are directly learned by the neural network. \\ \\
+In representation learning, there is a hierarchical abstraction of the features. These features are low- mid-, and high-level. After the extraction, these features are fed to the classifier.
+
+\subsection{Convolutional Neural Networks (CNN)}
+CNNs take advantage of the space affinities existing among neighbors. These networks are made up of many different layers. Each layer computes a higher abstract representation of the image while at the same time making the image shrink at each step -- done by \textbf{convolutional} and \textbf{pooling} layers. \\ \\
+The feature maps are finally concatenated in a single vector and fed to a feed-forward neural network.
+
+\subsubsection{Convolutional Layer}
+Convolutional layers evaluate the affinities of pixels based on the principle of locality. A \textbf{receptive field} is applied to the image with a certain \textbf{stride}. This results in an output image:
+\[ M = I \cdot K \]
+Where $I$ is the \textbf{original matrix}, and $K$ is the \textbf{filter} that contains the parameters to be learned.
+
+\begin{center}
+	\includegraphics[width=6cm]{assets/convolutional.png}
+\end{center}
+Many filters can be applied in parallel as each feature is learned, and the filter $K$ changes. After the convolution process, each filter $K$ will have provided with a different \textbf{feature map}. Another characteristic of these convolutional layers is that they offer some \textbf{local translation invariance property}. This means that it doesn't matter if the relevant parts of the image move around.
+
+\subsubsection{Pooling Layer}
+Pooling layers reduce the image size based on some specific rules. The pooling operators are:
+
+\begin{itemize}
+	\item \textbf{Max Pooling}
+	Given a square of -- say -- 4 different values, the pixel with the maximum one is carried to the next layer. This means that from 4 pixels, we only retain 1 (which has the maximum value).
+	
+	\item \textbf{Average Pooling}
+	This is done in the same way as the max pooling. Although, in this case, the value carried to the next layer is the average between the pixels values of the current image.
+\end{itemize}
+
+\begin{center}
+	\includegraphics[width=5cm]{assets/pooling.png}
+\end{center}
+
+\subsection{Special Activation Functions}
+Stacking many layers may lead to problems when performing back-propagation -- this is known as the \textbf{vanishing gradient problem}. For this reason, we use other activation functions.
+
+\subsubsection{*LU Activation Functions}
+In order to mitigate the back-propagation problem, we use special activation functions. Some of these are the \textbf{Rectified Linear Unit} (ReLU), the \textbf{Leaky Rectified Linear Unit} (Leaky ReLU), the \textbf{Scaled Exponential Linear Unit} (SELU), and the \textbf{Exponential Linear Unit} (ELU).
+
+\subsubsection{Softmax Activation Function}
+The softmax activation function takes a vector and turns it into the \textbf{membership probability} of the specific class. In other words, the network takes an image as input and outputs a vector representing a probability distribution over all the possible classes.
+\[ \sigma (z)_j = \frac{e^{z_j}}{\sum^K_{k = 1}e^{z_k}} \]
+Where $e^{z_j}$ is \textbf{one of the classes}.
+
+\begin{center}
+	\includegraphics[width=8cm]{assets/softmax.png}
+\end{center}
+This is very useful if used as the activation function of the last layer of a multi-class classifier.
+
+\subsection{Loss Functions}
+\subsubsection{Regression}
+In the case of regression problems, the following are different loss functions:
+
+\begin{itemize}
+	\item \textbf{Mean Square Error (MSE)}
+	\[ L(\theta) = \displaystyle\frac{1}{n} \sum^n_{i=1} (y_i - f(\theta,~x_i))^2 \]
+	
+	\item \textbf{Mean Absolute Error (MAE)}
+	\[ L(\theta) = \displaystyle\frac{1}{n} \sum^n_{i=1} \left|y_i - f(\theta,~x_i)\right| \]
+	
+	\item \textbf{Mean Absolute Percentage Error (MAPE)}
+	\[ L(\theta) = \displaystyle\frac{1}{n} \sum^n_{i=1} \frac{\left|y_i - f(\theta,~x_i)\right|}{y_i} \]
+\end{itemize}
+
+\subsubsection{Classification}
+In the case of classification problems, we use the \textbf{cross-entropy} in order to compute the loss. The formula for the cross-entropy is the following:
+\[ L(\theta) = \displaystyle -\frac{1}{n} \sum^n_{i=1}\sum^m_{j=1} y_{ij}\log(f(\theta,~x_i)_j) \]
+The classification accuracy is the percentage of the correct predictions over the total predictions.
+
+\subsection{Image Classification}
+\subsubsection{AlexNet}
+This was the first \textbf{deep convolutional neural network} to achieve good results on ImageNet. It is composed of several layers:
+
+\begin{itemize}
+	\item \textbf{Feature Extraction Layers}
+	\begin{itemize}
+		\item Convolutional Layer with a stride of 4
+		\item Max Pooling Layers (x2)
+		\item Fully Connected Layers (x2)
+		\item Max Pooling Layer
+	\end{itemize}
+	
+	\item \textbf{Application Specific Layers}
+	\begin{itemize}
+		\item Dense Layers with 4096 neurons (x2)
+		\item Dense Layer with 1000 neurons
+	\end{itemize}
+\end{itemize}
+
+\subsubsection{Very Deep Convolutional Neural Networks: VGG}
+\textbf{Visual Geometry Group} (VGG) is a neural network that has been proposed in two variants: \textbf{VGG-19}, with 19 trainable layers, and \textbf{VGG-16}, with 16 trainable layers. \\ \\
+\textbf{VGG-16} is still used today, as it provides a good tradeoff between accuracy, performance, and processing efficiency. The VGG-16 architecture is made up of several layers:
+
+\begin{itemize}
+	\item Convolutional Layers with a 3x3 receptive field mask and ReLU (x16)
+	\item Max Pooling Layers (x5)
+	\item Fully Connected Layers with ReLU (x3)
+	\item Dense Layer with softmax
+\end{itemize}
+To \textbf{train} VGG-16, we use the \textbf{momentum term}. This means that if the previous update changes the weights by a significant margin, then the following update probably should remember that. Thus, the optimizer remembers the previous update and uses it to compute the new weights.
+\[ \Delta\theta = \alpha\Delta\theta - \eta\displaystyle\frac{\partial V_n(\theta)}{\partial\theta}\Bigg|_{Z_n,i} \]
+\[ \theta_{i+1} = \theta + \Delta\theta \]
+In reality, a much more complex approach is used to optimize. This optimizer is called \textbf{Adam}. This algorithm does the following:
+
+\begin{enumerate}
+	\item Keeps a running average of the previous gradients and second moments
+	\item Estimates the current gradient and the second moment using the running averages
+	\item Updates the weights using the estimated values
+\end{enumerate}
+VGG can be trained using 32x32 batches, which is good enough and allows for better generalization.
+
+\subsection{Autoencoders}
+Encoders and decoders can be composed of graph convolutional layers with pooling, dense feedforward neural networks, or other architectures. These encoders/decoders are used to learn a compact representation of the input space and filter out noise in the input data. \\ \\
+After concept learning, autoencoders can generate novel patterns — known as generative schemes.
+
+\begin{center}
+	\includegraphics[width=9cm]{assets/encoders.png}
+\end{center}
+
+\section{Results from the Theory}
+\subsection{Vapnik Chervonenkis Dimension}
+If we consider a binary classification problem and a family of models $f(\theta, x)$, the Vapnik Chervonenkis (VC) dimension $d_{VC}$ is the \textbf{maximum} number of points for which there is a layout of points such that, for all points labelings, the classification provided by $f(\theta, x)$ makes no errors. \\ \\
+In the classification case, if we consider the empirical risk as the ratio of correct classification on the training set, we have:
+\[ Pr \left( \displaystyle \bar{V}(\hat \theta) \leq V_n(\hat \theta) + \sqrt{\frac{1}{n} \left[ d_{VC} \left( \log \left( \frac{2n}{d_{vc}} \right) + 1 \right) - \log \left( \frac{\delta}{4} \right) \right]} \right) \geq 1 - \delta \]
+Which holds if $d_{VC} \ll n$
+
+\subsection{Uniform Convergence of Empirical Mean (UCEM)}
+The \textbf{empirical mean} converges to its expectation uniformly as $n$ goes to infinity, and for each element of an arbitrarily selected finite sequence of parameter estimates. \\ \\
+From \textbf{Hoeffding inequality}, we have that:
+\[ Pr \left( \sup_{L \in A} |V_n(L(\theta)) - E_x[L(\theta, x)]| > \varepsilon_V \right) \leq 2Me^{-2n\varepsilon^2_V} \]
+\[ A = \{ L(\hat \theta_1, x), \dots, L(\hat\theta_M, x) \} \]
+Provided that $M$ is finite, the right-most term goes to zero as $n$ tends to infinity. The \textbf{UCEM} property also holds for a family of functions composed of infinite models:
+\[ A = \{ L(\theta, x), \theta \in \Theta \} \]
+Provided the VC dimension is finite.
+
+\subsection{The Bias-Variance Tradeoff}
+We wish to evaluate the \textbf{expected test error} for a given $x$ and a quadratic loss function:
+\[ SE_{PE}(x) = E[ y(x) - f(\hat\theta, x) ]^2 \]
+The expectation is taken with respect to the realizations of the training set and the noise. The above formula can be rewritten as:
+\[ SE_{PE} = \sigma^2_\eta + E \left[ (g(x) - E [f(\hat \theta, x)])^2 \right] + E \left[ (E[f(\hat \theta, x)] - f(\hat \theta, x))^2 \right] \]
+The accuracy of the approximating model depends on three terms:
+
+\begin{itemize}
+	\item The \textbf{variance} of the noise
+	\item The \textbf{bias}
+	\item The \textbf{variance} associated with the training set
+\end{itemize}
+Some important notes about the above formula are:
+
+\begin{itemize}
+	\item The variance of the noise cannot be canceled out
+	\item A model with high bias poorly approximates the unknown function
+	\item A model family with high variance is susceptible to the particular selection of the training set
+	\item As we use more flexible learning methods, the variance increases, and the bias decreases
+\end{itemize}
 \end{document}
-
-
-
-
-
 
 
 
