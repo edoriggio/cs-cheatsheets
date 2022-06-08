@@ -177,6 +177,16 @@ $S$ = On input $\langle A \rangle$, where $A$ is a DFA:
 	\item If, once all states have been marked, no accept state was marked, \textbf{accept}, otherwise \textbf{reject}
 \end{enumerate}
 
+\subsubsection{CFG Emptiness Problem}
+The language $E_{CFG}$ is decidable. To prove it, we construct a Turing machine $M$. \\ \\
+$M$ = On input $\langle G \rangle$, where $G$ is a CFG:
+
+\begin{enumerate}
+	\item Mark all terminal symbols in $G$
+	\item Repeat this operation until no new varibale gets marked
+	\item If, once all varibles have been marked, the start variable was not marked \textbf{accept}, otherwise \textbf{reject}
+\end{enumerate}
+
 \subsubsection{DFA Equivalence Problem}
 The language $EQ_DFA$ is decidable. We need to build an automaton that checks if both DFAs or neither accepts the string to prove it. \\ \\
 $M$ = On input $\langle A, B \rangle$ where both $A$ and $B$ are DFAs:
@@ -189,14 +199,89 @@ $M$ = On input $\langle A, B \rangle$ where both $A$ and $B$ are DFAs:
 	\item If, once all states have been marked, no accept state was marked, \textbf{accept}, otherwise \textbf{reject}
 \end{enumerate}
 
-\subsubsection{CFG Emptiness Problem}
-The language $E_{CFG}$ is decidable. To prove it, we construct a Turing machine $M$. \\ \\
-$M$ = On input $\langle G \rangle$, where $G$ is a CFG:
+\section{Undecidable Langauges}
+A language is said to be undecidable if no Turing Machine accepts the language and makes a decision for every input string.
+
+\subsection{Membership Problem}
+Given a Turing Machine $M$ and a string $\omega$, we need to determine whether $M$ accepts $\omega$. \\ \\
+Let $L$ be a Turing-recognizable language, and let $M_L$ be the Turing Machine that accepts $L$. We prove that $L$ is also decidable by building a decider for $L$. This would mean that $L$ is decidable. But, since $L$ is chosen arbitrarily, this would mean that every Turing-recognizable language is decidable. Since we already know that decidable languages are a subset of Turing-recognizable languages, some languages are not decidable but still Turing-recognizable. \\ \\
+This will generate a contradiction, thus making the membership problem undecidable.
+
+\subsection{Correspondence}
+A function $f: A \rightarrow B$ is a \textbf{correspondence} if $f$ is \textbf{one-to-one} and \textbf{onto}. A function is said to be \textbf{one-to-one}, if $\forall y \in B, \exists~\text{at most one} ~ x \in A$, with $(x, y) \in R$. While a function is said to be \textbf{onto} if $\forall y \in B, \exists~\text{at least one} ~ x \in A$, with $(x, y) \in R$. \\ \\
+Correspondences are essential because two sets are considered to have \textbf{the same number of elements} if there exists a one-to-one and onto correspondence between them.
+
+\subsection{Halting Problem}
+The halting problem occurs when a TM loops on its input while simulating $\omega$ on $M$. This will cause the TM not to halt, making it impossible to determine if $\omega$ is accepted or not. \\ \\
+To prove that this problem is unsolvable, we can use the \textbf{diagonalization method}. \\ \\
+Assuming that the halting problem is decidable, we construct a decider $H'$ with another decider $H$ inside it, which decides if a machine halts or not. If $M$ halts on input $\omega$, then make the decider $H'$ loop forever, otherwise halt. If we pass $H$ as an input to itself, then the machine will stop on input $\langle H \rangle$ if H terminates on $\langle H \rangle$ and loop forever; otherwise. we now have a contradiction; thus, the halting problem is \textbf{undecideble}.
+
+\section{Reductions}
+If a problem $X$ is reduced to problem $Y$, this means that if we can solve $Y$, we can also solve $X$.
+
+\subsection{Computing Functions with Turing Machines}
+A function $f(w)$ has a \textbf{domain} and a \textbf{result region}. Given an element in the domain $w \in D$, by appying the function $f(w)$, we obtain the element in the resulting region $f(w) \in S$. \\ \\
+In order for this to work also on Turing Machines, we prefer to use \textbf{unary} representations of integers. \\ \\
+A function $f$ is said to be \textbf{computable}, if there is a Turing Machine $M$ such that on every input $\omega$ it halts with $f(\omega)$ on its tape.
+
+\subsection{Reduction}
+If a language $A$ is \textbf{reduced} to language $B$ ($A \leq_m B$), this means that there is a computable function $f$, such that for every $\omega$ the following double implication is proven:
+\[ \omega \in A \iff f(\omega) \in B \]
+
+\subsubsection{Reduction Theorem 1}
+If a language $A$ is reduced to language $B$, then the language $B$ is decidable. To prove this, we follow these steps:
 
 \begin{enumerate}
-	\item Mark all terminal symbols in $G$
-	\item Repeat this operation until no new varibale gets marked
-	\item If, once all varibles have been marked, the start variable was not marked \textbf{accept}, otherwise \textbf{reject}
+	\item Take the decider of $B$
+	\item Use the decider of $B$ to build the decider for $A$
+	\item In the decider for $A$, first we compute the reduction $f(\omega)$, then we feed the result to the decider for $B$
+	\item The decider for $B$ will either accept or reject
+	\item The decider for $A$ now can accept or reject based on the outcome of $B$ 
+\end{enumerate}
+
+\subsubsection{Reduction Theorem 2}
+If a language $A$ is reduced to $B$, and language $A$ is undecidable, then language $B$ is undecidable. To prove this, we follow these steps:
+\begin{enumerate}
+	\item Take the decider for $B$
+	\item Use the decider for $B$ to build the decider for $A$
+	\item In the decider for $A$, first we compute the reduction $f(\omega)$, then we feed the result to the decider for $B$
+	\item The decider for $B$ will either accept or reject
+	\item The decider for $A$ now can accept or reject based on the outcome of $B$
+\end{enumerate}
+Since we know that $A$ is undecidable, we have a contradiction. Thus, $B$ also needs to be undecidable.
+
+\subsection{Examples}
+\subsubsection{DFA Equality Problem}
+The language
+\[ EQUAL_{DFA} = \{ \langle M_1, M_2 \rangle : M_1~\text{and}~M_2~\text{accept the same languages}\} \]
+can be reduced to $EMPTY_{DFA}$, which decides if a DFA has accepting states or not. $EMPTY_{DFA}$ is defined as follows:
+\[ EMPTY_{DFA} = \{ \langle M \rangle : M~\text{accepts the empty language $\emptyset$} \} \]
+Since $EMPTY_{DFA}$ gets only one DFA as input, we need to apply some transformation to $\langle M_1, M_2 \rangle$ in order to obtain $M$. This can be done as follows:
+\[ L(M) = (L_1 \cap \bar L_2) \cup (\bar L_1 \cap L_2) \]
+This makes sure that the language of $M$ is $\emptyset$. Thus
+\[ \langle M_1, M_2 \rangle \in EQUAL_{DFA} \iff \langle M \rangle \in EMPTY_{DFA} \]
+
+\subsubsection{State-Entry Problem}
+Given a Turing Machine $M$, a state $q$, and string $w$, we need to prove that the language $STATE_{TM}$ is undecidable. This language is represented as:
+\[ STATE_{TM} = \{ \langle M, w, q \rangle : M~\text{enters state $q$ on input string $\omega$} \} \]
+In order to prove that this language is undecidable, we need to reduce $HALT_TM$ to $STATE_TM$. The following steps are used:
+
+\begin{enumerate}
+	\item Inside of the decider for $HALT_TM$, we compute the reduction to transform $\langle M, \omega \rangle$ into $\langle \hat M, q, \omega \rangle$
+	\item $\langle \hat M, q, w \rangle$ is passed to the decider for $STATE_{TM}$
+    \item If $STATE_{TM}$ accepts, then $HALT_{TM}$ \textbf{accepts}. Otherwise, it \textbf{rejects}
+\end{enumerate}
+This will give us that if $STATE_{TM}$ is decidable, then $HALT_{TM}$ is decidable. But this is a contradiction since $HALT_{TM}$ is \textbf{undecidable}. Thus $STATE_{TM}$ is undecidable.
+
+\subsubsection{Blank-Tape Halting Problem}
+Given a Turing Machine $M$, we need to prove that the language $BLANK_{TM}$ is undecidable. This language is defined as:
+\[ BLANK_{TM} = \{ \langle M \rangle:~M~\text{halts when started on a blank tape} \} \]
+In order to prove that the language above is undecidable, we reduce $HALT_{TM}$ to $BLANK_{TM}$. The steps are the following:
+
+\begin{enumerate}
+	\item Inside of the decider for $HALT_{TM}$, we compute the reduction in order to transform $\langle M, w \rangle$ into $\langle \hat M \rangle$
+	\item $\langle \hat M \rangle$ is fed to the decider for $BLANK_{TM}$
+	\item If $BLANK_{TM}$ accepts, then $HALT_{TM}$ \textbf{accepts}. Otherwise, it \textbf{rejects}
 \end{enumerate}
 
 \end{document}
