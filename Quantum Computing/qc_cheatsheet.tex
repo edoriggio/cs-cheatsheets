@@ -91,7 +91,7 @@ This is one of the most important experiments to understand the structure and pr
 \begin{center}
 	\includegraphics[width=8cm]{assets/stern_gerlach.png}
 \end{center}
-This experiment consisted of the measurement of the \textbf{magnetic dipole moment} of silver atoms. These silver atoms are sent as a stream (2) coming from an oven (1). Each atom is deflected from the path through an inhomogeneous magnetic field (3), and each atom is deflected from the path (5). This deflection is proportional to its dipole in the direction of the magnets. \\ \\
+This experiment consisted of the measurement of the \textbf{magnetic dipole moment} of silver atoms. These silver atoms are sent as a stream (2) from an oven (1). Each atom is deflected from the path through an inhomogeneous magnetic field (3) and deflected from the path (5). This deflection is proportional to its dipole in the direction of the magnets. \\ \\
 This experiment revealed no detection in the middle of the screen (4) but rather two sharp peaks at equal distances from the center (5). The quantity measured by the experiment is known in quantum mechanics as \textbf{spin}. \\ \\
 In the case of a single measurement, for example, in the $z$-direction, it will result in two identical rays.
 
@@ -123,7 +123,7 @@ No matter if we obtain one measurement or the other in the $Z$ measurement, the 
 
 \subsection{Quantum Key Distribution}
 We have seen that we can measure with certainty the same value in two consecutive measurements with the same basis. In other words, the interactions of a system with its environment become traceable. This traceability enables us to detect an eavesdropper in a \textbf{quantum cryptographic key agreement protocol}. \\ \\
-The distribution of the key starts with \textit{Alice} using random measurements to encrypt the data. The encrypted photons are then sent to \textit{Bob}, which also uses random measurements to try and decrypt the data. After this process has terminated, \textit{Alice} sends the measurement basis she used to \textit{Bob} on a public channel. \textit{Bob} now takes the measurement basis and confronts it with his basis. The equal measurements are used as the \textbf{key}. \\ \\
+The key distribution starts with \textit{Alice} using random measurements to encrypt the data. The encrypted photons are then sent to \textit{Bob}, which also uses random measurements to try and decrypt the data. After this process has terminated, \textit{Alice} sends the measurement basis she used to \textit{Bob} on a public channel. \textit{Bob} now takes the measurement basis and confronts it with his basis. The equal measurements are used as the \textbf{key}. \\ \\
 If an eavesdropper, say \textit{Eve}, tries to intercept the message, she will need to guess the measurements for each photon. If the measurement is wrong, the system is disturbed. This means that \textit{Eve} has a probability of $1/4$ to be wrong in each stage. Thus, there is an almost 100\% probability of whether there was an eavesdropper.
 
 \subsection{The Double-Slit Experiment}
@@ -132,7 +132,7 @@ If one shines a light onto a double slit, an interference pattern appears on the
 \begin{center}
 	\includegraphics[width=10cm]{assets/double_slit.png}
 \end{center}
-If we were to measure the position of the photons on the screen (to the right of the image), an interference pattern would emerge. This means that single particles exhibit wave properties. However, if we look at the particles' paths, the interference pattern disappears.
+If we were to measure the position of the photons on the screen (to the right of the image), an interference pattern would emerge. This means that single particles exhibit wave properties. However, the interference pattern disappears if we look at the particles' paths.
 
 \subsection{The Mach/Zehnder Interferometer}
 The Mach/Zehnder interferometer can be considered a variant of the double-slit experiment.
@@ -187,7 +187,7 @@ In classical mechanics, no gate yields the not-gate this way. The gate $F$ has t
 \subsection{Deutsch's Algorithm}
 Given a function
 \[ f : \{ 0, 1 \} \rightarrow \{ 0, 1 \} \]
-We want to find out whether $f$ is constant and $f(0) \oplus f(1)$ is 0 or 1. In classical mechanics, we would have to query the function twice to get both answers. But there is another way to find out. First, we need to transform the black box into a \textbf{quantum black box}. Because of the unitarity of the quantum mechanical time evolution, the quantum box is \textbf{reversible}.
+We want to find out whether $f$ is constant and $f(0) \oplus f(1)$ is 0 or 1. We would have to query the function twice in classical mechanics to get both answers. But there is another way to find out. First, we must transform the black box into a \textbf{quantum black box}. Because of the unitarity of the quantum mechanical time evolution, the quantum box is \textbf{reversible}.
 
 \begin{center}
 	\includegraphics[width=4cm]{assets/deutsch.png}
@@ -229,6 +229,44 @@ These three scientists, in 1935, claimed that quantum theory was \textbf{incompl
 \subsubsection{Bell's Claim}
 Bell gave \textit{Alice} and \textit{Bob} more freedom. Now they could do measurements on a standard basis and other orthogonal bases. Bell claimed that EPR (Einstein/Podolsky/Rosen) is in doubt. There exist quantum correlations that go beyond the explanatory power of shared classical information. To prove it, Bell used a \textbf{singlet} and made \textit{Alice} and \textit{Bob} make measurements on different bases. \\ \\
 Moreover, Bell discovered that measurement results are correlated; however, this correlation arises only upon measurement -- and not before it. This is known as \textbf{Bell non-locality}.
+
+\section{Information is Physical}
+A computing device essentially transforms \textbf{electrical free energy} into \textbf{heat}. If we consider a Turing Machine, even for deterministic TMs, computations are not logically reversible.
+
+\subsection{Thermodynamics and Entropy}
+\subsubsection{First Law}
+The first law of thermodynamics says that the total energy is constant in a closed system. Moreover, a perpetuum mobile of the first kind is impossible.
+
+\subsubsection{Second Law}
+The second law of thermodynamics says that in a closed system, entropy does not decrease. Moreover, a perpetuum mobile of the second kind is impossible. \\ \\
+This law is \textbf{asymmetric in time}.
+
+\subsection{Information Theory}
+Information theory was developed in 1948 by Claude Shannon to determine the fundamental limits of signal-processing operations such as \textbf{data compression on reliable storage} and \textbf{communication}.
+
+\subsubsection{Standard Model of Communication}
+Information theory initially focused on communication. In the most common scenario, we have \textit{Alice} and \textit{Bob} sending information to one another.
+
+\begin{center}
+	\includegraphics[width=12cm]{assets/information_theory.png}
+\end{center}
+A model usually contains \textbf{compression} to reduce the size of the data representing specific information. \textbf{Encryption} is then used to minimize attacks upon information transfer. \textbf{Channel coding} is used to introduce redundancy to protect against errors during transmission. Finally, there are all of the counterparts of the previous steps.
+
+\subsubsection{The Game of 20 Questions}
+If we imagine that \textit{Bob} can retrieve a secret by \textit{Alice} just by using 20 yes/no questions. \\ \\
+Since \textit{Bob} from 20 questions can receive 20 answers -- 20 bits, this means that he will be able to distinguish between $2^20$ different questions. \\ \\
+Assuming that \textit{Alice} chooses an element $x \in X$. \textit{Bob} now wants to determine which element \textit{Alice} has chosen. To do so, one could divide the set $X$ into subsets of equal size and ask in which one the chosen element was. The number of questions now is:
+\[ \#Q = \lceil \log_2 |X|\rceil \]
+This consideration motivated Hartley's formula for the \textbf{entropy of a uniform random variable X} over X (the elements), with
+\[ P_x(x) = \frac{1}{|X|} \]
+And the formula is:
+\[ H(X) = \log_2|X| \]
+Where the first $X$ is the random variable. Now, \textbf{uncertainty becomes a function of a random variable}. \textit{Bob}'s prior knowledge about \textit{Alice}'s choice can be formally described by a pdf (probability density function). For a general random variable, the measure of uncertainty -- i.e., the \textbf{entropy}, should correspond to the expectation value of the number of yes/no questions to find an element $x \in X$ using an optimal strategy and combining asymptotically many realizations of the random variable $X$.
+
+
+
+
+
 
 
 

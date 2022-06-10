@@ -15,7 +15,7 @@
 \documentclass{article}
 
 \usepackage{hyperref, amsmath, graphicx, amssymb}
-\usepackage{fancyvrb, newverbs, xcolor, tikz}
+\usepackage{fancyvrb, newverbs, xcolor, tikz, float}
 
 \usetikzlibrary{positioning}
 
@@ -98,7 +98,7 @@ What does it mean "to learn"? We have to different definitions, one from a \text
 \begin{itemize}
 	\item \textbf{Statistical Perspective}
 	\vspace{.2cm} \\
-	Vast amounts of data are being generated in many fields. The statistician's job is to make sense of all of this data, extract meaningful patterns and trends, and understand "what the data says". This approach is also known as \textbf{learning from data}.
+	Vast amounts of data are being generated in many fields. The statistician's job is to make sense of this data, extract meaningful patterns and trends, and understand "what the data says". This approach is also known as \textbf{learning from data}.
 	
 	\item \textbf{Computer Science Perspective}
 	\vspace{.2cm} \\
@@ -110,7 +110,7 @@ A computer program is said to learn from \textbf{experience $E$} -- concerning s
 
 \subsection{Models}
 \subsubsection{White Box Model}
-In this case, both physical laws and structural parameters of the problem are known. A family equation can be derived.
+The problem's physical laws and structural parameters are known in this case. A family equation can be derived.
 
 \subsubsection{Grey Box Model}
 The physical laws are known in this case, and at least one parameter is unknown. A family of equations can be derived, but the parameters need to be identified.
@@ -254,7 +254,7 @@ Where $L$ is the \textbf{loss function}. The risk associated with the model's ge
 \[ \bar V(\hat\theta) = (\bar V(\hat\theta) - \bar V(\theta^0)) + (\bar V(\theta^0) - V_I) + V_I \]
 
 \subsubsection{Inherent Risk}
-The inherent risk depends entirely on the structure of the learning problem. This term can be improved only by improving the problem itself, such as reducing the noise caused by the measurement instruments. \\ \\
+The inherent risk depends entirely on the structure of the learning problem. This term can be improved only by improving the problem, such as reducing the noise caused by the measurement instruments. \\ \\
 The inherent risk is computed as:
 \[ V_I \]
 
@@ -328,7 +328,7 @@ The idea of early stopping is to start from an over-dimensioned network and try 
 To evaluate the model, we use another set of data called \textbf{validation set}. We cannot use the test set for the model selection during training. Otherwise, the model performance assessment would be biased.
 
 \subsection{Splitting the Data}
-To split the data we have -- which has length $n$, we apply a ratio (which is application-dependent). This ratio is computed in the function of:
+We apply a ratio (application-dependent) to split the data we have -- which has length $n$, we apply a ratio (application-dependent). This ratio is computed in the function of:
 
 \begin{itemize}
 	\item The size of $n$
@@ -366,12 +366,12 @@ Where $Pr(Y = k|X = x)$ is the \textbf{posterior probability}, $Pr(X = x|Y = k)$
 This classifier is said to be na\"ive. It is because it makes the strong assumption of independence among the features. The Bayes classifier is optimal if the premises and known probabilities are met.
 
 \subsection{K-Nearest Neighbour Classifier}
-This type of classifier looks at the $k$-nearest neighbors of point $x$ to make the classification decision. For example, the Euclidean distance can be used to determine the class.
+This classifier looks at the $k$-nearest neighbors of point $x$ to make the classification decision. For example, the Euclidean distance can be used to determine the class.
 
 \begin{center}
 	\includegraphics[width=6cm]{nearest_neighbors.png}
 \end{center}
-In this case, no training phase is required, but we have a high computational cost in evaluating the distances.
+No training phase is required in this case, but we have a high computational cost in evaluating the distances.
 
 \subsection{Linear Discriminant Analysis}
 Linear Discriminant Analysis (LDA) is a robust way to solve the classification problem and find a separating boundary. \\ \\
@@ -442,7 +442,7 @@ This method can be considered an unbiased estimate if $S_E$ is large enough.
 This method randomly splits $Z_n$ into $k$ disjoint subsets of equal size. For each subset, the other $k-1$ remaining subsets are merged to form $S_D$, and the $k$ subset is used as $S_E$. The resulting $k$ estimates are averaged.
 
 \subsubsection{Leave-One-Out}
-In this method, $S_E$ contains one pattern of $Z_n$, and $S_D$ contains the remaining $n - 1$ patterns of $Z_n$. The procedure iterates $n$ times every time, holding out each pattern in $Z_n$. The resulting $n$ estimates are averaged. \\ \\
+In this method, $S_E$ contains one pattern of $Z_n$, and $S_D$ contains the remaining $n - 1$ patterns of $Z_n$. The procedure iterates $n$ times, holding out each pattern in $Z_n$. The resulting $n$ estimates are averaged. \\ \\
 This is a simplification of K-CV. The estimates from each fold are highly correlated. Thus, the estimate has a significant variance.
 
 \subsubsection{Bootstrap Method}
@@ -462,7 +462,7 @@ If $T$ is outside of the 95\% confidence interval -- i.e., [-1.96, 1.96] -- then
 Something similar can be done to check if one model is statistically better than the other. In this case we consider the null hypothesis to be:
 \[ H_0 : Var[\varepsilon_a] = Var[\varepsilon_b] \]
 \[ H_1 : Var[\varepsilon_a] \not = Var[\varepsilon_b] \]
-We reject the null hypothesis if $T$ -- or rather a slightly modified version -- is out of the 95\% confidence interval. This means that the two models are different. Now that we know that they are different, we compute their variances to determine which model is the best. The model with the lowest variance is the best one.
+We reject the null hypothesis if $T$ -- or rather a slightly modified version -- is out of the 95\% confidence interval. This means that the two models are different. Now that we know they are different, we compute their variances to determine which model is the best. The model with the lowest variance is the best one.
 
 \subsection{Assessing Anomaly detection Methods}
 An anomaly detector is a classifier that processes data streams looking for anomalies.
@@ -507,7 +507,7 @@ To correctly assess the method performance, it is necessary to consider at least
 The values for the accuracy and the F1 score are 1 when we have an ideal detecting method.
 
 \section{Deep Learning}
-Thanks to significant advances in computational power and the cost-effective availability of big data for training, deep learning flourished. \\ \\
+Deep learning flourished thanks to significant advances in computational power and the cost-effective availability of big data for training. \\ \\
 Deep learning can have several applications:
 
 \begin{itemize}
@@ -516,12 +516,12 @@ Deep learning can have several applications:
 	\item Make decisions with the same skills and creativity as humans
 \end{itemize}
 \subsection{Representation Learning}
-In more traditional approaches, the features are hand-crafted by humans and then fed to the neural network. Instead, in the case of deep learning, the features are directly learned by the neural network. \\ \\
+In more traditional approaches, hand-crafted features and then fed to the neural network. Instead, in the case of deep learning, the features are directly learned by the neural network. \\ \\
 In representation learning, there is a hierarchical abstraction of the features. These features are low- mid-, and high-level. After the extraction, these features are fed to the classifier.
 
-\subsection{Convolutional Neural Networks (CNN)}
+\subsection{Convolutional Neural Networks}
 CNNs take advantage of the space affinities existing among neighbors. These networks are made up of many different layers. Each layer computes a higher abstract representation of the image while at the same time making the image shrink at each step -- done by \textbf{convolutional} and \textbf{pooling} layers. \\ \\
-The feature maps are finally concatenated in a single vector and fed to a feed-forward neural network.
+The feature maps are concatenated in a single vector and fed to a feed-forward neural network.
 
 \subsubsection{Convolutional Layer}
 Convolutional layers evaluate the affinities of pixels based on the principle of locality. A \textbf{receptive field} is applied to the image with a certain \textbf{stride}. This results in an output image:
@@ -531,7 +531,7 @@ Where $I$ is the \textbf{original matrix}, and $K$ is the \textbf{filter} that c
 \begin{center}
 	\includegraphics[width=6cm]{assets/convolutional.png}
 \end{center}
-Many filters can be applied in parallel as each feature is learned, and the filter $K$ changes. After the convolution process, each filter $K$ will have provided with a different \textbf{feature map}. Another characteristic of these convolutional layers is that they offer some \textbf{local translation invariance property}. This means that it doesn't matter if the relevant parts of the image move around.
+As each feature is learned, many filters can be applied in parallel and the filter $K$ changes. After the convolution process, each filter $K$ will have provided with a different \textbf{feature map}. Another characteristic of these convolutional layers is that they offer some \textbf{local translation invariance property}. This means that it doesn't matter if the relevant parts of the image move around.
 
 \subsubsection{Pooling Layer}
 Pooling layers reduce the image size based on some specific rules. The pooling operators are:
@@ -549,7 +549,7 @@ Pooling layers reduce the image size based on some specific rules. The pooling o
 \end{center}
 
 \subsection{Special Activation Functions}
-Stacking many layers may lead to problems when performing back-propagation -- this is known as the \textbf{vanishing gradient problem}. For this reason, we use other activation functions.
+Stacking many layers may lead to back-propagation problems, known as the \textbf{vanishing gradient problem}. For this reason, we use other activation functions.
 
 \subsubsection{*LU Activation Functions}
 In order to mitigate the back-propagation problem, we use special activation functions. Some of these are the \textbf{Rectified Linear Unit} (ReLU), the \textbf{Leaky Rectified Linear Unit} (Leaky ReLU), the \textbf{Scaled Exponential Linear Unit} (SELU), and the \textbf{Exponential Linear Unit} (ELU).
@@ -562,7 +562,7 @@ Where $e^{z_j}$ is \textbf{one of the classes}.
 \begin{center}
 	\includegraphics[width=8cm]{assets/softmax.png}
 \end{center}
-This is very useful if used as the activation function of the last layer of a multi-class classifier.
+This is useful if used as the activation function of the last layer of a multi-class classifier.
 
 \subsection{Loss Functions}
 \subsubsection{Regression}
@@ -627,7 +627,7 @@ In reality, a much more complex approach is used to optimize. This optimizer is 
 VGG can be trained using 32x32 batches, which is good enough and allows for better generalization.
 
 \subsection{Autoencoders}
-Encoders and decoders can be composed of graph convolutional layers with pooling, dense feedforward neural networks, or other architectures. These encoders/decoders are used to learn a compact representation of the input space and filter out noise in the input data. \\ \\
+Encoders and decoders can comprise graph convolutional layers with pooling, dense feedforward neural networks, or other architectures. These encoders/decoders are used to learn a compact representation of the input space and filter out noise in the input data. \\ \\
 After concept learning, autoencoders can generate novel patterns — known as generative schemes.
 
 \begin{center}
@@ -641,7 +641,7 @@ In the classification case, if we consider the empirical risk as the ratio of co
 \[ Pr \left( \displaystyle \bar{V}(\hat \theta) \leq V_n(\hat \theta) + \sqrt{\frac{1}{n} \left[ d_{VC} \left( \log \left( \frac{2n}{d_{vc}} \right) + 1 \right) - \log \left( \frac{\delta}{4} \right) \right]} \right) \geq 1 - \delta \]
 Which holds if $d_{VC} \ll n$
 
-\subsection{Uniform Convergence of Empirical Mean (UCEM)}
+\subsection{Uniform Convergence of Empirical Mean}
 The \textbf{empirical mean} converges to its expectation uniformly as $n$ goes to infinity, and for each element of an arbitrarily selected finite sequence of parameter estimates. \\ \\
 From \textbf{Hoeffding inequality}, we have that:
 \[ Pr \left( \sup_{L \in A} |V_n(L(\theta)) - E_x[L(\theta, x)]| > \varepsilon_V \right) \leq 2Me^{-2n\varepsilon^2_V} \]
@@ -670,6 +670,217 @@ Some important notes about the above formula are:
 	\item A model family with high variance is susceptible to the particular selection of the training set
 	\item As we use more flexible learning methods, the variance increases, and the bias decreases
 \end{itemize}
+
+\section{Other Classification Families}
+\subsection{Classification and Regression Trees}
+The input space is partitioned into regions, each associated with a constant value $\hat y_{R_i}$.
+
+\subsubsection{Single-Component Splits}
+The goal of CART is to learn the regions split. Since considering all possible region partitions is not feasible, we use heuristics based on incremental splits along single axes -- i.e., components. \\ \\
+The regions are determined by a tree of splits, where two parameters define the splits:
+
+\begin{itemize}
+	\item $d$ -- The axis to split
+	\item $t$ -- The threshold inducing the split
+\end{itemize}
+
+\begin{figure}[H]
+   \begin{minipage}{0.48\textwidth}
+     \centering
+     \includegraphics[width=.9\linewidth]{assets/cart.png}
+   \end{minipage}\hfill
+   \begin{minipage}{0.48\textwidth}
+     \centering
+     \includegraphics[width=.7\linewidth]{assets/cart_tree.png}
+   \end{minipage}
+\end{figure}
+
+\subsubsection{Learning the Tree}
+In CART, the region partitions are learned from the training set. \\ \\
+To learn the tree, we use the \textbf{recursive binary splitting} heuristic. This process follows these steps:
+
+\begin{itemize}
+	\item Split along with a single component -- say $d$
+	\item Each split results in two new tree branches. A region $R_{parent}$ is now split into two regions:
+	\[ R_{left}(d, t) = R_{parent} \cap \{ x : x_d \leq t \} \]
+	\[ R_{right}(d, t) = R_{parent} \cap \{ x : x_d > t \} \]
+\end{itemize}
+The thresholds $t$ are found by minimizing the estimated value $d$ and $t$. This can be done as such:
+\[ \sum_{i \in R_{right}} L(y_i, \hat y_{R_{right}}; d, t) + \sum_{i \in R_{left}} L(y_i, \hat y_{R_{left}}; d, t) \]
+This has to be repeated for all new regions and terminate with few data points -- although other termination criteria can be considered instead.
+
+\subsubsection{Regression and Classification}
+CART can be used in both regression and classification. For \textbf{regression}, the \textbf{prediction estimate} is the mean value:
+\[ \hat y_{R_i} = \frac{1}{|R_i|} \sum _{j \in R_i} y_j \]
+The \textbf{loss function} is the sum of squares:
+\[ \displaystyle\sum_{i \in R_j}(y_i - \hat y_{R_j})^2 \]
+For \textbf{classification}, the \textbf{prediction estimate} is the majority voting:
+\[ \hat y_{R_i} = \displaystyle\arg\max_c\{ p_{R_i}(c) \} \]
+Where $p_{R_i}(c)$ is the ratio of datapoints of class $c$ in region $R_i$. The \textbf{loss function} is the cross-entropy:
+\[ - \sum_c p_{R_i}(c) \log(p_{R_i}(c)) \]
+
+\subsection{Bagging}
+Trees generate different models when trained on different datasets. By using bagging, we mitigate the high variance generated. When using this method, we do as follows -- in the case of regression:
+
+\begin{itemize}
+	\item We take $B$ independent training sets -- or use bootstrap.
+	\item We build a model from each training set and generate a \textbf{forest}
+	\item We consider the \textbf{ensemble} model
+	\[ \hat f_{avg}(x) = \frac{1}{B}\sum^B_{b=1} \hat f^b(x) \]
+\end{itemize}
+This method is also known as \textbf{Random Forests}.
+
+\subsection{Maximal Margin Classifier}
+The criterion is not based on the data's density but the region of space occupied by the data -- i.e., their support. \\ \\
+The dataset must be linearly separable for this method to be applied. To find a hyperplane that divides the data, we need to perform a maximization of margin $M$. This maximization is used to find the points near the margin. The vectors from these points and the hyperplane are known as \textbf{support vectors}.
+
+\begin{center}
+	\includegraphics[width=4cm]{assets/mmc.png}
+\end{center}
+
+\subsection{Support Vector Classifier}
+When data points are not linearly separable by a hyperplane, we introduce the \textbf{soft margin classifier} concept. \\ \\
+With soft margins, we tolerate errors by introducing slack variables.
+\[ \min_{w, \epsilon_i}||w||^2_2 + \lambda \displaystyle\sum^n_i \epsilon_i ~~~~~~~ \text{s.t.} ~ y_i(w^Tx_i + b) \geq 1 - \epsilon_i ~~~~~~~~ \text{with}~\epsilon_i \geq 0 \]
+The hyperplane is determined only by those points on the wrong side of the plus-minus-hyperplane or those lying on them. Also in this case such vectors are known as \textbf{support vectors}.
+
+\begin{center}
+	\includegraphics[width=5cm]{assets/svc.png}
+\end{center}
+
+\subsection{Support Vector Machines}
+Some classification problems seem to be challenging to solve using linear methods. For this reason, we can \textbf{embed} the input data. This means that we can project the points onto a higher dimension. This will hopefully make the problem linearly separable, thus solvable.
+
+\begin{center}
+	\includegraphics[width=8cm]{assets/svm.png}
+\end{center}
+The original soft-margin problem can be rewritten in the dual form:
+\[ \max_{\alpha_i} \sum^n_{i=1} \alpha_i - \frac{1}{2} \sum^n_{i, j = 1} \alpha_i \alpha_j y_i y_j \langle x_i, x_j\rangle \]
+\[ s.t. ~ 0 \leq \alpha_i \leq \lambda ~~~~~~~ \text{with} ~ \displaystyle \sum_i \alpha_i y_i = 0 \]
+Which yields:
+\[ \hat w = \displaystyle\sum^n_{i = 1} \alpha_i y_i x_i \]
+By applying the embedding function $\phi(x)$ to $x$, the dual optimization problem now becomes:
+\[ \displaystyle \max_{\alpha_i} \sum^n_{i=1} \alpha_i - \frac{1}{2} \sum^n_{i, j = 1} \alpha_i \alpha_j y_i y_j \langle \Phi(x_i), \Phi(x_j)\rangle \]
+\[ s.t. ~ 0 \leq \alpha_i \leq \lambda ~~~~~~~ \text{with} ~ \displaystyle \sum_i \alpha_i y_i = 0 \]
+The scalar product can now be substituted with a function named \textbf{kernel}. This function is the following:
+\[ K(x_i, x_j) = \langle \Phi(x_i), \Phi(x_j) \rangle \]
+Thus we can rewrite the dual optimization problem as:
+\[ \displaystyle \max_{\alpha_i} \sum^n_{i=1} \alpha_i - \frac{1}{2} \sum^n_{i, j = 1} \alpha_i \alpha_j y_i y_j K(x_i, x_j) \]
+\[ s.t. ~ 0 \leq \alpha_i \leq \lambda ~~~~~~~ \text{with} ~ \displaystyle \sum_i \alpha_i y_i = 0 \]
+The classification can now be performed by checking the sign of the following:
+\[ f(x) = \sum^n_{i = 1} \alpha_i y_i K(x, x_i) + \hat b \]
+Where $\hat b$ is computed as:
+\[ \hat b = y_* - \sum_i \alpha_i y_i K(x_i, x_*) \]
+
+\subsubsection{Polynomial Kernel}
+For the polynomial kernel, we consider the following polynomial of degree $d$:
+\[ K(x, x') = (c + x^Tx')^d \]
+
+
+\subsubsection{RBF Kernel}
+For the Radial Basis Function kernel, we need to use the following function:
+\[ K(x, x') = e^{-\gamma ||x-x'||^2} \]
+Where the $\gamma$ value indicates the neighborhoods' tightness, this kernel's mapping space is infinitely dimensional.
+
+\subsection{SVM VC Dimension}
+In SVMs, the VC dimension $d_{VC}$ is upper-bounded by
+\[ \frac{D}{M} \]
+Where $D$ is the \textbf{diameter of the smallest sphere embracing the training points}, and $M$ is the \textbf{margin}.
+
+\subsection{Multiclass Classification}
+SVM only deals with binary classifiers. To tackle the multi-class problem, we need to train a classifier for each class. This means that the $n$-th classifier checks class $n$ against all the other classes. \\ \\
+During the operational phase, we select the class for which the classification output is the farthest into the positive region.
+
+\section{Unsupervised Learning}
+In unsupervised learning, there no label/response $y$ is available. These algorithms need to discover the properties of a dataset given just a set of data points
+\[ x_1, x_2, \dots, x_n \]
+
+\subsection{Isolation Forest}
+This is an interesting tree-based method designed to isolate anomalies explicitly. The assumption is that anomalies are rare events that differ from the nominal class ones. \\ \\
+It is easier to isolate an anomalous point $x_0$ with respect to a genuine one $x_i$ when a $k$-dimensional tree is generated from data -- with a random splitting criterion. The anomalies will lie in \textbf{leaves with shallow depth}.
+
+\begin{center}
+	\includegraphics[width=6cm]{assets/ifor.png}
+\end{center}
+
+\subsubsection{Training}
+To train an IFOR algorithm, we must first build a forest of trees given a dataset $X$. Now, for each of the training sets, we generate a tree as follows:
+
+\begin{enumerate}
+	\item Uniformly select an axis to split
+	\item Determine a split point along the axis
+	\item Stop the procedure when one of the following conditions are met:
+	\begin{itemize}
+		\item The tree reaches a depth limit
+		\item The number  of points in the leaf equals 1
+		\item The points in the leaves share the same values
+	\end{itemize}
+\end{enumerate}
+
+\subsubsection{Operational Phase}
+We compute the average path length:
+\[ E(h(x)) \]
+Among all the trees in the forest for the given point $x$. This point $x$ is identified as \textbf{anomalous}, if the anomaly score:
+\[ s(x, n) = 2^{\frac{E(h(x))}{c(n)}} > T \]
+Where $n$ is the number of \textbf{points in $X$}, $T$ is a \textbf{threshold}, and $c(n)$ is the \textbf{average path length} of generic binary trees given $n$ data instances
+\[ c(n) = 2(\ln(n-1) + \gamma_E) - 2\frac{n-1}{n} \]
+Where $\gamma_E$ is the \textbf{Euler-Mascheroni constant}. Moreover, the averaged path lengths of $x_i$ and $x_0$ \textbf{converge} when the number of trees in forest increase.
+
+\subsection{Principal Component Analysis}
+Principal Component Analysis changes the reference system of the data through a rotation operator. The axes of the new reference system show the most significant data scattering.
+
+\begin{figure}[H]
+   \begin{minipage}{0.48\textwidth}
+     \centering
+     \includegraphics[width=.9\linewidth]{assets/pca.png}
+   \end{minipage}\hfill
+   \begin{minipage}{0.48\textwidth}
+     \centering
+     \includegraphics[width=.92\linewidth]{assets/pca1.png}
+   \end{minipage}
+\end{figure}
+Given $d$-dimensional data points:
+\[ x_1', x_2', \dots, x_n' \]
+And centered data points:
+\[ x_i = x_i' - \frac{1}{n} \sum_j x'_j \]
+We will then have
+\[ X = [x_1 | x_2 | \dots | x_n] \]
+From this, we compute the sample covariance matrix and consider the symmetrical semidefinite positive matrix
+\[ H = X^TX = U\Lambda U^T \]
+Where $\Lambda$ is the matrix that contains all of the eigenvalues. Each eigenvalue corresponds to one dimension, and each component of
+\[ \tilde x = U^Tx \]
+It is called \textbf{principal component}.
+
+\subsubsection{Dimensinality Reduction}
+Once the data has been modified, we remove the smallest $l$ eigenvalues and group the remaining eigenvectors as:
+\[ \tilde U = [ U_1 | U_2 | \dots | U_{l+1} ] \]
+Dimensionality reduction is then obtained by means of:
+\[ \tilde x = \tilde U^T x \]
+As we embed the vectors from dimension $d$ into a lower $d-l$ dimension.
+
+\subsubsection{Information Loss}
+To determine how much information we lost from the PCA we use the \textbf{spectral decomposition}. The spectral decomposition theorem grants that:
+\[ H = \sum^d_{i=1} \lambda_iU_iU_i^T \]
+If we remove the smallest $l$ eigenvalues, we generate:
+\[ \tilde H = \sum^d_{i = l+1} \lambda_iU_iU_i^T \]
+
+\subsection{Clustering}
+Sometimes the data group together in certain feature/input space regions. For this reason, we use \textbf{clustering}. Using this algorithm, we group data so that the points in the same cluster stay close.
+
+\subsubsection{K-Means Clustering}
+A \textbf{cluster} is defined as a set of indices such that
+\[ C_k \subseteq \{ 1, 2, \dots, n \} \]
+Given data points $x_1, x_2, \dots, x_n$, we perform the following steps:
+
+\begin{enumerate}
+	\item Randomly search for $K$ clusteroids $\mu_1, \mu_2, \dots, \mu_K$
+	\item Given the selected clusteroids, create $K$ classes
+	\item The points are then assigned to one of the clusters based on the Euclidean distance of the point to the clusteroids -- we need to find the minimum distance
+	\item Recompute the clusteroids -- as the mean of the points in that cluster
+	\item Perform steps 3 and 4 until the clusters converge -- there are no more changes in the clusters
+\end{enumerate}
+
+
 \end{document}
 
 
