@@ -464,7 +464,7 @@ Something similar can be done to check if one model is statistically better than
 \[ H_1 : Var[\varepsilon_a] \not = Var[\varepsilon_b] \]
 We reject the null hypothesis if $T$ -- or rather a slightly modified version -- is out of the 95\% confidence interval. This means that the two models are different. Now that we know they are different, we compute their variances to determine which model is the best. The model with the lowest variance is the best one.
 
-\subsection{Assessing Anomaly detection Methods}
+\subsection{Assessing Anomaly Detection Methods}
 An anomaly detector is a classifier that processes data streams looking for anomalies.
 
 \subsubsection{Confusion Matrix}
@@ -880,6 +880,85 @@ Given data points $x_1, x_2, \dots, x_n$, we perform the following steps:
 	\item Perform steps 3 and 4 until the clusters converge -- there are no more changes in the clusters
 \end{enumerate}
 
+\section{Forecasting}
+In most ML tasks, we assume the data to be \textbf{independent and identically distributed}. This means that there are no time dependencies among consecutive samples. Moreover, they have an identical \textbf{probability density function}.
+
+\subsection{Time Series}
+A \textbf{discrete-time series} $X$ is a discrete-time stochastic process. This means that $X$ is a sequence of \textbf{random variables}.
+\[ X = \{ X_t \in \mathbb{R}^d,~t = 0,1,2,\dots \} \]
+An observer time series is a realization of the stochastic process . If $d = 1$, then the time series is said to be \textbf{univariate}. Otherwise, it is said to be \textbf{multivariate}.
+
+\subsection{Stationarity and Time Invariance}
+\subsubsection{Stationairy}
+We say that a data generating process is \textbf{stationary} when the generated data are realizations of a random variable whose distribution does not change over time. \\ \\
+We say that a generating process is \textbf{weakly stationary} if only the first few moments of the random variable do not change with time.
+
+\subsubsection{Time Invariance}
+We say that a data generating process is \textbf{time invariant} when its outputs do not explicitly depend on time.
+
+\subsection{White Noise}
+A \textbf{white noise} stochastic process is a sequence of independent random variables with zero mean and $\sigma^2$ variance. This data-generating process is unrelated at different time steps. As such, it is unpredictable.
+
+\subsection{Linear Time Invariant Models}
+\subsubsection{Autoregressive Predictive Models}
+A stationary time series is said to be autoregressive if:
+\[ y(t) = \phi_1 x(t-1) + \phi_2x(t-2) + \dots + \phi_px(t-p) + \eta(t) \]
+\[ \eta(t) \sim WN(0, \sigma^2) \]
+Where the predictive model is:
+\[ \hat y (t) = \displaystyle\sum^p_{i = 1} \phi_ig_i(t) \]
+Where $y(t) = x(t)$, $\Phi = (\phi_1, \dots, \phi_p)$ is the vector of parameters, and $g_i(t) = x(t - i)$ are the components of the regressor vector. We can consider $x(t-i)$ to be the \textbf{delay operator}. Then, by modifying the series, we obtain:
+\[ x(t) = (\phi_1 z^{-1} + \dots + \phi_p z^{-p})x(t) + \eta(t) \]
+Since $y(t) = x(t)$. From this we get the \textbf{transfer function}:
+\[ H(z) = \displaystyle\frac{1}{A(z)} = \frac{z^p}{z^p - \phi_1 z^{p-1} - \dots - \phi_p} \]
+The numerator is known as the \textbf{zeros}, and the denominator is known as the \textbf{poles}. This system is \textbf{BIBO stability} requires each pole to have a magnitude within the unit circle. The system learning must be carried out carefully to guarantee stability.
+
+\subsubsection{Moving Average Predictive Models}
+A stationary time series is said to be a moving average if:
+\[ y(t) = \theta_1\eta(t-1) + \theta_2\eta(t-2) + \dots + \theta_q\eta(t-q) + \eta(t), ~ \eta(t) \sim WN(0, \sigma^2) \]
+Where $\Theta = (\theta_1, \dots, \theta_q)$, and the \textbf{regressor components} are $f_j(t) = \eta(t-j)$. In this case, the predictive model family is:
+\[ \hat y(t) = \displaystyle\sum^q_{j=1} \theta_j f_j(t) \]
+Again, by applying the \textbf{delay operator}, the transfer function becomes:
+\[ H(z) = C(z) = \displaystyle\frac{z^q + \theta_1 z^{q-1}+\dots+\theta_q}{z^q} \]
+This system is also always \textbf{BIBO stable}.
+
+\subsubsection{Autoregressive Moving Average Predictive Models}
+This is a combination of \textbf{AR} and \textbf{MA}:
+\[ \hat y (t) = \displaystyle\sum^p_{i = 1} \phi_ig_i(t) + \displaystyle\sum^q_{j=1} \theta_j f_j(t) \]
+Since \textbf{ARMA} contains both \textbf{AR} and \textbf{MA} contributions, then its \textbf{transfer function} will be:
+\[ H(z) = \displaystyle\frac{C(z)}{A(z)} \]
+The \textbf{BIBO stability} of this system depends only on the \textbf{AR} part.
+
+\subsubsection{Autoregressive Integrated Moving Average}
+All previously discussed models work under the assumption of \textbf{stationarity}. \textbf{ARIMA}, however, generalizes \textbf{ARMA} models through differentiation to describe the non-stationarity of the time series. \\ \\
+\textbf{Differentiation} is used to remove seasonalities and trends. This model builds a stationary time series by finite differentiation. Given the following model:
+\[ y (t) = \displaystyle\sum^p_{i = 1} \phi_i y(t-i) + \displaystyle\sum^q_{j=1} \theta_j \eta(t - j) \]
+The single optimal step-ahead predictor becomes:
+\[ \hat y (t) = \left( 1 - H^{-1} \right) y(t) \]
+
+\subsection{Estimating ARMA Parameters}
+\textbf{ARMA} has $p + q$ unknown parameters. To estimate them, we can use the following methods.
+
+\subsubsection{Least Mean Squares}
+While a one-shot solution can be used for \textbf{AR}, for \textbf{ARMA}, instead, we cannot use \textbf{LMS} as we cannot build the matrices $X$ and $Y$ -- since the lagged errors are unobservable.
+
+\subsubsection{Maximum Likelihood Estimator}
+In this case, we assume the following:
+
+\begin{itemize}
+	\item The stochastic process $X$ is gaussian
+	\item The noise terms are i.i.d. and gaussian
+	\item The data points are centered
+\end{itemize}
+When performing \textbf{MLE} on \textbf{ARMA}, we need to look for those parameters that maximize the likelihood:
+\[ \hat\Theta_{MLE} = \displaystyle\arg\max_\Theta L(\Theta|X) = \arg\max_\Theta f_\Theta(X_1, \dots, X_p) \]
+
+\subsection{Exogenous Variables}
+The Linear Time-Invariant model can also include exogenous variables. Models which include exogenous variables are \textbf{ARX} and \textbf{ARMAX}.
+
+\subsection{Feed-Forward Neural Networks in Forecasting}
+\textbf{Autoregressive non-linear predictive models} use past observations to forecast:
+\[ \hat y(t) = f_\Theta(x(t-1), \dots, x(t-p)) \]
+Where $y(t) = x(t)$ and $f_\Theta$ is a \textbf{non-linear function}.
 
 \end{document}
 
