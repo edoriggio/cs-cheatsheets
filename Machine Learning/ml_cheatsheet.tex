@@ -166,7 +166,7 @@ Linear models are good when we have the following conditions:
 	\item The uncertainty is high
 \end{itemize}
 
-\subsection{Muliple Linear Regression}
+\subsection{Multiple Linear Regression}
 We are given a set of points:
 \[ \{ (x_1, y_1), (x_2, y_2), \dots, (x_n, y_n) \} ~~~~~ \text{where}~x \in \mathbb{R}^d, y \in 	\mathbb{R} \]
 This is known as the \textbf{training set}. We now assume that the unknown function that generates the data is linear. Moreover, we assume that there is a gaussian uncertainty affecting the measurements. The model is given as:
@@ -194,7 +194,7 @@ By grouping the data into vectors $X$ -- of all $x$ values -- and $Y$ -- of all 
 \textbf{Stationary points} are those for which:
 \[ \frac{\partial V_n^*(\theta)}{\partial \theta} = -2X^T Y + 2X^T X \theta = 0 \]
 Therefore, the parameter vector $\hat \theta$ minimizing the performance function is the following:
-\[ \hat \theta = (X_TX)^{-1}X^TY \]
+\[ \hat \theta = (X^TX)^{-1}X^TY \]
 And the best approximating model is:
 \[ f(\hat \theta x) = x^T\hat\theta \]
 
@@ -839,7 +839,7 @@ Principal Component Analysis changes the reference system of the data through a 
      \includegraphics[width=.92\linewidth]{assets/pca1.png}
    \end{minipage}
 \end{figure}
-Given $d$-dimensional data points:
+\noindent Given $d$-dimensional data points:
 \[ x_1', x_2', \dots, x_n' \]
 And centered data points:
 \[ x_i = x_i' - \frac{1}{n} \sum_j x'_j \]
