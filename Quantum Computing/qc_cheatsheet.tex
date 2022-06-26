@@ -16,7 +16,7 @@
 
 \usepackage{hyperref, amsmath, graphicx, amssymb}
 \usepackage{fancyvrb, newverbs, xcolor, tikz}
-\usepackage[latin1]{inputenc}
+\DeclareMathAlphabet{\mymathbb}{U}{BOONDOX-ds}{m}{n}
 
 \usetikzlibrary{positioning}
 
@@ -263,6 +263,305 @@ And the formula is:
 \[ H(X) = \log_2|X| \]
 Where the first $X$ is the random variable. Now, \textbf{uncertainty becomes a function of a random variable}. \textit{Bob}'s prior knowledge about \textit{Alice}'s choice can be formally described by a pdf (probability density function). For a general random variable, the measure of uncertainty -- i.e., the \textbf{entropy}, should correspond to the expectation value of the number of yes/no questions to find an element $x \in X$ using an optimal strategy and combining asymptotically many realizations of the random variable $X$.
 
+\subsection{Entropy}
+The entropy of a random variable $X$ over $X$, with distribution:
+\[ P_X(x) = p_x \]
+Is given by:
+\[ H(X) = E[-(\log_2 P_X(x)] = - \sum_{x \in X} p_x \log_2p_x \]
+In the case of a uniform distribution, the \textbf{entropy} of a random variable is equal to the size of its range. The \textbf{entropy of a macrostate} is the logarithm of the number of microstates that correspond to it. \\ \\
+The \textbf{microstate} of a physical system specifies the position and momentum of each of the molecules. The \textbf{macrostate} of a physical system is a set of microstates.
+\begin{center}
+	\includegraphics[width=5cm]{assets/entropy.png}
+\end{center}
+In the example above, the probability of going from the state on the left to the state on the right is:
+\[ 2^{-N} \]
+Where $N$ is the \textbf{number of particles}. Moreover, the entropy difference is:
+\[ \Delta S = -Nk \ln 2 \]
+Where $N$ is the \textbf{number of particles} and $k$ is the \textbf{Boltzmann's constant}. We can say that the right-to-left transition is \textbf{probable}, and allows for \textbf{gaining work}. \\ \\
+The left-to-right transition can be enforced. For instance, this can be done by pushing a piston. Although in this case, the gas will cease to be in a closed system. 
+\begin{center}
+	\includegraphics[width=5cm]{assets/piston.png}
+\end{center}
+In this case, the amount of entropy in the gas decreases. To compress this gas, we will have to use a certain amount of \textbf{free energy}. This energy will then be dissipated into the environment as \textbf{heat}. \\ \\
+The minimal investment in terms of free energy to enforce that entropy decreases is:
+\[ \Delta Q \geq \Delta S \cdot T \]
+
+\subsection{Bit Analogy}
+If we interpret the molecule in the canister as storing one bit -- a 0 if it is on the left and a 1 if it is on the right, forcing the molecule to the left would correspond to erasing that bit. \\ \\
+The price for erasing that bit is:
+\[ kT \ln 2 \]
+This, together with the claim that it's irrelevant by what physical system the bit is stored, is called \textbf{Landauer's Principle}.
+
+\subsection{Landauer's Principle}
+Erasing a bit requires
+\[ kT \ln 2 ~~~ (\approx 3 \times 10^{-21} J~ \text{at room tempterature}) \]
+Of free energy. This energy must, in the process, be dissipated into the environment.
+
+\subsection{The Converse of Landauer's Principle}
+The inverse process of erasure, which is \textbf{randomization}, allows for the gain of free energy. For example, the amount of environmental heat energy that can be transformed into work is $kTN\ln2$ -- in the case of an \textit{all-0-string} of length $N$. Another example is the string of the first $N$ digits of the decimal expansion of $\pi$, which is $kTN\log10$. \\ \\
+The previously defined examples offer the possibility of a logically reversible computation between the given string (for example, the first N decimal digits of $\pi$) and the \textit{all-0-string} of the same length.
+
+\subsection{Bennett's Solution to Maxwell's Demon}
+The demon must erase all the information accumulated in its brain during the sorting procedure. The necessary heat dissipation will exactly compensate for the entropy decrease. The demon must have an internal state depending on its observations and guiding its actions. \\ \\
+This does not violate the second law of thermodynamics, as the demon will generate heat whenever it resets its internal memory to a known state. This will result in an entropy decrease and the emission of heat.
+
+\subsection{Reversible Computing}
+If in the course of computation, information is lost about \textit{which branch the computation came from}, then the free energy $kT \ln 2$ must be invested. This free energy will then be dissipated through the environment. This means that \textbf{loss of information} implies \textbf{loss of free energy}. \\ \\
+If we consider a classical gate, such as the one below
+
+\begin{center}
+	\includegraphics[width=5cm]{assets/and.png}
+\end{center}
+It is logically irreversible since the output does not allow for a complete reconstruction of the input. A way to make a computation logically reversible would be to use a \textbf{history tape} to a Turing Machine for storing the entire path of the computation. This solution, though, is not sustainable. This is because the original state of the history tape is lost and replaced by the waste piled up.
+
+\begin{center}
+	\includegraphics[width=5cm]{assets/irreversible_tm.png}
+\end{center}
+Bennett's idea was to eliminate the waste in an \textit{orderly fashion}. This means that the waste was \textbf{uncomputed} instead of erased. Here the output of the computation is copied onto some extra bit positions, and then the computation is undone step by step in reverse order.
+
+\begin{center}
+	\includegraphics[width=12cm]{assets/reversible_tm.png}
+\end{center}
+We have seen that any computation can now be made logically reversible. Furthermore, \textbf{Friedkin} and \textbf{Toffoli} demonstrated that every logically reversible computation could be carried out in a thermodynamically reversible way. This was shown with the elastic collision of balls onto a billiard table. Loss of information is impossible due to the time-reversal symmetry of the laws of classical mechanics.
+
+\subsection{Toffoli Gate}
+The Toffoli gate is a made-reversible \textbf{AND} gate. This is done by adding an output wire for each input wire. This makes sure that the output of the gate contains the input values of the gate. This is the schematic for the \textbf{Toffoli Gate}:
+
+\begin{center}
+	\includegraphics[width=7cm]{assets/toffoli.png}
+\end{center}
+The Toffoli gate is \textbf{universal}. This means that any circuit can be translated into a Toffoli gate. This follows from the possibility to get -- from one Toffoli gate each -- the \textbf{NOT}, \textbf{AND}, and \textbf{FAN-OUT}.
+
+\begin{center}
+	\includegraphics[width=12cm]{assets/not_and_fanout.png}
+\end{center}
+To remove the \textbf{junk} from a circuit, we can now use the following two gates:
+
+\begin{center}
+	\includegraphics[width=11cm]{assets/junk.png}
+\end{center}
+Bennett's trick to uncompute the junk is the following:
+
+\begin{enumerate}
+	\item Apply $C$
+	\item The output we want is copied using the Toffoli gate
+	\item Use $C^{-1}$ to uncompute the junk
+\end{enumerate}
+The following is the visual representation of such circuit:
+
+\begin{center}
+	\includegraphics[width=11cm]{assets/remove_junk.png}
+\end{center}
+From this, we can conclude that the best reversible circuit is half as efficient as its irreversible counterpart.
+
+\section{Key Experiments and Postulates of Quantum Physics}
+The \textbf{UV catastrophe of black body radiation} and the \textbf{photoelectric effect} lead to the development of quantum physiscs.
+
+\subsection{Black-Body Radiation}
+\subsubsection{Classical Mechanics}
+In classical statistical mechanics, the \textbf{law of equipartition} expresses the idea that, in thermal equilibrium, energy is usually shared over all possible corresponding microstates. If we assume the head to be transferred by electromagnetic waves, the equipartition law leads to problematic consequences. \\ \\
+Let's imagine the following, we have a \textbf{cubic vacuum} with side length $l$. This vacuum has the following properties:
+
+\begin{itemize}
+	\item It absorbs and emits all radiation frequencies
+	\item It is in thermodynamic equilibrium with its environment, in a heat bath of temperature $T$
+\end{itemize}
+
+\begin{center}
+	\includegraphics[width=2cm]{assets/cube.png}
+\end{center}
+The thermal electromagnetic radiation within this body can be thought of as \textbf{standing waves} within the body. Generally, a \textbf{standing wave} is a superposition of three standing waves, each corresponding to one spacial direction. Thus, a wave can be described by a three-dimensional vector of positive integers
+\[ \overrightarrow n = (n_1, n_2, n_3) \in (\mathbb{N}_{> 0})^3 \]
+
+\begin{center}
+	\includegraphics[width=2cm]{assets/standing_waves.png}
+\end{center}
+If we consider a shell of radius $|\overrightarrow n|$, then the number of waves scales with the scaling of the shell. This means that the number of waves also becomes $|\overrightarrow n|^2$. Likewise, the energy density scales with the square of the frequency
+\[ \omega = c \pi \displaystyle\frac{|\overrightarrow n|}{l} \]
+This growth in energy is referred to as \textbf{ultraviolet catastrophe}. This is absurd since, for instance, if we take a classroom at room temperature, everyone in it would drop dead immediately due to the intensity of the X-rays. \\ \\
+For lower frequencies of waves, the quadratic dependence of the spectral radiance on the frequency matches experimental findings -- the \textbf{Rayleigh-Jeans Law}. In the case of higher frequencies, the spectral radiance exponentially decreases again.
+
+\begin{center}
+	\includegraphics[width=6cm]{assets/spectral_radiance.png}
+\end{center}
+\subsubsection{Quantum Mechanics}
+Max Plank discovered that the probability of emission and absorption of the cube would exponentially decrease at higher frequencies. He assumed that the radiation energy to be absorbed and emitted multiplies $\hbar \omega$, where $\hbar = 1.054 \times 10^{-34}Nms$. The probability of emission or absorption decreases exponentially in
+\[ \frac{\hbar \omega}{kT} \]
+In particular, the probability falls off exponentially for higher frequencies.
+
+\subsection{Photoelectric Effect}
+\subsubsection{Classical Mechanics}
+By examining the emission of electrons from a metal surface if a light is shone onto it, the expectation was that the velocity of the emitted electrons faster depends on the intensity of the light but is independent of the frequency of the light --  i.e., its color. \\ \\
+However, from experimental findings, Hertz found out that the intensity of the light merely changed the number of electrons. By increasing the frequency of the light, the velocity of the electrons increased. Below a specific frequency $\omega_0$, there were no emitted electrons, whatever the intensity or the duration of shining the light onto the surface.
+
+\begin{center}
+	\includegraphics[width=4cm]{assets/photoelectric.png}
+\end{center}
+
+\subsubsection{Quantum Mechanics}
+Alber Einstein explained the behavior observed by Plank. Einstein regarded light as a quantized packet of a certain frequency-dependent energy. Light comes in packets of $\hbar \omega$ energy. If the frequency is lower than $\omega_0$, then the energy lies below the energy $W = \hbar\omega_0$ needed to remove the electrons from the metal. Thus, the kinetic energy of the electron becomes
+\[ E_{kin} = \hbar \omega - W \]
+This shows the fundamental dualism in quantum mechanics, the \textbf{wave-particle dualism}.
+
+\subsection{Wave-Particle Dualism}
+We now examine the wave-particle dualism by using the example of a plane wave:
+\[ \psi(\overrightarrow x, t) = C \cdot e^{i(\overrightarrow k \cdot \overrightarrow x - \omega t)} \]
+Where $\overrightarrow k$ is the \textbf{wave vector} -- which is perpendicular to the wavefront. The relation between the wavelength and the wave vector is:
+\[ \lambda = \frac{2\pi}{|\overrightarrow k|} \]
+The \textbf{period} of the wave -- i.e., the time that elapses between the passage of two wavefronts -- is:
+\[ \Delta t = \frac{2\pi}{\omega} \]
+The \textbf{phase velocity} -- i.e., the velocity of the wavefront -- is:
+\[ v = \frac{\omega}{|\overrightarrow k|} \]
+If we examine the partial derivative of the plane wave, we obtain:
+\[ \frac{\partial}{\partial t} \psi(\overrightarrow x, t) = - \frac{\hbar^2}{2m}\Delta\psi \]
+Which directly corresponds to the \textbf{Shr\"odinger equation of a free particle}.
+\[ i \hbar \frac{\partial}{\partial t} \psi = - \frac{\hbar^2}{2m}\Delta\psi \]
+
+\subsubsection{Schr\"odinger's Equation}
+The Sch\"odinger equation of a free particle has two fundamental properties:
+
+\begin{itemize}
+	\item \textbf{It is linear} \\
+	Any linear combination of solution of the Schr\"odinger equation
+	\[ \psi(\overrightarrow x, t) = \alpha\psi(\overrightarrow x, t) + \beta\psi(\overrightarrow x, t) ~~~~~~~~ \forall \alpha, \beta \in \mathbb{C}  \]
+	Will again yield a solution.
+	
+	\item \textbf{It preserves the inner product} \\
+	This means that a solution can be written as
+	\[ \psi(\overrightarrow x, t) = U(t) \psi(\overrightarrow x, 0) \]
+	Thus, the \textbf{time evolution operator} is unitary. This also implies that the \textbf{time evolution in quantum mechanics is reversible}.
+\end{itemize}
+
+\subsection{Postulates of Quantum Theory}
+The postulates of quantum mechanics form the axiomatic basis of the theory.
+
+\subsubsection{The State}
+In quantum mechanics, a system (e.g. an electron, a photon, or an atom) is assigned a \textbf{normalized state vector} in a complex Hilbert space:
+\[ \psi(\overrightarrow x, t) \in H ~~~~~~~~ \text{with}~||\psi|| = 1 \]
+
+\subsubsection{The Time Evolution}
+The time evolution of a quantum state is governed by the \textbf{Schr\"odinger equation}:
+\[ \displaystyle\frac{\hbar}{i} \frac{\partial \psi}{\partial t} = H \psi \]
+
+\subsubsection{The Observables}
+In quantum mechanics, measurable entities correspond to observables. These are Hermitian operators $A$ with $A^\dagger = A$. More generally, \textbf{any Hermitian operator is an observable}. \\ \\
+The \textbf{spectral theorem} for finite-dimensional linear operators states that an operator $A$ has a spectral decomposition with real eigenvalues if and only if the operator is Hermitian. Thus, an observable -- which is Hermitian by definition -- has a corresponding spectral decomposition. \\ \\
+From the spectral decomposition, we obtain the weighted sum over all possible results of the measurement corresponding to $A$.
+
+\subsubsection{Joint Systems and Composition}
+Any linear combination in any of the subspaces corresponds to a linear combination in the joint space. This is an essential characteristic of the \textbf{tensor product}. Given two Hilbert spaces $H_A$ and $H_B$, the joint system has a state-space that is isomorphic to the tensor product of the Hilbert spaces -- $H_A \otimes H_B$. \\ \\
+If the systems are in \textbf{pure states} $\psi_A \in H_A ~\text{and}~ \psi_B \in H_B$, then the joint state becomes:
+\[ \psi_A \otimes \psi_B \in H_A \otimes H_B \]
+However, any superposition of such product states is also a state in the joint Hilber space, and such superpositions may not have a representation as a product. Such states are said to be \textbf{entangled}.
+
+\subsubsection{Astraction and Simplification}
+If we assume the Hilbert space to be finite-dimensional, then this Hilbert space is isomorphic to an $n$ dimensional complex vector space $H \cong \mathbb{C}^n$. With this assumption, the states can be expressed by coordinates with respect to some fixed basis. \\ \\
+For $\varphi \in H \cong \mathbb{C}^n$, we call the corresponding vector \textbf{ket} of $\varphi$, and represent it as:
+\[ |\varphi\rangle = \begin{bmatrix} \varphi_1 \\ \varphi_2 \\ \vdots \\ \varphi_n \end{bmatrix} \]
+Similarly, a \textbf{bra} is the conjugate transpose of a \textbf{ket}.
+\[ \langle\varphi| = |\varphi\rangle^\dagger = \begin{bmatrix} \overline \varphi_1 & \overline \varphi_2 & \cdots & \overline \varphi_n \end{bmatrix} \]
+Now, we can write the inner product as:
+\[ (\varphi, \psi) = \begin{bmatrix} \overline \varphi_1 & \overline \varphi_2 & \cdots & \overline \varphi_n \end{bmatrix} \begin{bmatrix} \varphi_1 \\ \varphi_2 \\ \vdots \\ \varphi_n \end{bmatrix} = \langle \varphi|\psi\rangle \in \mathbb{C} \]
+This is known as \textbf{Dirac's Bra-ket notation}. This notation is useful in expressing Hamiltonian observables. For example, the effect of an observable $A$ on a vector $\psi$, can be expressed as:
+\[ |A\psi \rangle = \displaystyle \sum_i \lambda_i |P_{\varphi_i} \psi \rangle = \sum_i \lambda_i |\varphi_i \rangle \langle \varphi_i||\psi \rangle = \sum_i \lambda_i |\varphi_i \rangle \langle \varphi_i| \]
+Where $|\varphi_i \rangle \langle \varphi_i|$ is the common way to represent a \textbf{projector}. A linear operator on a finite-dimensional vector space can be represented with a fixed basis as a matrix. In Dirac's notation, we can abbreviate the basis vector to their indices ($|\varphi_i \rangle =: |i\rangle$), this reads as:
+\[ A = \displaystyle\sum_{k,l} \langle k | A | l \rangle |k\rangle \langle l| \]
+Where $\langle k | A | l \rangle$ is the \textbf{matrix entry} of the $k$-th row and the $l$-th column. A property of the bra-ket notation is that:
+\[ \sum_i |i\rangle\langle i| = \mymathbb{1} \]
+
+\subsubsection{The Trace}
+The trace is an important linear map $End(\mathcal{H}) \rightarrow \mathbb{C}$ defined as the sum over the diagonal elements of the matrix corresponding a linear operator $A \in End(\mathcal{H})$.
+\[ Tr(A) := \sum_k \langle k|A|k\rangle \]
+
+\subsubsection{Density Matrix}
+A density matrix represents a statistical mixture of states. This matrix is defined as $\rho$ and is a positive trance-one operator. So $\rho$ is both Hermitian and all its eigenvalues are positive and sum to one.
+\[ \rho = \sum_i \lambda_i |\varphi_i\rangle \langle \varphi_i| \]
+\[ \sum_i \lambda_i = 1 \]
+The eigenvalues can be regarded as probabilities for the system to be in the state of the corresponding eigenvector.
+
+\subsubsection{The Time Evolution}
+The time evolution of density matrices derives from the unitary propagator
+\[ U(t) = e^{iHt/\hbar} \]
+To be:
+\[ \rho(t) = U(t)\rho(0)U^\dagger(t) \]
+
+\subsubsection{The Probability}
+The probability of obtaining the result $\lambda_i$ when measuring an observable $A$ is:
+\[ P(\lambda_i) = Tr(|\varphi_i\rangle \langle\varphi_i|\rho) \]
+Where $\varphi_i$ is the \textbf{eigenvector} corresponding to the eigenvalue $\lambda_i$ of $A$.
+
+\subsubsection{Pure States}
+The density matrices with no uncertainties -- which are those with eigenvalues corresponding to a deterministic probability distribution -- are the \textbf{projectors} on $\mathcal{H}$.
+
+\subsubsection{Separability and Entanglement}
+States of a joint system $H_A \otimes H_B$ that can be written as a product
+\[ \psi = \varphi_A \otimes \varphi_B \]
+are called \textbf{separable}. On the other hand, states that are not separable are called \textbf{entangled}. Let's consider the entangled \textbf{singlet} state:
+\[ | \psi^- \rangle = \displaystyle\frac{1}{\sqrt{2}} (| 1 \rangle_B - | 1 \rangle_A \otimes | 0 \rangle_B) \]
+This state is a \textbf{superposition} of pure states, thus a pure state itself. On the contrary, density matrices are convex combinations of \textbf{projectors} -- unless we are dealing with the special case of a pure density matrix.
+
+\subsection{CNOT Gate}
+The CNOT gate can be seen as a made-reversible XOR. The schematics for such a gate is:
+\begin{center}
+	\includegraphics[width=2cm]{assets/cnot.png}
+\end{center}
+The CNOT can generate \textbf{entanglement}:
+\begin{center}
+	\includegraphics[width=5cm]{assets/entanglement.png}
+\end{center}
+This combination between the Hadamard gate (which puts the input in superposition) and the CNOT (which, combined with the Hadamard, generates an entangled state) is a change of basis between the standard basis and the \textbf{Bell basis}. The Bell basis is the following:
+\[ \{ |\Phi^+\rangle, |\Phi^-\rangle, |\Psi^+\rangle, |\Psi^-\rangle \} \]
+In particular, the following is a \textbf{Bell measurement}:
+\begin{center}
+	\includegraphics[width=3.5cm]{assets/bell_measurement.png}
+\end{center}
+
+\subsection{Cloning, Pseudo-Cloning, and Pseudo-Measurements}
+To copy classical bits, we can use the CNOT gate. If the source is 0, then the CNOT gate does the following:
+\begin{center}
+	\includegraphics[width=6.5cm]{assets/cloning.png}
+\end{center}
+In the case of CNOT gates with $|0\rangle$ as a source, we can see that it also allows for \textbf{cloning} quantum information.
+\begin{center}
+	\includegraphics[width=6.5cm]{assets/cloning_2.png}
+\end{center}
+Only \textbf{parallel} and \textbf{orthogonal} states can be cloned by the CNOT. The cloning operation is not unitary, hence not allowed by quantum theory. This is known as the \textbf{no-cloning theorem}. The CNOT does not clone quantum states; it generates superpositions. This is why the action of the CNOT is sometimes referred to as \textbf{pseudo-cloning}. \\ \\
+The CNOT can also be seen as a \textbf{pseudo-measurement} since there is no outcome. Moreover, because it is reversible, the CNOT is an \textbf{involution} -- i.e., a self inverse.
+
+\section{Quantum Communication}
+\subsection{Teleportation}
+An object is said to be teleported from point $A$ to point $B$ if it is first at $A$ and at the end at $B$. However, the object must have never been anywhere in between $A$ and $B$. Moreover, the transfer does not have to be instantaneous -- as this would contradict relativity. \\ \\
+Teleportation allows for carrying over the ability to transmit quantum information between two parties to a later point in time -- when only a classical channel is available. A priori, sending an unknown quantum state over a classical channel is \textbf{impossible}. If, however, the parties additionally both share entanglement, then it \textbf{becomes possible}.
+\begin{center}
+	\includegraphics[width=4cm]{assets/teleportation.png}
+\end{center}
+
+\pagebreak
+\subsubsection{Circuit}
+The teleportation circuit is the following:
+\begin{center}
+	\includegraphics[width=11cm]{assets/teleportation_circuit.png}
+\end{center}
+As we can see from the diagram above, the Qbit $|1\rangle$ at state \verb|q[0]| -- which represents $|\varphi\rangle$ (i.e., the Qbit that Alice needs to send to Bob) -- has been teleported to \verb|q[2]| -- which represents Bob. \\ \\
+In the \textbf{first step} of the circuit -- Hadamard + CNOT -- an entangled pair of Qbits is created and given to Alice (\verb|q[1]|) and Bob (\verb|q[2]|). In the \textbf{second step} of the circuit -- CNOT + Hadamard -- we prepare for a Bell measurement, which is done in \textbf{step three}. The two measurements are saved to two classical registers -- \verb|c11| and \verb|c21|. In \textbf{step four}, the final step, Bob now measures the bits sent by Alice. Bob, to read them, applies the transformation
+\[ X^{b_1}Z^{b_2} \]
+Where $X$ is a \textbf{X-pauli gate} (i.e., a negation), $Z$ is a \textbf{Z-Pauli gate} (i.e., a conditional phase flip), $b_1$ is the \textbf{bit on the} \verb|c21| \textbf{classical register} (sent to Bob by Alice), and $b_2$ is the \textbf{bit on the} \verb|c11| \textbf{classical register}. The transformations will only occur if the classical bit is equal to 1 (as we can see in the circuit above).
+
+\subsubsection{Quantum Repeaters}
+The main application of teleportation are \textbf{quantum repeaters}, which allow something called \textbf{entanglement-swapping}. There exist some device-independent cryptographic protocols. For these protocols, no trust in manufacturers and no correctness of quantum theory are required. \\ \\
+The protocols are based on the parties sharing maximally entangled states. Such entanglement is complicated to establish over long distances. This is because the further the particles are transported, the more likely it is that they interact with the environment, thus losing their initial entanglement. \\ \\
+If Alice and Bob are too far away from each other, we can use Charlie -- who is in between them -- to establish a \textbf{singlet} with both Alice and Bob. A property of teleportation is that if part of the entangled state is sent, then this entanglement is preserved. Charlie acts as a \textbf{quantum repeater}. \\ \\
+In this cryptographic context, a downside of the \textbf{quantum repeater} is that the inner node -- i.e., the repeater -- must be trusted.
+
+\subsection{Superdense Coding}
+The scenario of superdense coding is the exact opposite of that of teleportation. In the case of teleportation, we use two classical bits to transport one Qbit. On the other hand, in the case of superdense coding, we transmit two bits using one Qbit. \\ \\
+The circuit is the following:
+\begin{center}
+	\includegraphics[width=8cm]{assets/superdense_circuit.png}
+\end{center}
+In the \textbf{first step} of the circuit -- Hadamard + CNOT -- an entangled pair of Qbits is created and given to Alice (\verb|q[1]|) and Bob (\verb|q[2]|). In the \textbf{second step} -- X-Pauli + Z-Pauli -- we encode the two classical bits. To encode these bits we use the following transformation:
+\[ X^{b_1}Z^{b_2} \]
+Where $b_1$ and $b_2$ are the \textbf{classical bits}. This transformation is the same as the one done in the teleportation. We prepare for a Bell measurement in the \textbf{third step} of the circuit -- CNOT + Hadamard. In \textbf{step four}, the final step, we perform the measurement -- i.e., decoding the originally sent bits.
 
 
 
@@ -278,12 +577,38 @@ Where the first $X$ is the random variable. Now, \textbf{uncertainty becomes a f
 
 
 
+
+
+
+
+
+
+
+
+\pagebreak
 \section{Glossary}
 \subsection{Magnetic Dipole Moment}
 The magnetic dipole moment is a vector that represents the strength and orientation of a magnet or other object that produces a magnetic field (e.g., an electron).
 
 \subsection{Singlet}
 A singlet is a maximally-entangled state. However, this one has nicer transformation properties differently from other maximally-entangled states. For instance, a singlet written with respect to a general basis has the same form as the standard basis.
+
+\subsection{Hilbert Spaces}
+The Hilbert spaces are the state spaces of quantum-mechanical systems. Quantum informatics happens in finite-dimensional Hilbert spaces -- while, in general, they can be infinite-dimensional. \\ \\
+For a given dimension, there exists \textbf{exactly one} Hilbert space.
+
+\subsection{Hermitian Operator}
+A linear operator is said to be self-adjoint or Hermitian if and only if
+\[ A^\dagger = A \]
+
+\subsection{Unitary Operator}
+A linear operator is said to be unitary if and only if
+\[ U \cdot U^\dagger = 1 \]
+
+\subsection{Superposition}
+Any convex combination of state vectors:
+\[ \alpha \psi_1 + \beta \psi_2 \in H ~~~~~~~~ \alpha, \beta \in \mathbb{C}~\text{with}~ |\alpha|^2 + |\beta|^2 = 1 \]
+Is again a vector associated with a state of the system. Correspondingly, this linear structure of the state space gives rise to the interference effects and, generally, the wave characteristics of quantum mechanics.
 
 \end{document}
 
