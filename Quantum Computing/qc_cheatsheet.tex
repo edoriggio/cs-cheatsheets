@@ -563,6 +563,74 @@ In the \textbf{first step} of the circuit -- Hadamard + CNOT -- an entangled pai
 \[ X^{b_1}Z^{b_2} \]
 Where $b_1$ and $b_2$ are the \textbf{classical bits}. This transformation is the same as the one done in the teleportation. We prepare for a Bell measurement in the \textbf{third step} of the circuit -- CNOT + Hadamard. In \textbf{step four}, the final step, we perform the measurement -- i.e., decoding the originally sent bits.
 
+\section{Simple Algorithms}
+\subsection{$n$ Qbits}
+The state space of systems of $n$ Qbits is the $n$-fold tensor product of $\mathbb{C}^2$ with itself:
+\[ \mathcal{H} = \mathbb{C}^2 \otimes \mathbb{C}^2 \otimes \dots \otimes \mathbb{C}^2 \equiv \mathbb{C}^{2^n} \]
+A basis of the space is given by the classical basis characterized through the set of all \textbf{classical} $n$-bit strings:
+\[ \{ |i\rangle~|~i \in \{ 0, 1 \}^n \} \]
+The action of the $n$-fold, bitwise, \textbf{Hadamard transform} is:
+\[ H^{\otimes n} |i\rangle = \displaystyle\bigotimes^n_{l = 1} \left( \frac{|0\rangle + (-1)^{i_1} |1\rangle}{\sqrt{2}} \right) = \frac{1}{2^{n/2}} \displaystyle\sum_{j \in \{ 0,1 \}^n} (-1)^{i \cdot j}|j\rangle \]
+Where the product $i \cdot j$ is defined as:
+\[ i \cdot j := \displaystyle\bigotimes^n_{k=1} = i_k \wedge j_k \]
+The product is always 0 if \textbf{one} of the two strings is the all-zero string 0. This means that the Hadamard applied to this vector has only plus signs. \textbf{This is the equal superposition of all classical states and will be the input for all quantum algorithms}. This is known as \textbf{quantum parallelism}. The state $|0\rangle$ also always has a positive sign.
+
+\subsection{The Secret Mask}
+Let $s \in \{ 0,1 \}^n$. Then $f_s$ is the function from $n$ bits to 1 bit:
+\[ f_s := s \cdot x = \displaystyle\bigotimes^n_{i=1}(s_i \wedge x_i) \]
+To find out $s$, one must make exactly $n$ queries. This algorithm is \textbf{optimal}, and only one bit of information per query is learned. The above function is for classical circuits; this cannot be directly translated to a quantum circuit. This is because classical circuits are \textbf{non-reversible}. Thus we need another function $\tilde f_s$, that is reversible:
+\[ \tilde f_s (x, b) = (x, b \oplus f_s(x)) \]
+This reversible function can now be represented as a reversible quantum circuit:
+\begin{center}
+	\includegraphics[width=5cm]{assets/circuit1.png}
+\end{center}
+It can be queried with the equal superpositions of classical inputs. This can be obtained by applying an Hadamard gate to each input wire -- except the last one.
+\begin{center}
+	\includegraphics[width=4cm]{assets/circuit2.png}
+\end{center}
+The joint input of the output wires is now:
+\[ \displaystyle\frac{1}{2^{n/2}} \sum_j (|j\rangle \otimes |f_s(j)\rangle) \]
+This is \textbf{quantum parallelism}. This means that a single execution of the circuit allows for generating a state containing the function value for all inputs simultaneously. Though, such parallelism alone is not very helpful. \\ \\
+To improve the circuit, let's add a Hadamard to the last wire:
+\begin{center}
+	\includegraphics[width=4cm]{assets/circuit3.png}
+\end{center}
+Now the circuit acts as the identity and thus cannot be of any help. For this reason we flip the last state from $|0\rangle$ to $|1\rangle$. By doing so, the addition of the mapping becomes a subtraction, which is not commutative. The circuit becomes:
+\begin{center}
+	\includegraphics[width=4cm]{assets/circuit4.png}
+\end{center}
+For the given function, the sign factor equals to $(-1)^{j\cdot s}$, and all the $n$ Qbits are in the state $H^{\otimes n}|s\rangle$. Thus, if we apply $H$ again, this will yield $|s\rangle$ on the first $n$ Qbits.
+\begin{center}
+	\includegraphics[width=5cm]{assets/circuit5.png}
+\end{center}
+The initial problem can be solved with one single call to the above quantum circuit. This algorithm combines the following two tricks:
+\begin{enumerate}
+	\item \textbf{Quantum Parallelism}
+	\item \textbf{Phase Kick-back} \\
+	When the state input on the result wire is $H|1\rangle$, then the function's output is encoded in a phase factor of the state of the input wires.
+\end{enumerate}
+	
+\subsection{Deutsch/Josza Algorithm}
+Let
+\[ f~:~\{ 0, 1 \}^n \rightarrow \{ 0, 1 \} \]
+Together with the promise that $f$ is either \textbf{constant} -- i.e., $f \equiv 0$ or $f \equiv 1$, or \textbf{balanced} -- i.e., $|\{ x|f(x) = 0 \}| = |\{ x|f(x) = 1 \}| = 2^{n-1}$ The circuit needs to decide whether $f$ is \textbf{constant} or \textbf{balanced}. Given a classical circuit, the number of calls would be in the order of:
+\[ \displaystyle\frac{2^n}{2} + 1 \]
+In the case of the quantum circuit, we would need only 1 call. The quantum circuit is the following:
+\begin{center}
+	\includegraphics[width=5cm]{assets/circuit6.png}
+\end{center}
+The state after the first Hadamard gate is:
+\[ \displaystyle\frac{1}{2^{n/2}} \sum_j |j\rangle \otimes H|1\rangle \]
+The state, after the $f$-gate, then becomes:
+\[ \displaystyle\frac{1}{2^{n/2}} \sum_j (-1)^{f(j)} |j\rangle \otimes H|1\rangle \]
+The final $n$-fold Hadamard gate is applied to this state. The probability amplitude of only the output state $|000\dots 0\rangle$ is equal to:
+\begin{itemize}
+	\item 0 - if $f$ is \textbf{balanced}
+	\item 1 - if $f \equiv 0$ -- i.e., \textbf{constant}
+	\item -1 - if $f \equiv 1$ -- i.e., \textbf{constant}
+\end{itemize}
+This means that the output is \textbf{always} measured when $f$ is \textbf{constant}, but \textbf{never} when the function is \textbf{balanced}.
+
 
 
 
