@@ -1,0 +1,84 @@
+% Copyright 2022 Edoardo Riggio
+
+% Licensed under the Apache License, Version 2.0 (the "License");
+% you may not use this file except in compliance with the License.
+% You may obtain a copy of the License at
+
+% 	http://www.apache.org/licenses/LICENSE-2.0
+
+% Unless required by applicable law or agreed to in writing, software
+% distributed under the License is distributed on an "AS IS" BASIS,
+% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+% See the License for the specific language governing permissions and
+% limitations under the License.
+
+\documentclass{article}
+
+\usepackage{hyperref, amsmath, graphicx, amssymb, csquotes, tabularx}
+\usepackage{fancyvrb,newverbs,xcolor}
+
+\graphicspath{ {./assets/} }
+
+\definecolor{cverbbg}{gray}{0.93}
+
+\newenvironment{cverbatim}
+ {\SaveVerbatim{cverb}}
+ {\endSaveVerbatim
+  \flushleft\fboxrule=0pt\fboxsep=.5em
+  \colorbox{cverbbg}{\BUseVerbatim{cverb}}%
+  \endflushleft
+}
+
+\newenvironment{lcverbatim}
+ {\SaveVerbatim{cverb}}
+ {\endSaveVerbatim
+  \flushleft\fboxrule=0pt\fboxsep=.5em
+  \colorbox{cverbbg}{%
+    \makebox[\dimexpr\linewidth-2\fboxsep][l]{\BUseVerbatim{cverb}}%
+  }
+  \endflushleft
+}
+
+\newcommand{\ctexttt}[1]{\colorbox{cverbbg}{\texttt{#1}}}
+\newverbcommand{\cverb}
+  {\setbox\verbbox\hbox\bgroup}
+  {\egroup\colorbox{cverbbg}{\box\verbbox}}
+
+\begin{document}
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+        
+        \Huge
+        \textbf{Title}
+        
+        \vspace{0.5cm}
+        \LARGE
+        
+        \vspace{.5cm}
+        
+        Your Name
+   		  \vspace{1.5cm}
+       
+        \vfill
+        
+        \today
+        
+        \vspace{.8cm}
+          \Large
+          Subject - Year \\
+        Minor/Major \\
+        University Name\\
+        
+    \end{center}
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+% YOUR CONTENT GOES HERE %
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}

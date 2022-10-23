@@ -1,0 +1,228 @@
+% Copyright 2022 Edoardo Riggio
+
+% Licensed under the Apache License, Version 2.0 (the "License");
+% you may not use this file except in compliance with the License.
+% You may obtain a copy of the License at
+
+% 	http://www.apache.org/licenses/LICENSE-2.0
+
+% Unless required by applicable law or agreed to in writing, software
+% distributed under the License is distributed on an "AS IS" BASIS,
+% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+% See the License for the specific language governing permissions and
+% limitations under the License.
+
+\documentclass{article}
+
+\usepackage{hyperref, amsmath, graphicx, amssymb, csquotes, tabularx}
+\usepackage{fancyvrb,newverbs,xcolor}
+
+\graphicspath{ {./assets/} }
+
+\definecolor{cverbbg}{gray}{0.93}
+
+\newenvironment{cverbatim}
+ {\SaveVerbatim{cverb}}
+ {\endSaveVerbatim
+  \flushleft\fboxrule=0pt\fboxsep=.5em
+  \colorbox{cverbbg}{\BUseVerbatim{cverb}}%
+  \endflushleft
+}
+
+\newenvironment{lcverbatim}
+ {\SaveVerbatim{cverb}}
+ {\endSaveVerbatim
+  \flushleft\fboxrule=0pt\fboxsep=.5em
+  \colorbox{cverbbg}{%
+    \makebox[\dimexpr\linewidth-2\fboxsep][l]{\BUseVerbatim{cverb}}%
+  }
+  \endflushleft
+}
+
+\newcommand{\ctexttt}[1]{\colorbox{cverbbg}{\texttt{#1}}}
+\newverbcommand{\cverb}
+  {\setbox\verbbox\hbox\bgroup}
+  {\egroup\colorbox{cverbbg}{\box\verbbox}}
+
+\begin{document}
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+        
+        \Huge
+        \textbf{Distributed Systems Cheatsheet}
+        
+        \vspace{0.5cm}
+        \LARGE
+        
+        \vspace{.5cm}
+        
+        Edoardo Riggio
+   		  \vspace{1.5cm}
+       
+        \vfill
+        
+        \today
+        
+        \vspace{.8cm}
+          \Large
+          Distributed Systems - S.A. 2022 \\
+        Software and Data Engineering \\
+        Universit\`{a} della Svizzera Italiana, Lugano \\
+        
+    \end{center}
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+With the advent in the mid 1980's of 16-, 32-, and 64-bit CPUs -- as well as the invention of high-speed computer networks, made it possible for the creation of large numbers of geographically-dispersed networks of computers. These are known as \textbf{distributed systems}.
+
+\subsection{Definition}
+A distributed system is a collection of independent computers that appear to the user as a single coherent system. \\ \\
+Each computing element of these massive systems are able to behave independently from one another. A computing element is often referred to as a \textbf{node}. This node can either be a hardware device or a software process.
+
+\subsection{Consequences}
+Some of the main negative consequences that arise when dealing with distributed systems are the following:
+
+\begin{itemize}
+	\item \textbf{Concurrency} \\
+	This happens when several processes try to read and write on a shared storage service.
+	
+	\item \textbf{Absence of a global clock} \\
+	Each node will have its own notion of time. This means that there is no common reference of time between the nodes.
+	
+	\item \textbf{Failure independency}
+	The failure of a node can make another node unusable.
+	
+\end{itemize}
+
+\subsection{Challenges}
+Some of the challenges that arise when dealing with distributed systems are outlined in the following sections.
+
+\subsubsection{Openness}
+The services are offered according to standard rules. These rules describe both the syntax and semantics of such services. The standard rules of distributed systems are called \textbf{COBRA}(Common Object Request Broker Architecture).
+
+\subsubsection{Scalability}
+Scalability can be with respect to the \textbf{system size} -- which would mean adding more users to the system; to the \textbf{geography} -- which would deal with users lying far apart from one another; and to \textbf{administration} -- which would deal with the complexity to manage an increasing system. \\ \\
+Some scalability techniques are the following:
+
+\begin{itemize}
+	\item \textbf{Hiding communication latencies} \\
+	This is important for \textbf{geographical scalability}. Asynchronous communications can be used to reduce the waiting time of the users. This can be achieved with the use of batch processing and parallel applications.
+	
+	\item \textbf{Distribution} \\
+	Components are split into parts and spread across the system. An example of this would be the DNS, where we have a tree of domains divided into non-overlapping zones. Furthermore, the name in a zone is handled by a single name service.
+	
+	\item \textbf{Replication} \\
+	This can be use to increase both \textbf{availability} and \textbf{performance}, as well as reduce \textbf{latency}. Moreover, caching can be used as a form of replication, but is typically done on-demand.
+\end{itemize}
+
+\subsubsection{Transparency}
+Transparency is the ability of a system to hide some of its characteristics or errors to the user. There exist several different forms of transparency:
+
+\begin{itemize}
+	\item \textbf{Access transparency} \\
+	Hide the differences in data representation and machine architecture.
+	
+	\item \textbf{Location transparency} \\
+	Users cannot tell where a resource is physically located.
+	
+	\item \textbf{Relocation transparency} \\
+	Even if the entire service was moved from one data center to the other, the user wouldn't be able to tell.
+	
+	\item \textbf{Migration transparency} \\
+	Moving processes and resources initiated by users, without affecting any ongoing communication and operation.
+	
+	\item \textbf{Replication transparency} \\
+	Hide the existence of multiple replicas of one resource.
+	
+	\item \textbf{Concurrency transparency} \\
+	Each user is not going to notice if another user is making use of the same resource.
+	
+	\item \textbf{Failure transparency} \\
+	The user or application does not notice that some piece of the system fails to work properly. The system is then able to automatically recover from the failure.
+\end{itemize}
+
+\subsection{Types of Distributed Systems}
+There are three main types of distributed systems: \textbf{distributed computing systems}, \textbf{distributed information systems}, and \textbf{distributed pervasive systems}.
+
+\subsubsection{Distributed Computing Systems}
+These systems aim at high-performance computing tasks. These systems can be part of two subtypes:
+
+\begin{itemize}
+	\item \textbf{Cluster Computing} \\
+	All the resourced are located in a local-area network, and are using the same OS. In addition, they also have a common administrative domain.
+	
+	\item \textbf{Grid Computing} \\
+	This is a "federation" of computer systems. Such systems may have different administrative domains, different hardware, software... Such systems are used to make collaboration between organisations feasible.
+\end{itemize}
+
+\subsubsection{Distributed Information Systems}
+These systems are based on transactions. These transactions are used to make systems communicate between themselves. Transactions follow the \textbf{ACID} properties:
+
+\begin{itemize}
+	\item \textbf{Availability} \\
+	To the user, the transaction happens indivisibly.
+	
+	\item \textbf{Consistency} \\
+	The transaction does not violate system invariants.
+	
+	\item \textbf{Isolation} \\
+	Concurrent transactions do not interfere with each other.
+	
+	\item \textbf{Durability} \\
+	Once a transaction commits, the changes are permanent.
+\end{itemize}
+
+\noindent The application components of each node communicate directly with each other.
+
+\subsubsection{Distributed Pervasive Systems}
+These systems are composed by mobile and embedded computing devices. This means that pervasive systems need to have the following characteristics:
+
+\begin{itemize}
+	\item Embrace contextual changes
+	\item Encourage ad-hoc composition
+	\item Recognise sharing as the default
+\end{itemize}
+
+\noindent Some examples of such architectures are home systems, electronic health care systems, and sensor networks.
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
