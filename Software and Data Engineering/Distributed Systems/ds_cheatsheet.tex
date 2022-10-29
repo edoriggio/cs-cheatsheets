@@ -190,6 +190,173 @@ These systems are composed by mobile and embedded computing devices. This means 
 
 \noindent Some examples of such architectures are home systems, electronic health care systems, and sensor networks.
 
+\section{Architectures}
+In a distributed system there are two types of architectures:
+
+\begin{itemize}
+	\item \textbf{Software Architectures} \\
+	How software components are organised and interact between each other.
+	
+	\item \textbf{System Architectures} \\
+	How software components are instantiated on real machines.
+\end{itemize}
+
+\subsection{Software Architectures}
+Software architectures are based on \textbf{components}, which are modular units with well-defined interfaces. Software architectures can be of several different types:
+
+\begin{itemize}
+	\item \textbf{Layered architectures}
+	\item \textbf{Object-based architectures}
+	\item \textbf{Data-centred architectures}
+	\item \textbf{Event-based architectures}
+\end{itemize}
+
+\subsubsection{Layered Architectures}
+In this kind of architecture, the components at layer $L_i$ can call components in layer $L_{i-1}$, but not components in layer $L_{i+1}$.
+
+\begin{center}
+	\includegraphics[width=7cm, height=5cm, keepaspectratio]{assets/layered.pdf}
+\end{center}
+
+\subsubsection{Object-Based Architectures}
+Each object is a component connected through a remote procedure call mechanism.
+
+\begin{center}
+	\includegraphics[width=11cm, height=5cm, keepaspectratio]{assets/object-based.pdf}
+\end{center}
+
+\subsubsection{Data-Centred Architectures}
+The processes communicate through a common repository. This repository can be, for example, a shared distributed file system or a database.
+
+\begin{center}
+	\includegraphics[width=8cm, height=5cm, keepaspectratio]{assets/data-centered.pdf}
+\end{center}
+
+\subsubsection{Event-Based Architectures}
+The processes communicate through the propagation of events (\textbf{publish-subscribe system}). The middleware ensures that the process which subscribes to that events will receive them. \\ \\
+Processes are loosely coupled, this means that they do not to refer to each other.
+
+\begin{center}
+	\includegraphics[width=9cm, height=5cm, keepaspectratio]{assets/event-based.pdf}
+\end{center}
+
+\subsubsection{Shared Data-Space Architecture}
+These architectures are similar to data-centred and event-based architectures.
+
+\begin{center}
+	\includegraphics[width=8cm, height=5cm, keepaspectratio]{assets/shared.pdf}
+\end{center}
+
+\subsection{System Architectures}
+System Architectures describe what software components are used, where to place each component, and how the components interact with each other. \\ \\
+There are two types of system architectures:
+
+\begin{itemize}
+	\item \textbf{Centralised architectures}
+	\item \textbf{Decentralised architectures}
+\end{itemize}
+
+\subsection{Centralised Architecture}
+Centralised architectures follow the Client-Server model. The \textbf{server} implements some services, while the \textbf{client} requests services and waits for replies. \\ \\
+The communication between server and client is \textbf{connectionless}. This means that it is highly efficient, but it is more complex to handle transmission failures (UDP). \\ \\
+Server and client may also use another way to communicate. This protocol is connection-oriented, relatively low performance, but more reliable. This is because the node makes a request and receives a reply back in the same connection. \\ \\
+Centralised architectures can be either \textbf{single-} or \textbf{multi-layered}. Multi-layered architectures enable to divide concerns, meaning that clients can contain only the program implementing the user-interface level (or only part of it). Moreover, architectures can also be \textbf{multi-tiered}.
+
+\subsection{Decentralised Architectures}
+Decentralised architectures can be either vertically or horizontally distributed.
+
+\begin{itemize}
+	\item \textbf{Vertical Distribution} \\
+	It can be achieved by placing logically different components on different machines. An example of this is a three-tiered application.
+	
+	\item \textbf{Horizontal Distribution} \\
+	Both clients and servers are physically split up into logically equivalent parts. Each part operates on its own share of the dataset. An example of this is a peer-to-peer system.
+\end{itemize}
+
+\subsubsection{Structured Peer-to-Peer Architectures}
+Structured peer-to-peer architectures are deterministic procedures used to build an \textbf{overlay network}. Here nodes are processes, and links are possible communication channels. \\ \\
+In the case of a structured peer-to-peer architecture, we use \textbf{Distributed Hash Tables} (DHT). These tables contain data items to which a random 128-bit key is assigned. Moreover, nodes are also assigned to a random key. \\ \\
+An example of a structural peer-to-peer architecture is a \textbf{Chord}, which is depicted below.
+
+\begin{center}
+	\includegraphics[width=12cm, height=9.5cm, keepaspectratio]{assets/chord.pdf}
+\end{center}
+
+\subsubsection{Unstructured Peer-to-Peer Architectures}
+In this type of architecture, the overlay network is built using a randomised procedure. Each node in the network has a list of neighbours, constructed in a random way. \\ \\
+To find a data item inside of the network we need to flood it.
+
+\begin{center}
+	\includegraphics[width=8cm, height=5cm, keepaspectratio]{assets/unstructured.pdf}
+\end{center}
+
+\subsection{Superpeer}
+Superpeers are special nodes that keep an index of data items. Other regular nodes join the network by connecting to one of the superpeers.
+
+\begin{center}
+	\includegraphics[width=9cm, height=10cm, keepaspectratio]{assets/superpeer.pdf}
+\end{center}
+
+\subsection{Middleware}
+Middleware provides a degree of distribution transparency. They can either follow an object-based architectural style, or an event-based architectural style.
+
+\subsubsection{Interceptors}
+They offer a means to adapt the middleware. Interceptors break the usual flow of control and allow other application-specific code to be executed. Moreover, they are used to improve software management.
+
+\subsubsection{Wrappers and Adapters}
+Wrappers and adapters provide a similar interface to the original abstraction, and implement additional logic before or after invoking the original interface.
+
+\subsubsection{Proxies and Stubs}
+They provide -- as in the case of wrappers and adapters -- a similar interface as the original abstraction. However, in this case proxies and stubs usually own components rather than extending previously defined ones.
+
+\section{Processes}
+\subsection{Introduction}
+Virtual processors are created by the OS. A process is a program executed on one of these virtual processors. Each processor has a process table in which several different values relative to the process are stored. \\ \\
+Concurrent processes are protected from each other by making the sharing of CPU and hardware resources transparent and using special hardware. \\ \\
+Every time a new process is created, the OS must create an independent address space as well. This is known as \textbf{context switching}, and it's really expensive.
+
+\subsection{Threads}
+A thread is a lightweight process that can run inside of a process. Threads share the same memory space. For this reason, context switching between threads is less expensive than between processes. \\ \\
+Threads are used in distributed systems mainly for making communication calls non blocking. \\ \\
+In the case of servers with \textbf{single-threaded models}, one thread receives the request and executes it rapidly. This is known as sequential processing. \\ \\
+On the other hand, in the case of servers with \textbf{finite state machine models}, one thread executes the requests and the replies. Blocking system calls are replaced by non-blocking ones, and multiple requests can be handled in parallel.
+
+\subsection{Virtualisation}
+The role of virtualisation -- in distributed systems -- is to extend or replace existing interfaces and mimic the behaviour of other systems. \\ \\
+The main reasons of virtualisation are the following:
+
+\begin{itemize}
+	\item Allow legacy software to run on new mainframe hardware
+	\item Porting legacy interfaces to new platforms
+	\item Isolating systems running on the same server
+\end{itemize}
+
+\subsection{Superservers}
+A superserver is a kind of server that listens on many ports and fork a process to execute a service.
+
+\subsection{Stateless vs Stateful Servers}
+A server is said to be \textbf{stateless} if it does not keep any information about the state of the client. \\ \\
+On the other hand, a server is said to be \textbf{stateful} if it maintains persistent information about the clients. This solution is better in terms of performance (it caches data of the users), but can be problematic in the case that the server crashes or experience other memory-related issues.
+
+\subsection{Server Clusters}
+A server cluster is a collection of machines connected through a network. Such clusters have three tiers:
+
+\begin{enumerate}
+	\item \textbf{Logical Switch} \\
+	It receives client requests and route them to the servers.
+	
+	\item \textbf{Application Servers} \\
+	Low-end servers are used when the storage is the bottleneck of the system. Otherwise, high-end servers are used when the service deals with computationally expensive computations.
+	
+	\item \textbf{Data-Processing Servers} \\
+	The databases.
+\end{enumerate}
+
+\section{Communication}
+In layered protocols, process \textit{A} con communicate with process \textit{B} by building a message in its address space. After doing so, a system call is used to send the message from \textit{A} to \textit{B}.
+
+
+
 \end{document}
 
 
