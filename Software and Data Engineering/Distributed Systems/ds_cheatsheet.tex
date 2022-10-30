@@ -355,7 +355,132 @@ A server cluster is a collection of machines connected through a network. Such c
 \section{Communication}
 In layered protocols, process \textit{A} con communicate with process \textit{B} by building a message in its address space. After doing so, a system call is used to send the message from \textit{A} to \textit{B}.
 
+\subsection{OSI Model}
+The \textbf{Open System Interconnection} (OSI) \textbf{Reference Model} is an ISO standard. This type of model is never widely used or implemented. \\ \\
+The OSI model makes use of connection-oriented protocols. Both the sender and the receiver explicitly establish a connection, they communicate, and finally explicitly terminate the connection. \\ \\
+The OSI model is divided into the following parts:
 
+\begin{itemize}
+	\item Application layer
+	\item Presentation layer
+	\item Session layer
+	\item Transport layer
+	\item Network layer
+	\item Data link layer
+	\item Physical layer
+\end{itemize}
+
+\noindent In the following sections, we will have a bottom-up look at the different layers.
+
+\subsubsection{Physical Layer}
+This layer deals with how to send bits from one end to the other. It standardises electrical, mechanical, and signalling interfaces. finally, it does not handle errors.
+
+\subsubsection{Data Link Layer}
+The data link layer groups the bits into frames and ensures their correct transmission. It uses checksums to verify the integrity of the data frames.
+
+\subsubsection{Network Layer}
+It routes the messages from source to destination. To do so, it needs a routing protocol. The most common ones are:
+
+\begin{itemize}
+	\item \textbf{TCP} \\
+	Transmission Control Protocol (TCP) is both reliable and connection-oriented.
+	
+	\item \textbf{UDP} \\
+	Universal Datagram Protocol (UDP) is both unreliable and connectionless.
+\end{itemize}
+
+\subsubsection{Session Layer}
+The session layer is an enhanced version of the transport layer -- but rarely supported.
+
+\subsubsection{Presentation Layer}
+This layer simplifies the communication between machines with different internal data representation.
+
+\subsection{Middleware Protocols}
+This type of protocols usually resides at the application layer. The middleware protocols can have several different roles, such as:
+
+\begin{itemize}
+	\item Authentication
+	\item Commit protocols
+	\item Distributed locking protocols
+\end{itemize}
+
+\subsection{Types of Communication}
+There are several different ways in which a client and a server can communicate:
+
+\begin{itemize}
+	\item \textbf{Persistent Communication} \\
+	The message is stored by the communication middleware until it can be delivered to the receiver.
+	
+	\item \textbf{Transient Communication} \\
+	The message is delivered only if both sender and receiver are executing.
+	
+	\item \textbf{Asynchronous Communication} \\
+	The sender continues immediately after submitting the message. This message is temporarily stored inside of the middleware.
+	
+	\item \textbf{Synchronous Communication} \\
+	the server is blocked until the message has been received by the receiver.
+\end{itemize}
+
+\subsection{Remote Procedure Call}
+A Remote Procedure Call (RPC) is a simple communication mechanism, and is more natural than the send/receive primitives.
+
+\subsubsection{Basic RPC Operation}
+The RPC first makes itself look like a local procedure call. When a read operation is performed, a client stub is called. The client stub pack all the parameters into a message and sends it to the server. \\ \\
+Both the calling and the receiving procedures are not aware of the distribution of the system.
+
+\subsection{Message-Oriented Communication}
+Message-oriented transient communication uses \textbf{Berkeley sockets}. These sockets are communication endpoints used by applications to read are write. The process of the socket is the following: \\ \\
+Server:
+
+\begin{enumerate}
+	\item Create the socket
+	\item Bind the socket to a port
+	\item Listen on the opened port
+	\item Accept upon communication request
+	\item Communicate with the client
+	\item Close the socket
+\end{enumerate}
+
+\noindent Client:
+
+\begin{enumerate}
+	\item Create the socket
+	\item Request connection to the server
+	\item Communicate with the server
+	\item Close the socket
+\end{enumerate}
+
+\subsubsection{Message-Queuing Models}
+The applications communicate between one another by inserting messages into queues. Each application has its own private queue, and both the sender and receiver do not have to necessarily be active at the same time. \\ \\
+There is guarantee of delivery at destination, but the time at which it reaches its destination cannot be known. \\ \\
+Queue managers interact with both relays and applications. The relays forward the messages to other queue managers. The message is delivered as follows:
+
+\begin{enumerate}
+	\item Queue managers interact with both application and relays
+	\item The relays forward the messages to other queue managers
+	\item The overlay network composes the sender, the destination, and the relays
+\end{enumerate}
+
+\subsubsection{Message Brokers}
+A message broker acts as an application-level gateway. They do so by integrating existing and new applications into a single coherent system. Moreover, they convert the incoming messages ti formats that can be understood by the destination application.
+
+\subsection{Multicast Communication}
+Application-level multicasting has the following characteristics:
+
+\begin{itemize}
+	\item Support for sending data to multiple receivers
+	\item Nodes reorganise themselves into an overlay network at the application level
+\end{itemize}
+
+\noindent There are two main types of overlays:
+
+\begin{itemize}
+	\item \textbf{Tree-Based Overlay} \\
+	There is a single path between every pair of nodes.
+	
+	\item \textbf{Mesh-Based Overlay} \\
+	There are multiple paths between every two pair of nodes. Although it is harder to find the best path between a pair of nodes, these overlay networks are generally more robust.
+\end{itemize}
 
 \end{document}
 
