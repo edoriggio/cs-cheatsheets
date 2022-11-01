@@ -482,6 +482,144 @@ Application-level multicasting has the following characteristics:
 	There are multiple paths between every two pair of nodes. Although it is harder to find the best path between a pair of nodes, these overlay networks are generally more robust.
 \end{itemize}
 
+\section{Naming}
+It is impossible to memorise IPv4 and IPv6 addresses to reach websites. For this reason. we use \textbf{naming}. Naming can be of three types:
+
+\begin{itemize}
+	\item Flat
+	\item Structured
+	\item Attribute-Based
+\end{itemize}
+
+\subsection{Flat Naming}
+Flat names are composed of names, identifiers, and addresses. They can be described as follows:
+
+\begin{itemize}
+	\item \textbf{Name} \\
+	It is "human-friendly" and it is not necessarily unique or used for identifying.
+	
+	\item \textbf{Identifier} \\
+	It uniquely identifies an entity.
+	
+	\item \textbf{Address} \\
+	It is not "human-friendly" and is used for low-level naming of access points.
+\end{itemize}
+
+\subsubsection{Forwarding Pointers}
+When an entity is moved from point \textit{A} to point \textit{B}, it leaves a reference in point \textit{A} pointing to \textit{B}. The requests to \textit{A} must be forwarded to \textit{B} in a transparent manner. \\ \\
+There are some drawback to forwarding:
+
+\begin{itemize}
+	\item Fast moving entities leave a long chain of entities
+	\item Each intermediate location needs to allocate resources for the forwarding process
+	\item Any missing step in the chain makes the whole chain unusable
+\end{itemize}
+
+\subsubsection{Home-Based Approaches}
+In this case, a home location is used to keep track of the current location. By doing so, IPv6 addresses become identifiers. The following is the procedure of home-based approaches:
+
+\begin{enumerate}
+	\item Mobile devices requests a local temporary address
+	\item The address is registered with the home agent
+	\item The home agent forwards the packets to the mobile device
+	\item The home agent tells the sender the new temporary location
+\end{enumerate}
+
+\noindent There are some drawbacks that come with home-based approaches, such as:
+
+\begin{itemize}
+	\item Increased latency
+	\item Home agent must always be available
+	\item Permanent relocations must be handled
+\end{itemize}
+
+\noindent A possible solution to all of these problems comes with registering home locations using a \textbf{Domain Name Server} (DNS).
+
+\subsubsection{Distributed Hash Tables}
+We assign an \textit{m}-bit identifier space to each node of the system. To resolve the successor node \textit{k}, we use a \textbf{finger table}.
+
+\[ FT_p[i] = succ(p + 2^{i-1}) \]
+
+\noindent Where \textit{p} is the node, and \textit{i} is the number of nodes succeeding \textit{p}. The complexity of the successor computation is:
+
+\[ O(\log (nodes)) \]
+
+\noindent A drawback of this method is that nodes joining and leaving force the finger table to continuously update. This issue can be solved by making the nodes run the function \verb|succ(k)| in the background.
+
+\subsubsection{Hierarchical Approaches}
+Each \textbf{root node} keeps track only of the location of the directory nodes of the next lower-level subdomains. On the other hand, each \textbf{leaf node} contains the location of the entities. \\ \\
+A lookup request is performed bottom-up. This means that the request is forwarded amongst the children of the directory node. Afterwards, the request goes up the hierarchy.
+
+\subsection{Structured Naming}
+\subsubsection{Name Spaces}
+Name spaces can be represented as labeled, directed graphs with directory and leaf nodes. \\ \\
+A \textbf{pathname} is a sequence of labels corresponding to the edges in that path.
+
+\subsubsection{Linking and Mounting}
+A \textbf{symbolic link} is a link between a node and an absolute path. This is particular since normally nodes are linked to files -- in the case of a OS's file system. \\ \\
+Mounting a foreign name space in a distributed system is a type of symbolic link. For this symbolic link to work it requires:
+
+\begin{itemize}
+	\item Name of an access protocol
+	\item Name of a server
+	\item Name of the mounting point in the foreign name space
+\end{itemize}
+
+\subsubsection{Name Space Distribution}
+Generally, large-scale name services are organised into \textbf{organisational layers}. The layers are the following:
+
+\begin{itemize}
+	\item \textbf{Global Layer} \\
+	It is composed by the root name and its children (very stable)
+	
+	\item \textbf{Administrational Layer} \\
+	The nodes are managed by a single organisation (somewhat stable)
+	
+	\item \textbf{Managerial Layer} \\
+	Nodes are managed locally (may change frequently)
+\end{itemize}
+
+\subsubsection{Name Resolution}
+All clients have access to a name resolver. This name resolution can happen in two ways:
+
+\begin{itemize}
+	\item \textbf{Iteratively} \\
+	The name resolver performs each step of the name resolution.
+	
+	\item \textbf{Recursively} \\
+	The name resolver delegates the name resolution to the root server.  
+\end{itemize}
+
+\noindent Each one of the previously described methods has its own drawbacks. In the case of the \textbf{iterative} method, it has high communication costs and poor caching capabilities. In the case of the \textbf{recursive} method, it has an increased load on each server of the chain, as well as increased latency for non-cached requests.
+
+\subsubsection{DNS Name Space}
+The DNS is a hierarchically organised name space. Some of its characteristics are:
+
+\begin{itemize}
+	\item DNS root has no name
+	\item Each subtree is a domain
+	\item The path to the subtree root node is the domain name
+	\item All nodes contain records
+	\item One server is responsible for one zone
+\end{itemize}
+
+\subsection{Attribute-Based Naming}
+Attribute-based naming systems are also known as directory services. In this case, an entity is described in terms of an \verb|(attribute, value)| pair. A set of these attributes is used for searching.
+
+\subsubsection{LDAP}
+\textbf{Lightweight Directory Access Protocol} (LDAP) has the following characteristics:
+
+\begin{itemize}
+	\item Each service contains a number of directory entries
+	\item Each entry is composed of a number of \verb|(attribute, value)| pairs
+	\item Each attribute has an associated type
+	\item Attributes can be single- or multi-valued
+	\item The collection of all entries for a service is called a \textbf{Directory Information Base} (DIB)
+\end{itemize}
+
+\noindent In a DIB, each entry has a \textbf{Relative Distinguished Name} (RDN). This name is globally unique. \\ \\
+RDNs can be used a globally unique names -- which is the same thing that happens in DNS. Moreover, the RDNs establish a hierarchy of entries -- which is known as the \textbf{Directory Information Tree} (DIT).
+
 \end{document}
 
 
