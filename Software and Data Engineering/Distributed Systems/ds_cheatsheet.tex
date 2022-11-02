@@ -275,7 +275,8 @@ Decentralised architectures can be either vertically or horizontally distributed
 
 \subsubsection{Structured Peer-to-Peer Architectures}
 Structured peer-to-peer architectures are deterministic procedures used to build an \textbf{overlay network}. Here nodes are processes, and links are possible communication channels. \\ \\
-In the case of a structured peer-to-peer architecture, we use \textbf{Distributed Hash Tables} (DHT). These tables contain data items to which a random 128-bit key is assigned. Moreover, nodes are also assigned to a random key. \\ \\
+In the case of a structured peer-to-peer architecture, we use \textbf{Distributed Hash Tables} (DHT). Each data item that is maintained by the system, is uniquely associated with a key, and this key is subsequently used as an index. Moreover, to each node of the system is assigned an identifier. Each node is made responsible for storing data associated with a specific subset of keys. \\ \\
+Any node can be asked to look up a given key, which boils down to efficiently routing that lookup request to the node responsible for storing the data associated with the given key. \\ \\
 An example of a structural peer-to-peer architecture is a \textbf{Chord}, which is depicted below.
 
 \begin{center}
@@ -283,15 +284,17 @@ An example of a structural peer-to-peer architecture is a \textbf{Chord}, which 
 \end{center}
 
 \subsubsection{Unstructured Peer-to-Peer Architectures}
-In this type of architecture, the overlay network is built using a randomised procedure. Each node in the network has a list of neighbours, constructed in a random way. \\ \\
-To find a data item inside of the network we need to flood it.
+In this type of architecture, the overlay network is built using a randomised procedure. Each node in the network has a list of neighbours, constructed in a random way. This results in a random graph. \\ \\
+In these kinds of systems, when a node joins the network, it often contacts a well-known node to obtain a starting list of other peers in the system. Moreover, the nodes generally change their local list almost continuously. \\ \\
+Unlike in structured peer-to-peer architectures, looking up data cannot follow a predetermined route. Instead, in this case we need to resort to searching for data. This can be done in different ways, such as \textbf{flooding}, \textbf{random walks}, or \textbf{policy-based} search methods.
 
 \begin{center}
 	\includegraphics[width=8cm, height=5cm, keepaspectratio]{assets/unstructured.pdf}
 \end{center}
 
-\subsection{Superpeer}
-Superpeers are special nodes that keep an index of data items. Other regular nodes join the network by connecting to one of the superpeers.
+\subsection{Super Peer}
+\textbf{Brokers} are services that collect data on resource usage and availability for a number of nodes that are in each other's proximity. This allows to quickly select the node with sufficient resources. \\ \\
+Nodes that act as brokers are called \textbf{super peers}. Super peers organise themselves into a structured peer-to-peer network, leading to a hierarchical organisation of nodes. The nodes that connect to these super peers are known as \textbf{weak peers}.
 
 \begin{center}
 	\includegraphics[width=9cm, height=10cm, keepaspectratio]{assets/superpeer.pdf}
@@ -422,7 +425,7 @@ There are several different ways in which a client and a server can communicate:
 \end{itemize}
 
 \subsection{Remote Procedure Call}
-A Remote Procedure Call (RPC) is a simple communication mechanism, and is more natural than the send/receive primitives.
+A \textbf{Remote Procedure Call} (RPC) is a simple communication mechanism, and is more natural than the send/receive primitives.
 
 \subsubsection{Basic RPC Operation}
 The RPC first makes itself look like a local procedure call. When a read operation is performed, a client stub is called. The client stub pack all the parameters into a message and sends it to the server. \\ \\
