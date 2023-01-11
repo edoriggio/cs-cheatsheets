@@ -623,6 +623,257 @@ Attribute-based naming systems are also known as directory services. In this cas
 \noindent In a DIB, each entry has a \textbf{Relative Distinguished Name} (RDN). This name is globally unique. \\ \\
 RDNs can be used a globally unique names -- which is the same thing that happens in DNS. Moreover, the RDNs establish a hierarchy of entries -- which is known as the \textbf{Directory Information Tree} (DIT).
 
+\section{Synchronisation}
+\subsection{Clock Synchronisation}
+In a \textbf{centralised system}, the is only one clock. This makes time unambiguous. On the other hand, in \textbf{distributed systems}, there are multiple different clocks, one for each system. In this case there is no global time. Such a lack of global time makes agreements on time non trivial.
+
+\subsection{Physical Clocks}
+A \textbf{computer timer} (called RTC -- Real Time Clock) is composed of a quartz crystal. When we apply an electrical current to this crystal, its molecular structure distorts before going back to normal. The oscillation produced by the clock defines its frequency (\textbf{clock ticks}). Being quartz crystals physical clocks, no two clocks are the same. Moreover, different clocks will tend to diverge over time (\textbf{clock skew}). \\ \\
+In \textbf{real-time systems}, on the other hand, we can use universal clocks such as \textbf{UTC} (Coordinated Universal Time), or \textbf{GPS} (Global Positioning System). These two solutions are used to synchronise clocks with real-time clocks.
+
+\subsection{Clock Synchronisation Algorithms}
+\subsubsection{System Model}
+Each machine has a timer that causes an interrupt $H$ times a second. Every time we have an interrupt, the handler adds 1 second to the \textbf{software clock} -- which is handled by the OS. For a \textbf{clock value} $C$ and \textbf{UTC time} $t$, the clock of \textbf{machine} $p$ can be defined as:
+\[ C_p(t) \]
+Ideally, the clock should be equal to the UTC time.
+\begin{align*}
+	C_p(t) & = t \\
+	C'_p(t) & = \frac{\partial C}{\partial t} = 1
+\end{align*}
+Where $C'_p(t)$ is the \textbf{frequency of $p$'s clock at time $t$}, $1-C'_p(t)$ is the \textbf{clock skew}, and $C_p(t) - t$ is the \textbf{offset relative to a specific time $t$}. Following are three types of clocks defined by the value of $C'_p(t)$.
+\begin{align*}
+	\begin{cases}
+		\displaystyle\frac{\partial C}{\partial t} < 1 & \text{slow clock} \\[10pt]
+		\displaystyle\frac{\partial C}{\partial t} = 1 & \text{perfect clock} \\[10pt]
+		\displaystyle\frac{\partial C}{\partial t} > 1 & \text{fast clock}
+	\end{cases}
+\end{align*}
+When two clocks are drifting from UTC in opposite directions, at a certain time $\delta$ after their last synchronisation, they will differ by $2\rho\delta$ seconds from each other. Where $\rho$ is the \textbf{maximum drift time}. In order for the two clocks not to differ by more than $\delta$ seconds, they must be synchronised at lest every
+\[ \frac{\delta}{2\rho} \]
+Seconds. As in the previous case, $\delta$ is the \textbf{time after the clocks' last synchronisation}, and $\rho$ is the \textbf{maximum drift rate}.
+
+\subsubsection{Network Time Protocol}
+In this algorithm, the clients contact a time server, which stores the accurate current time. Let's suppose that client $A$ requests the time from server $B$.
+\begin{center}
+	\includegraphics[width=6cm, height=5cm, keepaspectratio]{assets/network-time-protocol.pdf}
+\end{center}
+Then this will be the procedure:
+\begin{enumerate}
+	\item $A$ sends a request to $B$ with timestamp $T_1$;
+	\item $B$ records $T_2$ from its own clock;
+	\item $B$ returns a response containing both $T_1$ and $T_2$;
+	\item $A$ records the value $T_4$ from its own clock.
+\end{enumerate}
+If we assume similar propagation delays then $T_2 - T_1 \approx T_4 - T_3$. This makes client $A$ able to compute the offset between the two clocks as such:
+\begin{align*}
+	\Theta & = T_3 + \frac{(T_2 - T_1) + (T_4 - T_3)}{2} - T_4 \\[10pt]
+	& = T_3 + \frac{\Delta T_{req} + \Delta T_{res}}{2} - T_4
+\end{align*}
+If $\Theta \neq 0$, then:
+\[ C_A := C_A + \Theta \]
+Where $C_A$ is \textbf{$A$'s clock} and $\Theta$ is the \textbf{offset between the clocks}.
+
+\subsubsection{Berkeley Algorithm}
+While in the NTP (Network Time Protocol) the time server is passive, in \textbf{Berkeley UNIX} the time server polls every machine periodically. Based on the client's response, the time server computes the averages and tells the client to update their timer. The time daemon -- which is the time of the server itself -- is updated manually.
+\begin{center}
+	\includegraphics[width=10cm, height=10cm, keepaspectratio]{assets/berkeley-time.pdf}
+\end{center}
+
+\subsection{Logical Clocks}
+Many applications need to agree on a current time. This time, though, does not need to necessarily match real time. In addition, if two processes don't interact with each other, it's not necessary for their clocks to be synchronised.
+
+\subsubsection{Lamport's Logical Clocks}
+Given the \textbf{happened-before} relation depicted by $\rightarrow$, we can say that $a \rightarrow b$ means that event $a$ comes before event $b$. The happens-before relation is \textbf{transitive}, this means that if we have both $a \rightarrow b$ and $b \rightarrow a$, then we can say that events $a$ and $b$ are concurrent. Given the following diagram:
+\begin{center}
+	\includegraphics[width=5cm, height=10cm, keepaspectratio]{assets/lamport.pdf}
+\end{center}
+We can define some other properties:
+\begin{itemize}
+	\item If $a \rightarrow b$, then $b \nrightarrow a$;
+	\item If $a \nrightarrow b$, and $e \nrightarrow a$, then $a \parallel e$;
+	\item Even if $b \rightarrow d$, this does not imply causality.
+\end{itemize}
+Each process $P_i$ keeps a Lamport timestamp $L_i$. A timestamp of event $e$ in $P_i$ is defined as:
+\[ T_{P_i} = L_i(e) \]
+Where $T$ is the \textbf{timestamp}, $P_i$ is the \textbf{$i$-th process}, $L_i$ is the \textbf{timestamp function}, and $e$ is the \textbf{event's name}.\\ \\
+When a process updates its local Lamport clock and wants to transmit its value in a message, then it must follow certain rules, namely:
+\begin{itemize}
+	\item The Lamport timer $L_i$ must be incremented before each event is issued by the process:
+	\[ P_i : L_i = L_i + 1 \]
+	\item When process $P_i$ sends a message $m$, the value $t = L_i$ needs to piggyback on message $m$ -- this means that the timestamp must be sent together with the message;
+	\item Upon receiving $(m, t)$ -- where $m$ is the \textbf{message} and $t$ is the \textbf{timestamp} -- process $P_j$ will compute:
+	\[ L_j = \max(L_j, t) \]
+	And applies rule 1 before timestamping the next event -- which will be receive($m$).
+\end{itemize}
+From the rules above, we can say that
+\[ e \rightarrow e' \Rightarrow L(e) < L(e') \]
+Where $e$ and $e'$ are the \textbf{two events}, and $L(e)$ and $L(e')$ are the \textbf{Lamport timestamps of those two events}.
+
+\subsubsection{Totally Ordered Logical Clocks}
+Since we sometimes need to have a total order of events, Lamport timestamps are not sufficient. The following is an extension of Lamport logical clocks.\\ \\
+Let $e_i$ be an event in $P_i$ with timestamp $T_i$, and let $e_j$ be and event in $P_j$ with timestamp $T_j$. We now define two \textbf{global timestamps} as $(Ti, i)$ for $P_i$ and $(T_j, j)$ for $P_j$. The following
+\[ (T_i, i) < (T_j, j) \]
+Will hold iff either $T_i < T_j$, or $T_i = T_j$ and $i > j$.
+
+\subsubsection{Vector Clocks}
+A key property of vector clocks is that:
+\[ e \rightarrow e' \Leftrightarrow L(e) < L(e') \]
+Given an array of $N$ processes, each process $P_i$ keeps its own vector clock $V_i$. The vector clock is used to timestamp local events. Every process sends the vector's timestamp together with the message to the other process.
+\begin{center}
+	\includegraphics[width=5cm, height=10cm, keepaspectratio]{assets/vector-clocks.pdf}
+\end{center}
+The vector timestamps in this representation are compared as follows:
+\begin{itemize}
+	\item $v = v' ~~~~~~~~\text{iff}~V[j] = V'[j] ~~~~~~~~\text{for}~j = 1, 2, 3, \dots, N$
+	\item $v \leq v' ~~~~~~~~\text{iff}~V[j] \leq V'[j] ~~~~~~~~\text{for}~j = 1, 2, 3, \dots, N$
+	\item $v < v' ~~~~~~~~\text{iff}~V \leq V' ~\text{and}~ V = V'$
+\end{itemize}
+As with Lamport clocks, also vector clocks have rules for updating the vector. These rules are:
+\begin{enumerate}
+	\item Initially the vector clock is as follows:
+	\[ V_i[j] = 0 ~~~~~~~~\text{for}~j = 1, 2, 3, \dots, N \]
+	\item Before process $P_i$ timestamps an event, it sets
+	\[ V_i[i] = V_i[i] + 1 \]
+	\item Process $P_i$ then needs to include timestamp $t = V_i$ in every message it sends;
+	\item When $P_i$ receives a timestamp $t$ in a message, it sets
+	\[ V_i[j] = \max(V_i[j], t[j]) ~~~~~~~~\text{for}~j = 1, 2, 3, \dots, N \]
+	This operation is called \textbf{merge}.
+\end{enumerate}
+Where $V_i[j]$ is the \textbf{number of events process $P_i$ has timestamped}, and $V_i[j]$ with $i \neq j$ is the \textbf{number of events at process $P_j$ that have potentially effected $P_i$}.
+
+\subsection{Mutual Exclusion}
+Let's assume that we have $N$ processes named $P_i$, that processes do not share variables, that the system is asynchronous, and that there are no process failures. Given these assumptions, we have an application-level interface composed by the following functions:
+\begin{itemize}
+	\item \verb|enter()|
+	\item \verb|resourceAccess()|
+	\item \verb|exit()|
+\end{itemize}
+Some more requirements are needed for the mutual exclusion, namely:
+\begin{enumerate}
+	\item \textbf{Safety} \\
+	At most one process may execute in the critical section at a time.
+	\item \textbf{Liveness} \\
+	Requests to enter the critical section will eventually succeed. No starvation or deadlocks are allowed.
+	\item \textbf{Ordering} \\
+	If one request to enter the critical section happened before another, then entry to the critical section is granted in that order.
+\end{enumerate}
+
+\subsubsection{Central Server Algorithm}
+in this case, a central server handles the requests to enter the critical section by saving each request in a FIFO queue.
+\begin{center}
+	\includegraphics[width=6cm, height=10cm, keepaspectratio]{assets/central-server.pdf}
+\end{center}
+The actions performed in the image above are the following:
+\begin{enumerate}
+	\item Process $P_2$ requests the token to access the critical section;
+	\item Process $P_3$ releases its token for access to the critical section;
+	\item The server grants access to $P_4$ to enter the critical section.
+\end{enumerate}
+In absence of failures, ME requisites 1 and 2 are respected. ME requisite 3, however, is not respected. Moreover, he central server may become the bottleneck of the whole system in case of heavy loads. The server is also a single-point-of-failure, this means that is the server fails, the whole system shuts down.
+
+\subsubsection{Ring-Based Algorithm}
+The processes are now arranged in a logical ring. These processes circulate a token around the ring. As before, the token is needed by the process to access the critical section. If one of the processes has the token, but does not need to enter the critical section, it sends the token to the neighbouring process. This token is passed to the neighbouring process even when the process exits from the critical section.
+\begin{center}
+	\includegraphics[width=5cm, height=10cm, keepaspectratio]{assets/ring-based.pdf}
+\end{center}
+ME requisites 1 and 2 are respected, but requisite 3 is not respected. Moreover, bandwidth is consumed even if no process requires access to the critical section.
+
+\subsubsection{Multicast and Logical Clock Algorithm}
+The idea of this algorithm is the following:
+\begin{enumerate}
+	\item The process that requires access to the critical section multicasts a request message to all the other processes;
+	\item If a response is received by the process from all of the other processes, then access to the critical section is granted.
+\end{enumerate}
+We can have two possible scenarios.
+\begin{center}
+	\includegraphics[width=9cm, height=13cm, keepaspectratio]{assets/multicast-1.pdf}
+\end{center}
+Here, to the process multicasting the request is granted access to the critical section. The reason is that both of the other processes sent a response message back to the requesting process.
+\begin{center}
+	\includegraphics[width=9cm, height=13cm, keepaspectratio]{assets/multicast-2.pdf}
+\end{center}
+Instead, in this case the to the process multicasting the request is not granted access to the critical section. The reason is that only one of the other two processes has sent a response message back to the requesting process. \\ \\
+This algorithm guarantees ME requisites 1, 2, and 3. Moreover, each process $P_i$ has its own Lamport clock. The messages request entry at time $(T, P_i)$, where $T$ is the \textbf{sender's timestamp}, and $P_i$ is the \textbf{sender's id}. \\ \\
+The problem with this algorithm is that every time a process $P_i$ needs access to the critical section, $2(N-1)$ messages need to be exchanged -- for both multicast and replies. Moreover, up to $N - 1$ messages are sent when a process exits the critical section -- since it needs to communicate it to the rest of the processes.
+
+\subsubsection{Maekawa's Voting Algorithm}
+Access to the critical section does not need to permission from all of the processes, but from a subset of them is enough -- only if the subsets overlap. \\ \\
+This algorithm is very similar to the previous. In this case, though, we need for a sufficient number of votes -- not all. To achieve this, to each process is assigned a voting set $V_i$. \\ \\
+ME requirement 1 is respected, but the algorithm is deadlock-prone. By queuing outstanding requests in a happens-before order, then both ME requirements 2 and 3 are also respected. \\ \\
+By using this algorithm, we will have $\approx 2 \sqrt{N}$ messages when asking to join the critical section, and $\approx\sqrt{N}$ messages when exiting the critical section.
+
+\subsection{Election Algorithms}
+These kind of algorithms are used for choosing a coordinator, which is represented by a single process. The coordinator is like the sever in the server-based mutual exclusion algorithm. \\ \\
+Each process $P_i$ has a variable $elected_i$, which is initially set to $\perp$. Moreover, two requirements must always be met. These requirements are:
+\begin{enumerate}
+	\item \textbf{Safety} \\
+	At any point in time
+	\[ \forall P_i : elected_i \in \{ \perp, P \} \]
+	Where $P$ is a non-crashed process with the largest id;
+	\item \textbf{Liveness} \\
+	All non-crashed processes $P_i$ will eventually set
+	\[ elected_i = P \]
+	Where $P$ is a non-crashed process with the largest id.
+\end{enumerate}
+
+\subsubsection{Ring-Based Election Algorithm}
+Let's suppose that we have an asynchronous system, no failures, processes arranged in a logical ring, and that messages can only circulate in one direction.
+\begin{center}
+	\includegraphics[width=6cm, height=10cm, keepaspectratio]{assets/ring-election.pdf}
+\end{center}
+The process of election is the following:
+\begin{enumerate}
+	\item Every process is initially marked as \textbf{non-participant};
+	\item To start an election, process $P_i$ makes itself a participant, and places its id onto the message to send to its neighbour;
+	\item When $P_j$ receives the message:
+	\begin{itemize}
+		\item If the id is greater than $P_j$'s id, then the message is forwarded directly to the neighbouring process;
+		\item If $P_j$ is not marked as a participant, it is marked as a participant and its id is sent to the neighbouring process.
+	\end{itemize}
+	\item If $P_i$ receives back its own id after one complete cycle of election, then it is elected as \textbf{leader} and marked as non-participant. Then, it sends  the \textbf{elected} message with its own it to its neighbouring process;
+	\item When $P_j$ receives the \textbf{elected} message, it saves the id of the leader and passes the message onwards.
+\end{enumerate}
+Let's consider the worst-case scenario. Let's say that process $P_i$ starts the election and that the process before it (process $P_j$) is the one with the highest id. In this case we will have the following:
+\begin{itemize}
+	\item $N-1$ messages needed to reach process $P_j$;
+	\item $N$ messages for $P_j$ to announce to the other processes it is now the leader;
+	\item $N$ messages for all of the other processes to acknowledge the id of the new leader.
+\end{itemize}
+A total of $3N-1$ messages are sent for the election process to be complete.
+
+\subsubsection{Bully Algorithm}
+In this algorithm, we take into account the fact that a process may crash. However, messages are sent reliably and all processes know every other process' id. Moreover, this is a synchronous system, where:
+\begin{itemize}
+	\item $T_{trans}$ is the maximum message transmission delay;
+	\item $T_{process}$ is the maximum process delay;
+	\item $T = 2_{trans} + T_{process}$ is the total elapsed time upper bound.
+\end{itemize}
+Graphically the process can be represented as follows:
+\begin{center}
+	\includegraphics[width=11cm, height=20cm, keepaspectratio]{assets/bully-1.pdf}
+\end{center}
+\begin{center}
+	\includegraphics[width=11cm, height=20cm, keepaspectratio]{assets/bully-2.pdf}
+\end{center}
+The steps performed by the algorithm are the following:
+\begin{enumerate}
+	\item Let $P_1$ suspect the crash of the current leader: process $P_4$;
+	\item If $P_1$ has the highest id, then
+	\begin{itemize}
+		\item Send a \textbf{coordinator} message to all other processes with lower id  to elect itself as the new leader;
+		\item Otherwise, $P_1$ sends an \textbf{election} message to all the processes with higher id, and awaits for an \textbf{answer} message.
+	\end{itemize}
+	\item If no \textbf{answer} message arrives within the predefined time $T$, then
+	\begin{itemize}
+		\item $P_2$ considers itself the leader and sends a \textbf{coordinator} message to all processes with lower id;
+		\item Otherwise, $P_2$ awaits another period $T$ for a \textbf{coordinator} message. If none arrives, then $P_2$ will start a new election.
+	\end{itemize}
+	\item If $P_1$ receives a \textbf{coordinator} message, it sets
+	\[ selected_1 = P_2 \]
+	\item If $P_1$ receives an \textbf{election} message, it will answer with an \textbf{answer} message and starts a new election -- if one hasn't already been started.
+\end{enumerate}
+In the best-case scenario, $N-1$ messages will be exchanged. In the worst-case scenario, $N^2$ messages will be exchanged.
+
 \end{document}
 
 
