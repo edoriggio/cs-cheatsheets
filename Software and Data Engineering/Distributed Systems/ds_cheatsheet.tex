@@ -1026,6 +1026,177 @@ Write operations are executed at multiple replicas, not only at the primary. To 
 	\[ N_W > \frac{N}{2} \]
 \end{itemize}
 
+\section{Fault Tolerance}
+A system is said to be \textbf{dependable} if it can tolerate faults. This means that the system can provide a service despite faults. A dependable system has the following characteristics:
+\begin{itemize}
+	\item \textbf{Availability} \\
+	A highly available system is most likely working at any given time;
+	\item \textbf{Reliability} \\
+	A highly reliable system will most likely continue to work without failures;
+	\item \textbf{Safety} \\
+	A safe system does not do anything wrong (but it may stop);
+	\item \textbf{Maintainability} \\
+	Describes how easily a failed system can be fixed.
+\end{itemize}
+Faults that affect systems can be of several different types:
+\begin{itemize}
+	\item \textbf{Transient} \\
+	Faults that occur once and then disappear;
+	\item \textbf{Intermittent} \\
+	Faults that occur and vanish several times;
+	\item \textbf{Permanent} \\
+	Faults that continue to exist until the faulty component is replaced.
+\end{itemize}
+
+\subsection{Failure Models}
+There exist several different failure models, for example:
+\begin{itemize}
+	\item \textbf{Crash Failure} \\
+	A server halts but was working properly before it stopped;
+	\item \textbf{Omission Failure} \\
+	It can either be a receive or send omission. A \textbf{receive omission} is when the server does not receive a request. On the other hand, a \textbf{send omission} is when the server has done some work but cannot send the message;
+	\item \textbf{Timing Failure} \\
+	The response lies outside of a real-life time interval;
+	\item \textbf{Response Failure} \\
+	The server's response is incorrect;
+	\item \textbf{State Transition Failure} \\
+	A request made by a server reacts unexpectedly;
+	\item \textbf{Arbitrary/Byzantine Failure} \\
+	This is the most difficult failure to handle. It can happen when a piece of software has bugs or when a server has been hacked.
+\end{itemize}
+
+\subsection{Failure Masking}
+The system failures described in the section above can be masked thanks to the use of redundancy. Redundancy can be of different types:
+\begin{itemize}
+	\item \textbf{Information Redundancy} \\
+	Extra bits are added to a message in order to allow for recovery (e.g. Hamming Code);
+	\item \textbf{Time Redundancy} \\
+	An action is performed multiple times;
+	\item \textbf{Physical Redundancy} \\
+	Extra equipment or processes are added to better tolerate failures.
+\end{itemize}
+
+\subsection{Process Resilience}
+The idea of process resilience is to group identical processes together. When a message is sent to the group, all processes that are part of that group will receive it. These groups are also dynamic, this means that processes can join and leave groups, as well as being part of multiple groups at the same time.
+
+\subsubsection{Flat vs Hierarchical Groups}
+The terms \textbf{flat} and \textbf{hierarchical} describe the internal structure of a group, as well as how the work is carried out in those groups.
+\begin{center}
+	\includegraphics[width=11cm, height=10cm, keepaspectratio]{assets/flat-hierarchical.pdf}
+\end{center}
+To remember group membership, we have two approaches:
+\begin{itemize}
+	\item \textbf{Centralised} \\
+	One node has the list of all group members;
+	\item \textbf{Distributed} \\
+	The group state is saved at each group member.
+\end{itemize}
+In these cases failure masking is done through \textbf{replication} and \textbf{agreement}. Agreement is used to elect a coordinator and to decide whether to commit a transaction or not. However, \textbf{failure detection} is vital for a distributed system to be truly fault-tolerant.
+
+\subsection{Consensus in Faulty Systems}
+In a fault-tolerant process group, each non-faulty process executes the same commands -- and in the same order -- as every other non-faulty process. \\ \\
+Non-faulty processes need to reach consensus on which command to execute next.
+
+\subsubsection{Flooding-Based Consensus}
+Let's consider a process group $P = \{ P_1, \dots, P_N \}$ with fail-stop feature semantics. A client now contacts $P_i$ requesting it to execute a command. Every $P_i$ maintains a list of proposed commands. The flooding-based consensus algorithm works as follows:
+\begin{enumerate}
+	\item In round $r$, $P_i$ multicasts its known set of commands $C_{r, i}$ to all the other processes;
+	\item At the end of round $r$, each process $P_i$ merges all received commands into a new $C_{r+1, i}$;
+	\item The next command $cmd_i$ is selected through a globally shared deterministic function.
+	\[ cmd_i \leftarrow select(C_{r+1}) \]
+\end{enumerate}
+
+\subsection{Reliable Client-Server Communication}
+TCP masks omission failures by handling lost messages with acknowledgments. In case of other types of failures, we can employ RPC semantics to deal with such failures. RPC deals with:
+\begin{itemize}
+	\item \textbf{Client unable to locate server} \\
+	This failure can be handled by throwing an exception at the client.;
+	\item \textbf{Request from client is lost} \\
+	The client can start a timer and resubmit the request if there is no response;
+	\item \textbf{Server crashes after receiving request} \\
+	We could either give up immediately and report the error -- \textbf{at-most-one} semantics, or we could keep trying until a response is received -- \textbf{at-least-one} semantics;
+	\item \textbf{Reply from server is lost} \\
+	The client could try to resend the request if no response is received after some time.
+\end{itemize}
+
+\subsection{Reliable Group Communication}
+\subsubsection{Basic Reliable-Multicasting Schemes}
+These schemes are important mechanisms used to implement replication in groups. A message sent to a group should be received by all members of that group. A basic implementation of such an algorithm is the following:
+\begin{center}
+	\includegraphics[width=12cm, height=10cm, keepaspectratio]{assets/multicasting-1.pdf}
+\end{center}
+\begin{center}
+	\includegraphics[width=12cm, height=10cm, keepaspectratio]{assets/multicasting-2.pdf}
+\end{center}
+There are some issues with this solution, namely:
+\begin{itemize}
+	\item If there are $N$ receivers, the sender must send $N$ messages;
+	\item The sender might be swamped with ACKs in the feedback step of the protocol -- second image above;
+	\item Negative ACKs are only sent when the receivers miss a message;
+	\item There is a risk of feedback implosion.
+\end{itemize}
+
+\subsubsection{Atomic Multicast}
+This is the basis for state machine replication. Here, messages are sent to all non-faulty processes and delivered in the same order. This multicast system ensures consistency and forces reconciliation.
+
+\subsubsection{Virtual Synchrony}
+All processes in the same view must agree on which messages are to be delivered in that view. Virtual synchrony ensures that the message and the view-change message are delivered in the same order by all group members.
+\begin{center}
+	\includegraphics[width=10cm, height=10cm, keepaspectratio]{assets/virtual-synchrony.pdf}
+\end{center}
+The steps performed in the above visualisation are the following:
+\begin{enumerate}
+	\item $P1$ joins the group at time $t$;
+	\item $P2$ performs a reliable multicast by sending multiple point-to-point messages;
+	\item $P1$ performs a reliable multicast by sending multiple point-to-point messages;
+	\item $P3$ crashes at time $v$ while performing the reliable multicast. This partial multicast is discarded entirely;
+	\item $P4$ performs a reliable multicast by sending multiple point-to-point messages;
+	\item $P3$ rejoins the group at time $w$;
+	\item $P3$ performs a reliable multicast by sending multiple point-to-point messages.
+\end{enumerate}
+
+\subsection{Message Ordering}
+This approach defines how different multicasts are ordered.
+
+\subsubsection{Reliable Unordered Multicast}
+No guarantees are given concerning the message ordering.
+\begin{center}
+	\includegraphics[width=6cm, height=10cm, keepaspectratio]{assets/unordered.pdf}
+\end{center}
+
+\subsubsection{Reliable FIFO-Ordered Multicast}
+The incoming messages from the same process are delivered in the order in which they are sent.
+\begin{center}
+	\includegraphics[width=8cm, height=10cm, keepaspectratio]{assets/fifo.pdf}
+\end{center}
+
+\subsubsection{Reliable Causally-Ordered Multicast}
+Messages are delivered such that potential causality between different messages is preserved. This multicast protocol has two properties:
+\begin{itemize}
+	\item \textbf{FIFO Order}
+	\item \textbf{Local Order} \\
+	For example, if a process delivers $M1$ before multicasting $M2$, then no process will deliver $M2$ before $M1$.
+\end{itemize}
+
+\subsubsection{Reliable Totally-Ordered Multicast}
+All messages are delivered in the same exact order.
+
+\subsection{Distributed Commits}
+One-phase commits protocol do not work in distributed systems with reliable multicasting. For this reason, more sophisticated protocols are used.
+
+\subsubsection{Two-Phase Commit}
+The protocol is structured as follows:
+\begin{center}
+	\includegraphics[width=11.5cm, height=10cm, keepaspectratio]{assets/two-phase.pdf}
+\end{center}
+Some characteristics of this protocol are the following:
+\begin{itemize}
+	\item The protocol may block if the coordinator crashes -- \textbf{single point of failure};
+	\item To avoid blocking on the participants, we can use timeouts;
+	\item In some of the states, a process is blocked waiting;
+	\item Until the coordinator recovers, all of the processes are blocked.
+\end{itemize}
+
 \end{document}
 
 
