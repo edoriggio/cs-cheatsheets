@@ -39,6 +39,9 @@
   \endflushleft
 }
 
+\def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
+\let\endchangemargin=\endlist 
+
 \newcommand{\ctexttt}[1]{\colorbox{cverbbg}{\texttt{#1}}}
 \newverbcommand{\cverb}
   {\setbox\verbbox\hbox\bgroup}
@@ -792,7 +795,7 @@ Here, to the process multicasting the request is granted access to the critical 
 \begin{center}
 	\includegraphics[width=9cm, height=13cm, keepaspectratio]{assets/multicast-2.pdf}
 \end{center}
-Instead, in this case the to the process multicasting the request is not granted access to the critical section. The reason is that only one of the other two processes has sent a response message back to the requesting process. \\ \\
+Instead, in this case, the to the process multicasting the request is not granted access to the critical section. The reason is that only one of the other two processes has sent a response message back to the requesting process. \\ \\
 This algorithm guarantees ME requisites 1, 2, and 3. Moreover, each process $P_i$ has its own Lamport clock. The messages request entry at time $(T, P_i)$, where $T$ is the \textbf{sender's timestamp}, and $P_i$ is the \textbf{sender's id}. \\ \\
 The problem with this algorithm is that every time a process $P_i$ needs access to the critical section, $2(N-1)$ messages need to be exchanged -- for both multicast and replies. Moreover, up to $N - 1$ messages are sent when a process exits the critical section -- since it needs to communicate it to the rest of the processes.
 
@@ -873,6 +876,155 @@ The steps performed by the algorithm are the following:
 	\item If $P_1$ receives an \textbf{election} message, it will answer with an \textbf{answer} message and starts a new election -- if one hasn't already been started.
 \end{enumerate}
 In the best-case scenario, $N-1$ messages will be exchanged. In the worst-case scenario, $N^2$ messages will be exchanged.
+
+\section{Replication and Consistency}
+\textbf{Replication} guarantees several different things:
+\begin{itemize}
+	\item \textbf{Reliability} \\
+	It protects against both failure and corrupted data;
+	\item \textbf{Performance} \\
+	It helps in scaling up numbers of clients and geographical area. By increasing the number of clients, it follows an increase in the number of processes needing access to data.
+\end{itemize}
+The main problem with replication is that multiple copies may lead to consistency issues. For this reason, we should modify the copies or the original with caution. \\ \\
+The solution to consistency problems could be solved by \textbf{loose consistency}. This means that global synchronisation is avoided -- because too expensive, and that replica states may diverge.
+
+\subsection{Data-Centric Consistency Models}
+\subsubsection{Data Store}
+In these kinds of models, we have a \textbf{distributed data store} on which read and write operations are performed.
+\begin{center}
+	\includegraphics[width=6cm, height=10cm, keepaspectratio]{assets/data-store.pdf}
+\end{center}
+
+\subsubsection{Consistency Model}
+A contract exists between the processes and the data store. If this contract -- i.e. set of rules -- is respected by the processes, then the store will work correctly.
+\begin{center}
+	\includegraphics[width=7cm, height=10cm, keepaspectratio]{assets/consistency.pdf}
+\end{center}
+
+\subsubsection{Sequential Consistency}
+This concept was first introduced by Lamport. Read and write operations are allowed, and the variables are all initially set to NIL. \\ \\
+A data store is said to be \textbf{sequentially consistent} when the result of any execution is the same as if the read and write operations were executed in some sequential order. Moreover, the operations of each individual process appear in the program the same way as they appear in the sequence. In this case, time is not taken into consideration.
+\begin{center}
+	\includegraphics[width=7cm, height=10cm, keepaspectratio]{assets/sequential-consistency.pdf}
+\end{center}
+
+\subsubsection{Causal Consistency}
+Writes that are potentially causally related, must be seen by all the processes in the same order. Concurrent writes may be seen in a different order on different by different machines.
+\begin{center}
+	\includegraphics[width=8cm, height=10cm, keepaspectratio]{assets/causal-consistency.pdf}
+\end{center}
+In the case above, write operations $W_{P_2}(x)b$ and $W_{P_1}(x)c$ are concurrent. Although being concurrent, this execution is causally consistent.
+
+\subsubsection{Entry Consistency}
+Sequential and causal consistency were initially developed for shared-memory multiprocessor systems. These paradigms do not work well in the case of distributed systems. 
+\begin{center}
+	\includegraphics[width=9cm, height=10cm, keepaspectratio]{assets/entry-consistency.pdf}
+\end{center}
+Processes, before being able to modify shared data, must acquire a lock. This lock will then be released when the data has been successfully modified. A lock is associated with every data item.
+
+\subsection{Client-Consistency Models}
+\subsubsection{Eventual Consistency}
+In the case of eventual consistency, we have a special class of distributed data stores. Here, the workload is mostly composed of reads and few -- if any -- writes. Data stores use a \textbf{weak consistency} policy. \\ \\
+These kind of distributed and replicated databases tolerate a high degree of inconsistency. In the absence of updates, all replicas converge to the same state. This is known as \textbf{eventual consistency}. \\ \\
+Some issues with this approach are:
+\begin{itemize}
+	\item Unreliable network connectivity and poor performance
+	\item Processes may connect to different copies and submit read and write commands.
+\end{itemize}
+In the following sections, four different types of consistencies will be explained in detail.
+
+\subsubsection{Monotonic Reads}
+A data store is said to provide monotonic-read consistency is the following holds:
+\begin{changemargin}{0.4cm}{0cm} 
+If a process reads the value of data item $x$, any successive read operation on $x$ by that process will always return that same value or a more recent value.
+\end{changemargin}
+An example of monotonic-read consistent data store is the following:
+\begin{center}
+	\includegraphics[width=6cm, height=10cm, keepaspectratio]{assets/monotonic-reads.pdf}
+\end{center}
+
+\subsubsection{Monotonic Writes}
+A data store is said to be monotonic-write consistent if the following condition holds:
+\begin{changemargin}{0.4cm}{0cm} 
+A write operation by a process on a data item $x$ is completed before any successive write operation on $x$ by the same process -- similarly to FIFO ordering.
+\end{changemargin}
+An example of monotonic-write consistent data store is the following:
+\begin{center}
+	\includegraphics[width=5.5cm, height=10cm, keepaspectratio]{assets/monotonic-writes.pdf}
+\end{center}
+
+\subsubsection{Read your Writes}
+A data store is said to provide read-your-writes consistency if the following condition holds:
+\begin{changemargin}{0.4cm}{0cm} 
+The effect of a write operation by a process on data item $x$ will always be seen by successive read operations on $x$ mad by the same process.
+\end{changemargin}
+An example of a data store with read-your-writes consistency is the following:
+\begin{center}
+	\includegraphics[width=5.5cm, height=10cm, keepaspectratio]{assets/read-your-writes.pdf}
+\end{center}
+
+\subsubsection{Writes follow Reads}
+A data store is said to provide writes-follow-reads consistency if the following condition holds:
+\begin{changemargin}{0.4cm}{0cm} 
+A write operation on data item $x$ following a previous read operation on $x$ -- by the same process -- is guaranteed to take place. Moreover, it will take place on the same or more recent value of $x$ that was read.
+\end{changemargin}
+An example of a data store that provides writes-follow-reads consistency is the following:
+\begin{center}
+	\includegraphics[width=7cm, height=10cm, keepaspectratio]{assets/writes-follow-reads.pdf}
+\end{center}
+
+\subsection{Replica Management}
+The objectives of replica management are mainly two:
+\begin{itemize}
+	\item Find the best location for a server that can host part of the data;
+	\item Find the best servers for content placement.
+\end{itemize}
+
+\subsection{Replica Server Placement}
+The placement of the replica represents an optimisation problem. As such, we need heuristics to solve it. We need to find the best $k$ locations out of the $N$ possible locations -- where $k < N$.
+
+\subsection{Content Distribution}
+First we need to decide what is there to propagate. Several options are possible:
+\begin{itemize}
+	\item Propagate only the notification of an update;
+	\item Transfer data from one copy to the other;
+	\item Propagate the update operation to the other copies.
+\end{itemize}
+There are \textbf{push} and \textbf{pull} protocols to deal with update propagation.
+\begin{itemize}
+	\item \textbf{Push-Based Model} \\
+	Updates the propagated data without replicas asking for updates. This type of protocol is usually used to obtain a high degree of consistency.
+	\item \textbf{Pull-Based Model} \\
+	Here the client is the one who asks for updates. This type of protocol is usually used to update caches.
+\end{itemize}
+There are also two modes of updates communication. These are:
+\begin{itemize}
+	\item \textbf{Unicasting} \\
+	To update $N$ servers we need to send $N$ messages. This communication mode is more suitable for pull-based propagation.
+	\item \textbf{Multicasting} \\
+	The underlying network will take care of propagating the updates to the clients. This method is very effective when the replicas are in the same LAN (Local Area Network). This mode of communication is more suitable for push-based propagation.
+\end{itemize}
+
+\subsection{Consistency Protocols}
+\subsubsection{Primary-Based Protocols}
+Each data item $x$ in the data store has a \textbf{primary} -- i.e. an original copy. This primary is responsible for coordinating write operations on $x$. There are two main classes of primary-based protocols:
+\begin{itemize}
+	\item \textbf{Remote-Write Protocols} \\
+	This is a primary backup. The write operations are forwarded to a fixed single server.
+	\item \textbf{Local-Write Protocols} \\
+	The primary migrates between servers. This is a primary-backup protocol, in which the primary migrates to the process that wants to perform the update.
+\end{itemize}
+
+\subsection{Replicated-Write Protocols}
+Write operations are executed at multiple replicas, not only at the primary. To perform these multiple write operations, we can use one of the following protocols:
+\begin{itemize}
+	\item \textbf{Active Replication} \\
+	In this case, each replica receives and executes all commands. These commands need to be executed in the same order for all replicas. Lamport's total order protocol- or sequencer-based mechanism is used to totally order the commands.
+	\item \textbf{Quorum-Based Protocol} \\
+	The clients request and acquire permission of multiple servers before being able to read and write to a replicated data item. Read quorum $N_R$ and write quorum $N_W$ are:
+	\[ N_R + N_W > N \]
+	\[ N_W > \frac{N}{2} \]
+\end{itemize}
 
 \end{document}
 
