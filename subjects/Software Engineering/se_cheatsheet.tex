@@ -1,0 +1,1107 @@
+% Copyright 2021 Edoardo Riggio
+
+% Licensed under the Apache License, Version 2.0 (the "License");
+% you may not use this file except in compliance with the License.
+% You may obtain a copy of the License at
+
+% 	http://www.apache.org/licenses/LICENSE-2.0
+
+% Unless required by applicable law or agreed to in writing, software
+% distributed under the License is distributed on an "AS IS" BASIS,
+% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+% See the License for the specific language governing permissions and
+% limitations under the License.
+
+\documentclass{article}
+
+\usepackage{hyperref, amsmath, graphicx}
+\usepackage{fancyvrb,newverbs,xcolor, listingsutf8}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+
+\definecolor{cverbbg}{gray}{0.93}
+
+\newenvironment{cverbatim}
+ {\SaveVerbatim{cverb}}
+ {\endSaveVerbatim
+  \flushleft\fboxrule=0pt\fboxsep=.5em
+  \colorbox{cverbbg}{\BUseVerbatim{cverb}}%
+  \endflushleft
+}
+
+\newenvironment{lcverbatim}
+ {\SaveVerbatim{cverb}}
+ {\endSaveVerbatim
+  \flushleft\fboxrule=0pt\fboxsep=.5em
+  \colorbox{cverbbg}{%
+    \makebox[\dimexpr\linewidth-2\fboxsep][l]{\BUseVerbatim{cverb}}%
+  }
+  \endflushleft
+}
+
+\lstdefinelanguage{docker}{
+  keywords={FROM, RUN, COPY, ADD, ENTRYPOINT, CMD,  ENV, ARG, WORKDIR, EXPOSE, LABEL, USER, VOLUME, STOPSIGNAL, ONBUILD, MAINTAINER, AS},
+  keywordstyle=\color{blue}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  showstringspaces=false,
+  commentstyle=\color{red},
+  keywordstyle=\color{blue},
+  inputencoding=utf8,
+  extendedchars=true,
+  numbers=left,                    
+  numbersep=5pt,
+}
+
+\begin{document}
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+        
+        \Huge
+        \textbf{Software Engineering Cheatsheet}
+        
+        \vspace{0.5cm}
+        \LARGE
+        
+        \vspace{.5cm}
+        
+        Edoardo Riggio
+   		  \vspace{1.5cm}
+       
+        \vfill
+        
+        \today
+        
+        \vspace{.8cm}
+          \Large
+          Software Engineering - S.P. 2021 \\
+        Computer Science\\
+        Universit\`{a} della Svizzera Italiana, Lugano\\
+        
+    \end{center}
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+
+\section{Software Development Life Cycle}
+\subsection{Waterfall Model}
+This is a family of models. They identify phases and activities, forcing a linear progression from a phase to the next. No return is allowed (i.e. you cannot go from a phase to one before it).
+
+\subsection{Royce's Waterfall}
+\subsubsection{Feasibility Study}
+This is a cost/benefits analysis. \\ \\
+It determines whether the project should be started, explore possible alternatives and needed resources. \\ \\
+Output $\rightarrow$ \textbf{Feasibility Study Document} - This document contains a preliminary problem description, scenarios with alternatives, and costs for these alternatives.
+
+\subsubsection{Requirement Analysis and Specification}
+This is a domain analysis. \\ \\
+It is needed in order to identify requirements and derive specifications for the software. It requires an interaction with the user, and an understanding of the properties of the domain. \\ \\
+Output $\rightarrow$ \textbf{RASD} (Requirements Analysis and Specification Document)
+
+\subsubsection{Design}
+Defines the software architecture. \\ \\
+It determines all the aspects of the software, such as: components/modules, relations among components and interactions among components. It also enables concurrent development and separates responsibilities. \\ \\
+Output $\rightarrow$ \textbf{Design Document}
+
+\subsubsection{Coding and Unit Testing}
+It is used to produce and test code. \\ \\
+Each module is implemented using the chosen programming language. Each module is then tested in isolation by the module's developer. \\ \\
+Output $\rightarrow$ \textbf{Software} - Composed of classes and modules.
+
+\subsubsection{Integration and System Test}
+All of the modules are integrated. \\ \\
+Modules are integrated into (sub)systems and all of the latter are tested. A complete system test is needed in order to verify the overall properties of the software. Sometimes \textbf{alpha tests} and \textbf{beta tests} are used. \\ \\
+Output $\rightarrow$ \textbf{Software} - Integrated modules.
+
+\subsubsection{Deployment}
+The goal is to distribute the application and manage the different installations and configurations at the clients' sites.
+
+\subsubsection{Maintenance}
+These are all the changes that are done after the delivery. It often is more than 50\% of the total cost. \\ \\
+Maintenance can be of three types:
+
+\begin{itemize}
+	\item \textbf{Corrective Maintenance}
+	\vspace{.2cm} \\
+	It is made up of diagnosing and fixing errors, which are possibly found by users.
+	
+	\item \textbf{Adaptive Maintenance}
+	\vspace{.2cm} \\
+	Modify the system to cope with changes in the software environment.
+	
+	\item \textbf{Perfective Maintenance}
+	\vspace{.2cm} \\
+	Implement new or changed user requirements.
+\end{itemize}
+
+\subsection{Spiral Model}
+In a spiral model, \textbf{prototypes} are produced at each new spiral. Prototypes are useful because they are an approximation of the model of the application. There exist two types of prototypes:
+
+\begin{itemize}
+	\item \textbf{Throw-Away}
+	\vspace{.2cm} \\
+	There is little to no reuse of the components of the prototype.
+	
+	\item \textbf{Evolutionary}
+	\vspace{.2cm} \\
+	The components of the prototype are reused even in the final product.
+\end{itemize}
+
+\subsection{Boehm's Spiral Model}
+\subsubsection{Determine Goals, Alternatives and Constraints}
+This enables to identify specific objectives, alternatives and constraints for that specific phase.
+
+\subsubsection{Evaluate Alternatives and Risks}
+Access each alternative in order to reduce the potential risks.
+
+\subsubsection{Develop and Test}
+Artifacts are produced for the next phase. This also includes code.
+
+\subsubsection{Plan}
+Review the project and plan the next phase of the spiral.
+
+\subsection{Synchronize and Stabilize}
+What people are doing as individuals and as members of parallel teams is continually \textbf{synchronized}, and the product increments are periodically \textbf{stabilized} as the project proceeds.
+
+\subsubsection{Planning Phase}
+This phase is itself divided into three more phases:
+
+\begin{itemize}
+	\item \textbf{Vision Statement}
+	\vspace{.2cm} \\
+	The product and program management create a vision statement defining the goals for the new product. Product features based on costumer input are identified and prioritized.
+	
+	\item \textbf{Specification Document}
+	\vspace{.2cm} \\
+	This is written by the program management and the developer teams. It defines the functional features, architectural issues, and interdependent components. It does not cover all the details of each feature, and does not lock the feature set of the project.
+	
+	\item \textbf{Schedule and Team Formation}
+	\vspace{.2cm} \\
+	The program management defines the schedule and arranges the teams. The teams are small and have a 1:1 ratio between developers and testers. The project is divided into sequential sub-projects containing priority-ordered features. The schedule is divided into milestone cycles.
+\end{itemize}
+
+\subsubsection{Development Phase}
+All teams have to go through a complete cycle of development, which includes: development, integration, testing and fixing problems. \\ \\
+Teams and individuals work in parallel, and revise the feature set as they learn. \\ \\
+Whenever developers commit code, regression testing is automatically performed. Debugging and synchronization between teams happen on a daily basis.
+
+\subsubsection{Stabilization Phase}
+In this phase program managers coordinate and monitor the customer's feedback. Developers perform final debugging and code stabilization. \\ \\
+The \textbf{golden master disks and documentation} are prepared for final release.
+
+\subsection{Extreme Programming}
+\subsubsection{Release Planning}
+This is made up of four different phases:
+
+\begin{itemize}
+	\item \textbf{User Stories}
+	\vspace{.2cm} \\
+	User stories are written by customers as things that the system is expected to accomplish. They are short, three sentences format of written text without technicalities.
+	
+	\item \textbf{Architectural Spike}
+	\vspace{.2cm} \\
+	Find the simplest system metaphor which allows to explain the system to new people without resorting to huge documents. The design must be kept as simple as possible. Naming of classes and methods must be kept simple and consistent.
+	
+	\item \textbf{Project Velocity}
+	\vspace{.2cm} \\
+	This is a measure of how much work is getting don on the project. It is also used as an indicator of how many user stories can be done before a deadline.
+	
+	\item \textbf{Release Plan}
+	\vspace{.2cm} \\
+	The development team estimates the ideal developing time needed for each user story. The customer must indicate which of the user stories must have higher priority.
+\end{itemize}
+
+\subsubsection{Iteration}
+This is made up of several phases:
+
+\begin{itemize}
+	\item \textbf{Iteration Planning}
+	\vspace{.2cm} \\
+	During iteration planning meetings, customers select the user stories from the release plan. User stories and failed tests are broken down into programming tasks. These tasks are done by developers.
+	
+	\item \textbf{Stand-up Meetings}
+	\vspace{.2cm} \\
+	These meetings are scheduled at the beginning of every day.
+	
+	\item \textbf{CRC Cards}
+	\vspace{.2cm} \\
+	Class, Responsibilities and Collaboration should be used to design systems. \textbf{Responsibilities} represent anything an object knows or does, while \textbf{collaborators} represent the classes to collaborate with in order to fulfill the responsibilities. Individual cards are used to represent objects.
+	
+	\item \textbf{Unit Test First}
+	\vspace{.2cm} \\
+	Unit tests are created before any coding activity. This is known as \textbf{Test Driven Development} (TDD).
+	
+	\item \textbf{Pair Programming}
+	\vspace{.2cm} \\
+	All code is created by two people working together at a single computer. One of the couple is the \textbf{navigator}, which reviews the code, and one is the \textbf{driver}, which writes the code.
+	
+	\item \textbf{Continuous Integration}
+	\vspace{.2cm} \\
+	Developers should be integrating code every few hours. All unit tests must pass in order to detect any compatibility problem early.
+\end{itemize}
+
+\subsubsection{Acceptance Tests}
+Here we have two phases:
+
+\begin{itemize}
+	\item \textbf{Creation}
+	\vspace{.2cm} \\
+	Acceptance tests are created from user stories. The customer specifies some scenarios in which to test for a user story. These are used as regression tests prior to production release.
+	
+	\item \textbf{Customer Approval}
+	\vspace{.2cm} \\
+	Customers are responsible for verifying the correctness of the acceptance tests. Customers decide which failed tests are of highest priority. A user story is not considered completed until it passes all acceptance tests.
+\end{itemize}
+
+\subsection{Scrum}
+Scrum is a framework that has \textbf{three roles} -- product owner, scrum master and scrum team, \textbf{three ceremonies} -- sprint planning, daily scrum meetings and sprint review, and \textbf{three artifacts} -- product backlog, string backlog and burndown chart.
+
+\subsubsection{Roles}
+There are three different roles in Scrum:
+
+\begin{itemize}
+	\item \textbf{Product Owner}
+	\vspace{.2cm} \\
+	This could be a customer representative or a customer proxy. He devises the vision, business plan and releases. He is also responsible for defining the features of the product prioritized on the return of investment. He also builds the product backlog and leads the scrum planning.
+	
+	\item \textbf{Scrum Master}
+	\vspace{.2cm} \\
+	Does whatever it's necessary to help the team be successful, by supporting the practices of Scrum. He manages conflicts within the team, identifies and prioritizes impediments, and implements remediation plans. The Scrum master is not a project manager, he does not assigning tasks to people.
+	
+	\item \textbf{Scrum Team}
+	\vspace{.2cm} \\
+	A team is typically composed by 5 to 10 people. These teams are cross functional and include all the expertise needed. Teams are also self-organizing. They set their sprint goals, and do everything within the boundaries of a project to achieve them.
+\end{itemize}
+
+\subsubsection{Ceremonies}
+There are three ceremonies in Scrum:
+
+\begin{itemize}
+	\item \textbf{Sprint Planning}
+	\vspace{.2cm} \\
+	This takes place at the beginning of each sprint, and sets the goals of the sprint. The project owner and the team review the product backlog, and discuss goals. The items selected are then broken down into tasks and added to the sprint backlog.
+	
+	\item \textbf{Daily Scrum Meetings}
+	\vspace{.2cm} \\
+	These are short, 15 minutes meetings, where tams report what they have done and what they are going to do. After the meeting, the Scrum master updates the burndown chart with the data of the completed tasks.
+	
+	\item \textbf{Sprint Review}
+	\vspace{.2cm} \\
+	The team demos the work they have done to everyone in the three roles. Presentations are not allowed.
+\end{itemize}
+
+\subsection{Agile}
+The 12 rules of the Agile manifesto are the following:
+
+\begin{enumerate}
+	\item Our highest priority is to satisfy the customer through early and continuous delivery of valuable software.
+	\item Welcome changing requirements, even late in development. Agile processes harness change for the customer's competitive advantage.
+	\item Deliver working software frequently, from a couple of weeks to a couple of months, with a preference to a shorter timescale.
+	\item Business people and developers must work together daily throughout the project.
+	\item Build projects around motivated individuals. Give them the environment and support they need, and trust them to get the job done.
+	\item The most efficient and effective method of conveying information to and within a development team is face-to-face conversation.
+	\item Working software is the primary measure of progress.
+	\item Agile processes promote sustainable development. The sponsors, developers, and users should be able to maintain a constant pace indefinitely.
+	\item Continuous attention to technical excellence and good design enhances agility.
+	\item Simplicity -- the art of maximizing the amount of work not done -- is essential.
+	\item The best architectures, requirements, and designs emerge from self-organizing teams.
+	\item At regular intervals, the team reflects on how to become more effective, then tunes and adjusts its behavior accordingly.
+\end{enumerate}
+
+\subsection{Hacker Way}
+In the hacker way, command is decentralized. This means that subordinate leaders must use their initiative in order to accomplish tasks supporting their senior's intent. The goals of a layer are set by the immediate upper layer, and this is a continuous feedback loop. Three levels of command are:
+
+\begin{itemize}
+	\item \textbf{Senior Leadership}
+	\vspace{.2cm} \\
+	It sets the strategic long-term direction, and ensures that the feedback engine runs smoothly. It is also responsible for the overall people management, meaning acquiring new capabilities, expelling obsolete capabilities and react to external changes.
+	
+	\item \textbf{Management}
+	\vspace{.2cm} \\
+	It provides operational context (goals) by linking strategy with tactics. They also devise the constraints that are aligned with the strategy of the company under which the developers operate. There is trust towards developers, and it provides them with all the software and hardware needed.
+	
+	\item \textbf{Developers}
+	\vspace{.2cm} \\
+	They are responsible for the tactical level of operations. The teams are composed of about 10 developers.
+\end{itemize}
+The decision is data-driven, and every layer must have a data scientist to help analyze data. \\ \\
+The philosophy of this method is to deploy, and if it fails, fix it. Some companies release versions of the product only to a subset of the users in order to test it. If the version is broken, they simply rollback to the previous working version.
+
+\section{Requirement Engineering}
+Requirement engineering analyses the context in which the problem to be solved lies, and finds out what needs to be developed, purchased or installed in order to fix the problem. \\ \\
+It is divided into two overlapping sets. The first is the \textbf{problem world's phenomena} set, and the second is the \textbf{machine solutions' phenomena} set. The intersection of these two sets is called \textbf{shared phenomena}. \\ \\
+There is also the distinction to be made between \textbf{system-as-is}, which is the system as it exists before the machine is built into it, and the \textbf{system-to-be}, which is the system as it should be when the machine will be built and operated in it.
+
+\begin{itemize}
+	\item \textbf{System-As-Is}
+	\vspace{.2cm} \\
+	Contains the problems, opportunities and domain knowledge.
+	
+	\item \textbf{System-To-Be}
+	\vspace{.2cm} \\
+	Contains the who, what and why.
+\end{itemize}
+
+\subsection{Categories of Requirements}
+\subsubsection{Environmental Phenomena}
+This set is subdivided into:
+
+\begin{itemize}
+	\item \textbf{Domain Properties}
+	\vspace{.2cm} \\
+	These are descriptive statements about the problem world that is expected to hold regardless of how the system will behave.
+	
+	\item \textbf{Assumptions}
+	\vspace{.2cm} \\
+	Statements that need to be satisfied by the environment and formulated in terms of environmental phenomena.
+	
+	\item \textbf{System Requirements}
+	\vspace{.2cm} \\
+	Prescriptive statements to be enforced by the \textbf{software-to-be}, possibly in cooperation with other system components, and formulated in terms of environmental phenomena. They are divided into:
+	
+	\begin{itemize}
+		\item \textbf{Functional Requirements}
+		\vspace{.2cm} \\
+		They define the functional effects that the \textbf{software-to-be} is required to have in its environment. They may also refer to environmental conditions under which such operations should be applied. They are also known as \textbf{features}.
+		
+		\item \textbf{Non-Functional Requirements}
+		\vspace{.2cm} \\
+		They define constraints on the way the \textbf{software-to-be} should satisfy functional requirements or on the way it should be developed. There could be several such requirements, such as:
+		
+		\begin{itemize}
+			\item \textbf{Quality Requirements}
+			\item \textbf{Compliance Requirements}
+			\item \textbf{Architectural Requirements}
+			\item \textbf{Development Requirements}
+		\end{itemize}
+	\end{itemize}
+\end{itemize}
+
+\subsubsection{Shared Phenomena}
+These are:
+
+\begin{itemize}
+	\item \textbf{Software Requirements}
+	\vspace{.2cm} \\
+	Prescriptive statements to be enforced solely by the \textbf{software-to-be} and formulated only in terms of shared phenomena.
+\end{itemize}
+
+\subsection{Requirements Engineering Process}
+\subsubsection{Requirements Elicitation}
+This is the discovery of candidates requirements and assumptions that will shape the \textbf{system-to-be} based on the weaknesses of the \textbf{system-as-is}. It requires a preliminary phase of knowledge acquisition and discovery about the application domain, the organization and the \textbf{system-as-is}. This phase can be of two types:
+
+\begin{itemize}
+	\item \textbf{Artifact Driven}
+	\vspace{.2cm} \\
+	Collect, read and synthesize relevant documentation about the \textbf{system-as-is}. Submit a list of specific questions to selected stakeholders with a list of possible answers and a brief context. Illustrate a typical sequence of interactions among system components that meet an implicit objective with concrete examples. Show positive/negative and normal/abnormal scenarios. Show mock-ups and prototypes of the final product to help understand and clarify its features.
+	
+	\item \textbf{Stakeholder Driven}
+	\vspace{.2cm} \\
+	Organize interviews with specific stakeholders to target the information we want to acquire. Interviews can be \textbf{structured}, which follow a sequence of pre-defined questions, or \textbf{unstructured}, where there is only a free informal discussion with the stakeholder about the \textbf{system-as-is}.
+\end{itemize}
+
+\subsubsection{Requirements Evaluation}
+This step is for the evaluation of the elicited requirements, in order to obtain a set of low-risk, conflict-free requirements that stakeholders agree on. This step too is divided into several parts:
+
+\begin{itemize}
+	\item \textbf{Conflict Handling}
+	\vspace{.2cm} \\
+	Negotiation may resolve conflicts there may be between stakeholders.
+	
+	\item \textbf{Risk Analysis}
+	\vspace{.2cm} \\
+	What is known as \textbf{functional risk} concerns the inability of the product to deliver the required services. \textbf{Non-functional risk}, on the other hand, concerns the inability of the product to deliver the required quality.
+	
+	\item \textbf{Prioritization}
+	\vspace{.2cm} \\
+	Some requirements often need to be prioritized. Unexpected circumstances might force re-planning of the development. Requirements with lower priority should be weakened or even dropped if necessary.
+\end{itemize}
+
+\subsubsection{Requirements Specification}
+This is to detail, structure and document the agreed characteristics of the \textbf{system-to-be} as they emerge from the evaluation activity. The output document of this phase is the \textbf{requirements document}, which contains objectives, domain properties, assumptions... This document should be easy to understand. These requirements can be of three different types:
+
+\begin{itemize}
+	\item \textbf{Informal}
+	\vspace{.2cm} \\
+	Make use of \textbf{natural language} to document all of the agreed requirements. Ambiguity and noise are inherent to natural language, and may lead to different interpretations.
+	
+	\item \textbf{Semi-Formal}
+	\vspace{.2cm} \\
+	Make use of diagrammatic notations to substitute or complement the natural language specifications. All items and relationships and items are declared formally. \textbf{UML} (Unified Modeling Language) is the industry standard for documenting object oriented systems.
+	
+	\item \textbf{Formal}
+	\vspace{.2cm} \\
+	Make use of formal notations that have a defined syntax, semantic and proof theory, in order to describe and derive requirements.
+\end{itemize}
+
+\subsubsection{Requirements Consolidation}
+In this steps we detect defects, report them, analyze their causes, and undertake the appropriate actions in order to fix them and ensure quality of the requirements. There are four steps to this process:
+
+\begin{itemize}
+	\item \textbf{Inspection Planning}
+	\vspace{.2cm} \\
+	Determine the size and members of the inspection team, schedule and formats of the reports.
+	
+	\item \textbf{Individual Reviewing}
+	\vspace{.2cm} \\
+	Each inspector reads the requirements document or parts of it to look for defects.
+	
+	\item \textbf{Defect Evaluation at Review Meetings}
+	\vspace{.2cm} \\
+	The defects found by each inspector are collected and discussed  to recommend appropriate actions.
+	
+	\item \textbf{Requirements Document Consolidation}
+	\vspace{.2cm} \\
+	The requirements document is revised to address all of the concerns expressed in the inspection report.
+\end{itemize}
+
+
+\section{Testing}
+There are several types of failure that can affect code, such as:
+
+\begin{itemize}
+	\item \textbf{Transient}
+	\vspace{.2cm} \\
+	It occurs only with certain inputs.
+	
+	\item \textbf{Permanent}
+	\vspace{.2cm} \\
+	It occurs with all inputs.
+	
+	\item \textbf{Recoverable}
+	\vspace{.2cm} \\
+	The system can recover automatically.
+	
+	\item \textbf{Unrecoverable}
+	\vspace{.2cm} \\
+	The operator needs to intervene in order to recover from failure.
+	
+	\item \textbf{Non-Corrupting}
+	\vspace{.2cm} \\
+	The failure does not corrupt data.
+	
+	\item \textbf{Corrupting}
+	\vspace{.2cm} \\
+	The failure corrupts data.	 
+\end{itemize}
+There are also several testing categories, such as:
+
+\begin{itemize}
+	\item \textbf{Unit Testing}
+	\vspace{.2cm} \\
+	It tests individual components (methods, classes...).
+	
+	\item \textbf{Module/Integration Testing}
+	\vspace{.2cm} \\
+	A collection of related components tested as a group.
+	
+	\item \textbf{Sub-System/System Testing}
+	\vspace{.2cm} \\
+	This is a higher-level integration testing, from sets of modules to the whole system, including functional and non-functional requirements.
+	
+	\item \textbf{System vs Components}
+	\vspace{.2cm} \\
+	Testing a system's functionality might be more important than testing its components.
+	
+	\item \textbf{Old vs New}
+	Testing old capabilities is more important than testing new capabilities. This is also known as \textbf{regression testing}.
+	
+	\item \textbf{Typical vs Boundaries}
+	\vspace{.2cm} \\
+	If resources are limited, focus on testing the typical scenarios.
+	
+	\item \textbf{Deterministic and Repeatable}
+	\vspace{.2cm} \\
+	Devise tests that are deterministic and repeatable, for example by using frameworks like jUnit.
+	
+	\item \textbf{Cost/Benefit Trade Off}
+	\vspace{.2cm} \\
+	Test is extra work, but it pays off in debugging and maintenance.
+	
+	\item \textbf{Top-Down Testing}
+	\vspace{.2cm} \\
+	Start testing sub-systems. Similarly test modules.
+	
+	\item \textbf{Bottom-Up Testing}
+	\vspace{.2cm} \\
+	Start by testing unit and modules.
+	
+	\item \textbf{Black Box Testing}
+	\vspace{.2cm} \\
+	Write tests according to the specifications.
+	
+	\item \textbf{White Box Testing}
+	\vspace{.2cm} \\
+	Write tests according to the structure of the implementation.
+	
+	\item \textbf{Gray Box Testing}
+	\vspace{.2cm} \\
+	Drive tests by both Back and White Box aspects.
+\end{itemize}
+
+\subsection{Black Box Testing}
+In order to test a unit, it needs a description of what it should do. This is done in order to derive meaningful inputs and check correct outputs. \\ \\
+A single unit test is divided in the following steps:
+
+\begin{enumerate}
+	\item \textbf{Arrange/Setup}
+	\vspace{.2cm} \\
+	It defines the software preconditions (such as needed objects, parameters and resources).
+	
+	\item \textbf{Act/Exercise}
+	\vspace{.2cm} \\
+	Invoke the method under test.
+	
+	\item \textbf{Assert/Verify}
+	\vspace{.2cm} \\
+	Check that the results/effects of the method match the expected ones.
+	
+	\item \textbf{Teardown}
+	\vspace{.2cm} \\
+	Release resources, dispose of unneeded objects.
+\end{enumerate}
+
+\subsubsection{Input Partitioning}
+\textbf{Input partitioning} is done in order to try and find all of the reasonable equivalence classes, check all of the combinations and document all tests. \\ \\
+\textbf{Boundary conditions} are checked by paying attention to primitive types. \\ \\
+\textbf{Parameterized testing} is used in case tests have the same setup/exercise/assertion and you're just testing for different values. Write down a static provider for the arguments, and then specify a Method Source for the actual test. \\ \\
+Inputs have to be partitioned into classes of behavior which are similar, and pick a representative -- which represents the behavior of the whole class.
+
+\subsection{Mocking}
+The purpose of mocking is to isolate the unit being tested and not the behavior or state of external dependencies. \\ \\
+Normally, mocking frameworks enables the developer to inject mock objects instead of real dependencies. Mocking objects imitate real dependencies, but only on a limited set of scenarios. \\ \\
+The main \textbf{issue} with mocking is how to express testing scenarios without the need of writing too much code. This is solved by using fluent APIs.
+
+\subsection{White Box Testing}
+Here testing units are treated as white boxes. This means that the code can be examined in order to generate test cases. Test cases need to maximize the coverage of that structure.
+
+\subsection{Coverage}
+The idea is to use the structure to drive the test case generation. There are several ways to cover code:
+
+\begin{itemize}
+	\item \textbf{Statement Coverage}
+	\vspace{.2cm} \\
+	Devise the minimal amount of test cases that will cover every statement in the code at least once.
+	
+	\item \textbf{Decision Coverage}
+	\vspace{.2cm} \\
+	Also known as \textbf{branch coverage}. Devise the minimal amount of test cases that will cover every decision in the control flow of the program at least once.
+	
+	\item \textbf{Condition Coverage}
+	\vspace{.2cm} \\
+	Devise the minimal amount of test cases that will cover every compound condition -- in boolean sub-expressions -- at least once.
+\end{itemize}
+
+\section{Software Metrics and Quality}
+A \textbf{software metric} is any type of measurement which relates to a software system, process or related documentation. There are two types of metrics:
+
+\begin{itemize}
+	\item \textbf{Direct Metric}
+	\vspace{.2cm} \\
+	It is measured directly on an observed process or artifact.
+	
+	\item \textbf{Indirect Metric}
+	\vspace{.2cm} \\
+	It is calculated from other metrics -- direct or indirect.
+\end{itemize}
+A \textbf{metric} is a function mapping an attribute of an entity onto a symbol in the mathematical set. A \textbf{metric value} is the value of such function assigned to a particular attribute. By manipulating the symbols in the range we can draw conclusions about the attributes in the domain. \\ \\
+A good metric is both \textbf{valid} -- it measures what it is intended to measure, and \textbf{reliable} -- it yields consistent results. Other desirable properties of a metric are:
+
+\begin{itemize}
+	\item \textbf{Objective}
+	\item \textbf{Precise}
+	\item \textbf{Intuitive}
+	\item \textbf{Robust}
+	\item \textbf{Computable}
+	\item \textbf{Economically Practical}
+\end{itemize}
+
+\subsection{Metrics for Cost Estimation and Quality Evaluation}
+Cost estimation and planning are closely related activities. The goals of such activities are:
+
+\begin{itemize}
+	\item To establish a budget for a software project.
+	\item To provide a means of controlling project costs.
+	\item To monitor progress against budget.
+	\item To establish a cost database for future estimation.
+\end{itemize}
+The cost is estimated as a mathematical function of product, project and process attributes whose values are estimated by project managers. The function is derived from a study of historical costing data. A measured-based estimation is composed of the following steps:
+
+\begin{itemize}
+	\item \textbf{Measure}
+	\vspace{.2cm} \\
+	Develop a system model and measure its size.
+	
+	\item \textbf{Estimate}
+	\vspace{.2cm} \\
+	Determine the effort with respect to an empirical database of measurements from similar projects.
+	
+	\item \textbf{Interpret}
+	\vspace{.2cm} \\
+	Adapt the effort with respect to a specific Development Project Plan.
+\end{itemize}
+The use of \textbf{LOC} (Lines Of Code) as an attribute for cost estimation is not the best. All measurements that are based on volume over time are flawed because they do not take in account quality. \\ \\
+In order to compute a quality evaluation, the following metrics are used.
+
+\begin{itemize}
+	\item \textbf{Class Size Metrics}
+	\vspace{.2cm} \\
+	NOM (Number Of Methods), NIA (Number of Instance Attributes) and NCA (Number of Class Attributes).
+	
+	\item \textbf{Method Size Metrics}
+	\vspace{.2cm} \\
+	LOC (Lines Of Code), NOS (Number Of Statements), NOA (Number Of Arguments), NOI (Number Of Invocations).
+	
+	\item \textbf{Inheritance Metrics}
+	\vspace{.2cm} \\
+	HNL (Hierarchy Nesting Level), NOC (Number Of immediate Children), NMI (Number of unmodified Methods Inherited) and NMO (Number of Overridden Methods).
+	
+	\item \textbf{Coupling Between Objects}
+	\vspace{.2cm} \\
+	It is the number of classes to which a given class is coupled. It is to be interpreted as the number of other classes a class requires in order to compile.
+	
+	\item \textbf{Lack of Cohesion Methods}
+	\vspace{.2cm} \\
+	The \textbf{cohesion} is the degree to which the elements inside a module belong together. The \textbf{LCOM} is in function of the number of disjoint sets of local methods. This measurement is \textbf{low} if all methods access all attributes, and is \textbf{equal to 1} if each method uses one given attribute.
+	
+	\item \textbf{Defect Density}
+	\vspace{.2cm} \\
+	The number and size of known defects -- it's a time-based count.
+\end{itemize}
+
+\subsection{Object-Oriented Metrics}
+Object-oriented metrics can be divided into three main categories:
+
+\begin{itemize}
+	\item \textbf{Inheritance}
+	\begin{itemize}
+		\item \textbf{ANDC}
+		\vspace{.2cm} \\
+		The Average Number of Derived Classes metric describes the average of derived classes.
+	
+		\item \textbf{AHH}
+		\vspace{.2cm} \\
+		The Average Hierarchy Height metric is an average depth of the inheritance hierarchy.
+	\end{itemize}
+	
+	\item \textbf{Size}
+	\begin{itemize}
+		\item \textbf{NOP}
+		
+		\item \textbf{NOC}
+		
+		\item \textbf{NOM}
+		
+		\item \textbf{LOC}
+		
+		\item \textbf{CYCLO}
+	\end{itemize}
+	
+	\item \textbf{Communication}
+	\begin{itemize}
+		\item \textbf{NOM}
+		
+		\item \textbf{CALLS}
+		
+		\item \textbf{FANOUT}
+		\vspace{.2cm} \\
+		It counts the types referenced classes and interfaces. It only counts those types that are not part of the same Inheritance Branch.
+	\end{itemize}
+\end{itemize}
+
+\subsubsection{God Class}
+The characteristics of a God Class are that it tends to centralize the intelligence of the system, to do everything and to use data from small data-classes. This type of class is large and has a lot of complex behavior. \\ \\
+In order to detect a God Class, use can use the following detection strategies:
+
+\begin{itemize}
+	\item The class uses directly more than a few attributes of other classes.
+	
+	\item The functional complexity of this class is very high.
+	
+	\item The class cohesion is low.
+\end{itemize}
+
+\subsubsection{Envious Method}
+An Envious Method is more interested in the data given to it from a handful of other classes. \\ \\
+In order to detect an envious method, we use the following detection strategies:
+
+\begin{itemize}
+	\item The method uses directly more than a few attributes of other classes.
+	
+	\item The method uses far more attributes of other classes than its own.
+	
+	\item The used "foreign" attributes belong to very few other classes.
+\end{itemize}
+
+\subsubsection{Data Classes}
+These Data Classes are "dumb" data holders. \\ \\
+In order to detect an envious method, we use the following detection strategies:
+
+\begin{itemize}
+	\item The interface of the class reveals data rather than offering services.
+	
+	\item The class reveals many attributes and is not complex. This measures by either
+	\begin{itemize}
+		\item There are more than a few public data elements.
+		\item The complexity of the class is not high
+	\end{itemize}
+	or
+	\begin{itemize}
+		\item The class has many public data elements.
+		
+		\item The complexity of the class is not very high.
+	\end{itemize}
+\end{itemize}
+
+\subsection{Code Smells and Technical Debt}
+A \textbf{code smell} is a surface indication that usually corresponds to a deeper problem in the system. The characteristics of code smells are the following:
+
+\begin{itemize}
+	\item They are easy to spot.
+	
+	\item Code smells are not problems per se, they are often indicators of problems.
+	
+	\item Some code style violations may be considered as code smells.
+	
+	\item Design flaws are also considered code smells.
+\end{itemize}
+Every time we ignore a code smell, we accumulate \textbf{technical debt}. It indicates the extra effort needed in order to add a new feature, fix an existing one... \\ \\
+Technical debt has also \textbf{interest}. This is measured by computing the difference in time it takes to do something with technical debt and without. \\ \\
+Technical debt has a \textbf{human cost}. This means that if the technical debt is too high, it affects the team's morale, frustrates developers, lowers productivity and generates fights.
+
+\subsubsection{Code Review}
+Code review is a systematic examination of computer source code.It is intended to find mistakes overlooked in software development, improving the overall quality of software. \\ \\
+Software inspection follows a strict sequential process, and is applied to any activity -- from requirement specification to programming, These are the steps of code review:
+
+\begin{itemize}
+	\item \textbf{Planning}
+	\vspace{.2cm} \\
+	Materials to be inspected must meet the inspection entry criteria.
+	
+	\item \textbf{Overview}
+	\vspace{.2cm} \\
+	Assignment of inspection roles, and education of participants on the materials under review. There are several roles, such as: Author, Reader, Testers and Moderator.
+	
+	\item \textbf{Preparation}
+	\vspace{.2cm} \\
+	The participants review the item to be inspected and the related material to prepare the meeting.
+	
+	\item \textbf{Inspection Meeting}
+	\vspace{.2cm} \\
+	All defects are reported by the participants.
+	
+	\item \textbf{Rework}
+	\vspace{.2cm} \\
+	Defects found during inspection are resolved by the author.
+	
+	\item \textbf{Follow-up}
+	\vspace{.2cm} \\
+	All defects found in the meeting should be corrected. 9:30
+\end{itemize}
+
+%\section{Software Architecture}
+%Architectural decisions are all about design constraints intended to guarantee certain global requirements. Typically, these are \textbf{non-functional requirements} having to do with performance, scalability, maintenance... \\ \\
+%The architecture of a system consists of: the structure of its parts, the externally visible properties of said parts, and the relationships and constrains between the parts.
+
+\section{Docker}
+Docker supports the construction, distribution and execution of independently deployable units. \\ \\
+A \textbf{Docker Image} is an immutable, layered collection of files that bundle together all the essential components required to configure and run a fully operational environment. \\ \\
+A \textbf{Docker Container} is a runnable instance of an image. A container can be created out of an image, and can also be started and stopped. Docker containers are not virtual machines, they are virtual environments. \\ \\
+Containers are an abstraction at the application layer that packages code and dependencies together. Multiple containers can run on the same machine and share the same OS kernel. Each container runs as an isolated process in the user space.
+
+\subsection{Dockerfile}
+A docker image can be built by reading the instructions from a \textbf{Dockerfile}. A Dockerfile contains all of the commands needed in order to assemble an image. The format of Dockerfile instructions is: \\
+
+\begin{lstlisting}[language=docker,breaklines=true,label={code:compose}]
+# Comment
+INSTRUCTION:arguments
+\end{lstlisting}
+
+\subsubsection{FROM}
+Docker images might depend on other docker images. Whatever is declared in the environment of an image will be available in the Dockerfile. \\
+
+\begin{lstlisting}[language=docker,breaklines=true,label={code:compose}]
+FROM <image>[@<tag>] [AS <name>]
+
+# For example
+FROM ubuntu:16.04
+\end{lstlisting}
+
+\subsubsection{ADD and COPY}
+The \textbf{ADD} and \textbf{COPY} instructions copy files from a source to a destination within the container. If an image is built on a Linux-based system, then ownership of files can be set too. \\
+
+\begin{lstlisting}[language=docker,breaklines=true,label={code:compose}]
+ADD | COPY [-chown=<user:group>] <src> <dest>
+
+# For example
+# The following two lines have identical behavior
+ADD my_app.jar /myapp/app.jar
+COPY my_app.jar /myapp/app.jar
+
+# Copy or add all files that start with "hom" to /mydir
+ADD hom* /mydir/
+COPY hom* /dir/
+\end{lstlisting}
+\vspace{.4cm}
+\textbf{ADD} can also handle URLs and can automatically decompress archives if set as the source. \\
+
+\begin{lstlisting}[language=docker,breaklines=true,label={code:compose}]
+# Creates the file /foobar
+ADD http://example.com/foobar /
+
+# The contents of the archive are unpacked into /tmp/
+ADD foo.tar.gz /tmp/
+\end{lstlisting}
+
+\subsubsection{RUN and ENV}
+The \textbf{RUN} command executes a shell command during the image construction. The effects of the command will be available in the next step of Docker. \\
+
+\begin{lstlisting}[language=docker,breaklines=true,label={code:compose}]
+RUN <command>
+RUN ["executable", "param1", "param2"]
+\end{lstlisting}
+\vspace{.4cm}
+By default the shell-form commands are executed via \verb|/bin/sh| on Linux. \\
+
+\begin{lstlisting}[language=docker,breaklines=true,label={code:compose}]
+RUN echo $HOME
+RUN ["/bin/sh", "-c", "echo $HOME"]
+\end{lstlisting}
+\vspace{.4cm}
+Environment variables can be defined and used all along the Dockerfile. \\
+
+\begin{lstlisting}[language=docker,breaklines=true,label={code:compose}]
+ENV <key> <value>
+ENV <key>=<value>
+
+# For example
+ENV HOME /home/username
+ENV HOME=/home/username
+\end{lstlisting}
+\vspace{.4cm}
+Here is an example that uses both \textbf{RUN} and \textbf{ENV}: \\
+\begin{lstlisting}[language=docker,breaklines=true,label={code:compose}]
+FROM openjdk:latest
+
+ENV MAVEN_OPTS=-Xmx256M
+
+RUN apt-get update > /dev/null
+RUN apt-get install -y maven git
+
+RUN git clone https://github.com/pdurbin/maven-hello-world.git
+
+RUN cd maven-hello-world/my-app; mvn compile
+\end{lstlisting}
+
+\subsubsection{EXPOSE}
+Docker containers are isolated and do not expose ports to the host machine. The \textbf{EXPOSE} instruction functions as documentation about which ports are intended to be published. \\
+
+\begin{lstlisting}[language=docker,breaklines=true,label={code:compose}]
+EXPOSE <port(s)>
+
+# For example for https, http and ssh
+EXPOSE 443 80 22
+\end{lstlisting}
+\vspace{.4cm}
+In order to actually expose the ports, the following command must be ran: \\
+
+\begin{lstlisting}[language=bash,breaklines=true,label={code:compose}]
+docker run -p <host_port>:<container_port>
+\end{lstlisting}
+
+\subsubsection{ENTRYPOINT}
+An entry point allows to configure a container that will run as executable. This is invoked when \verb|docker run| is executed. \\
+
+\begin{lstlisting}[language=docker,breaklines=true,label={code:compose}]
+ENTRYPOINT <command>
+
+# For example
+ENTRYPOINT ["executable", "param1", "param2"]
+\end{lstlisting}
+\vspace{.4cm}
+The following is an example Dockerfile for a maven executable: \\
+
+\begin{lstlisting}[language=docker,breaklines=true,label={code:compose}]
+FROM openjdk:latest
+
+RUN apt-get update > /dev/null
+RUN apt-get install -y maven git
+
+RUN git clone https://github.com/pdurbin/maven-hello-world.git
+
+RUN cd maven-hello-world/my-app; mvn compile
+
+ENTRYPOINT ["java", "-cp", "maven-hello-world/my-app/target/classes", "com.mycompany.app.App"]
+\end{lstlisting}
+
+\subsubsection{VOLUME}
+Docker containers do not persist data by default. Whenever a container is removed, all data is lost. Docker, however, supports two ways of declaring volumes to persistent data:
+
+\begin{itemize}
+	\item \textbf{Volume}
+	\vspace{.2cm} \\
+	It creates a volume in the docker area, and mounts it to the specific mount point. It can be specified in the Dockerfile. \\
+	
+	\begin{lstlisting}[language=docker,breaklines=true,label={code:compose}]
+VOLUME <mount-point>
+	\end{lstlisting}
+	
+	\item \textbf{Bind Mount}
+	\vspace{.2cm} \\
+	It binds a mount point in the docker container to the filesystem of the host machine. It's specified when running a container. \\
+	
+	\begin{lstlisting}[language=bash,breaklines=true,label={code:compose}]
+docker run -v <host_machine_path>:<container_mountpoint>
+	\end{lstlisting}
+\end{itemize}
+
+\subsection{Building a Dockerfile}
+In order to build a Dockerfile, we use: \\
+	
+\begin{lstlisting}[language=bash,breaklines=true,label={code:compose}]
+docker build <path> -t <image_name>:<tag>
+\end{lstlisting}
+
+\subsection{Docker Registry}
+A \textbf{Docker Registry} allows to store and retrieve newly created images. The main public directory is Docker Hub. A docker image can be either pushed to a public docker registry, or to a private registry (such as GitLab).
+
+\subsection{Docker Compose}
+Docker, through docker-compose, supports the construction and life cycle of multi-container Docker applications.
+
+\subsubsection{Structure}
+A docker-compose.yml file defines a set of services offering some functionalities. \\
+
+\begin{lstlisting}[language=bash,breaklines=true,label={code:compose}]
+version: "3.8"
+
+services:
+  backend:
+    ...
+  db:
+    ...
+  ...
+...
+\end{lstlisting}
+
+\subsubsection{Networks}
+The docker-compose.yml file may also define one or more named internal virtual networks to support communication between containers. \\
+
+\begin{lstlisting}[language=bash,breaklines=true,label={code:compose}]
+version: "3.8"
+
+services:
+  ...
+networks:
+  network:
+    driver: bridge
+\end{lstlisting}
+
+\subsubsection{Services}
+A service can be specified with a build section. \\
+
+\begin{lstlisting}[language=bash,breaklines=true,label={code:compose}]
+version: "3.8"
+
+services:
+  backend:
+    build: .
+    container_name: backend
+    networks: [network]
+    depends_on: [db]
+    ...
+...
+\end{lstlisting}
+\vspace{.4cm}
+Or with an image, such as: \\
+
+\begin{lstlisting}[language=bash,breaklines=true,label={code:compose}]
+version: "3.8"
+
+services:
+  db:
+    image: postgres:12-alpine
+    container_name: db
+    networks: [network]
+    networks:
+    ...
+  ...
+...
+\end{lstlisting}
+
+\subsubsection{Ports}
+By default, containers communicate only through the internal network. In order to expose public services, you need to expose specific ports. \\
+
+\begin{lstlisting}[language=bash,breaklines=true,label={code:compose}]
+version: "3.8"
+
+services:
+  backend:
+    build: .
+    container_name: backend
+    networks: [network]
+    depends_on: [db]
+    ...
+    ports:
+      - 8080:8080
+...
+\end{lstlisting}
+
+\subsubsection{Environment}
+The environment section is used to pass environment variables to containers. \\
+
+\begin{lstlisting}[language=bash,breaklines=true,label={code:compose}]
+version: "3.8"
+
+services:
+  backend:
+    container_name: backend
+    ...
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_HOST=db
+      - DB_PASSWORD=${DB_PASSWORD}
+      ...
+  db:
+    ...
+    environment:
+      - TZ="Europe/Zurich"
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ...
+  ...
+...
+\end{lstlisting}
+
+\subsubsection{Volumes}
+This volume specification binds the \verb|./data| folder in the host machine to the \verb|/application/data| folder in the container. \\
+
+\begin{lstlisting}[language=bash,breaklines=true,label={code:compose}]
+version: "3.8"
+
+services:
+  backend:
+    build: .
+    container_name: backend
+    ...
+    volume:
+      - ./data:/application/data
+...
+\end{lstlisting}
+
+\end{document}
